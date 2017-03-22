@@ -22,64 +22,28 @@ namespace Mirea.Snar2017.Navigate
 
             SetContentView(Resource.Layout.MainMenu);
 
-            Button calibrateButton = FindViewById<Button>(Resource.Id.CalibrateButton);
-            Button filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
+            Button calibrateButton = ButtonBuilder.Create(this, Resource.Id.CalibrateButton);
+            Button filterButton = ButtonBuilder.Create(this, Resource.Id.FilterSettingsButton);
             Button logButton = ButtonBuilder.Create(this, Resource.Id.LogButton);
-            logButton.Text = "sample text";
-
-            bool p = false, p2 = false;
+            Button logPlayerButton = ButtonBuilder.Create(this, Resource.Id.ShowLogPlayerButton);
+            Button clearButton = ButtonBuilder.Create(this, Resource.Id.ClearLogButton);
 
             calibrateButton.Touch += (o, e) =>
             {
-                Animation animation;
                 switch (e.Event.Action)
                 {
                     case MotionEventActions.Down:
                     {
-                        animation = AnimationUtils.LoadAnimation(ApplicationContext, Resource.Animation.Shrink);
-                        calibrateButton.StartAnimation(animation);
                         break;
                     }
                     case MotionEventActions.Up:
                     {
-                        animation = AnimationUtils.LoadAnimation(ApplicationContext, Resource.Animation.Expand);
-                        calibrateButton.StartAnimation(animation);
-
                         var intent = new Intent(this, typeof(CalibrateMenuActivity));
                         StartActivity(intent);
                         OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
                         break;
                     }
                 }
-            };
-            calibrateButton.Click += (o, e) =>
-            {
-                calibrateButton.Text = p ? "5" : "6";
-                p = !p;
-            };
-
-            logButton.Touch += (o, e) =>
-            {
-                switch (e.Event.Action)
-                {
-                    case MotionEventActions.Down:
-                    {
-                        logButton.Text = p2 ? "1" : "2";
-                        p2 = !p2;
-                        break;
-                    }
-                    case MotionEventActions.ButtonRelease:
-                    {
-                        logButton.Text = p ? "3" : "4";
-                        p = !p;
-                        break;
-                    }
-                }
-            };
-            logButton.Click += (o, e) =>
-            {
-                logButton.Text = p2 ? "5" : "6";
-                p2 = !p2;
             };
         }
     }

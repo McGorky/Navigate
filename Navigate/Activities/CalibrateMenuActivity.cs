@@ -40,21 +40,5 @@ namespace Mirea.Snar2017.Navigate
                 OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
             };
         }
-
-        protected override void OnResume()
-        {
-            base.OnResume();
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-            timer.Dispose();
-        }
-
-        protected override void OnPause()
-        {
-            base.OnPause();
-        }
     }
 }

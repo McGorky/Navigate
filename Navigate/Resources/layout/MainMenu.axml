@@ -51,7 +51,7 @@
             android:layout_weight="1"
             style="@style/ButtonText" />
         <Button
-            android:id="@+id/Clear"
+            android:id="@+id/ClearLogButton"
             android:background="@drawable/SaladButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"

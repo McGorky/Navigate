@@ -147,7 +147,7 @@ namespace Mirea.Snar2017.Navigate
 			public const int CalibrateText = 2131230720;
 			
 			// aapt resource value: 0x7f080006
-			public const int Clear = 2131230726;
+			public const int ClearLogButton = 2131230726;
 			
 			// aapt resource value: 0x7f080003
 			public const int FilterSettingsButton = 2131230723;
