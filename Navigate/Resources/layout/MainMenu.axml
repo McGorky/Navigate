@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:orientation="vertical"
+    android:weightSum="10">
+    <Button
+        android:id="@+id/CalibrateButton"
+        android:background="@drawable/SaladButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="@string/Calibrate"
+        android:layout_weight="1"
+        style="@style/ButtonText" />
+    <Button
+        android:id="@+id/FilterSettingsButton"
+        android:background="@drawable/SaladButton"
+        android:layout_below="@+id/CalibrateButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/FilterSettings"
+        android:layout_weight="1"
+        style="@style/ButtonText" />
+    <Button
+        android:id="@+id/LogButton"
+        android:background="@drawable/SaladButton"
+        android:layout_below="@+id/FilterSettingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:hint="Log Button"
+        style="@style/ButtonText"
+        android:layout_weight="1" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:padding="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="2">
+        <Button
+            android:id="@+id/ShowLogPlayerButton"
+            android:background="@drawable/SaladButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="4dp"
+            android:hint="Log Player"
+            android:layout_weight="1"
+            style="@style/ButtonText" />
+        <Button
+            android:id="@+id/Clear"
+            android:background="@drawable/SaladButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:hint="Clear log"
+            android:layout_weight="1"
+            style="@style/ButtonText" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:hint="Orientation and offset"
+        android:layout_weight="6" />
+</LinearLayout>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <style name="ButtonText" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >@color/Black</item>
+        <item name="android:gravity" >center</item>
+        <item name="android:layout_margin" >3dp</item>
+        <item name="android:textSize" >17dp</item>
+        <item name="android:textStyle" >normal</item>
+        <item name="android:typeface" >sans</item>
+        <item name="android:shadowColor" >@color/GrayVeryLight</item>
+        <item name="android:shadowDx" >1</item>
+        <item name="android:shadowDy" >1</item>
+        <item name="android:shadowRadius" >3</item>
+    </style>
+
+    <style name="DarkAndGray" parent="android:Theme.Black.NoTitleBar">
+        <item name="android:windowBackground" >@color/GrayDark</item>
+        <item name="android:navigationBarColor" >@color/GrayVeryDark</item>
+    </style>
+</resources>

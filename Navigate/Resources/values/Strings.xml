@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ApplicationName">Navigate</string>
+    <string name="Calibrate">Calibrate</string>
+    <string name="FilterSettings">Filter settings</string>
+    <string name="StartLog">Log</string>
+    <string name="StopLog">Stop</string>
+</resources>

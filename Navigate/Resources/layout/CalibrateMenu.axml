@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:orientation="vertical"
+    android:weightSum="10">
+    <TextView
+        android:id="@+id/CalibrateText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:hint="sup"
+        android:layout_weight="6" />
+    <Button
+        android:id="@+id/CalibrateExit"
+        android:background="@drawable/SaladButton"
+        android:layout_below="@+id/CalibrateButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:text="Exit"
+        android:layout_weight="2"
+        style="@style/ButtonText" />
+</LinearLayout>
