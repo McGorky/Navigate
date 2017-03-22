@@ -14,7 +14,7 @@ namespace Mirea.Snar2017.Navigate
             Icon = "@drawable/ApplicationIcon",
             Theme = "@style/DarkAndGray"
             )]
-    public class MainMenuActivityActivity : Activity
+    public class MainMenuActivity : Activity
     {
         protected override void OnCreate(Bundle bundle)
         {
