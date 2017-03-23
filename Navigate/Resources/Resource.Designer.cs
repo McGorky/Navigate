@@ -119,10 +119,13 @@ namespace Mirea.Snar2017.Navigate
 			public const int ApplicationIcon = 2130837504;
 			
 			// aapt resource value: 0x7f020001
-			public const int RedButton = 2130837505;
+			public const int Border = 2130837505;
 			
 			// aapt resource value: 0x7f020002
-			public const int SaladButton = 2130837506;
+			public const int RedButton = 2130837506;
+			
+			// aapt resource value: 0x7f020003
+			public const int WhiteButton = 2130837507;
 			
 			static Drawable()
 			{
@@ -137,6 +140,9 @@ namespace Mirea.Snar2017.Navigate
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f080004
+			public const int AccelerometerPlotView = 2131230724;
+			
 			// aapt resource value: 0x7f080002
 			public const int CalibrateButton = 2131230722;
 			
@@ -146,17 +152,26 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f080000
 			public const int CalibrateText = 2131230720;
 			
-			// aapt resource value: 0x7f080006
-			public const int ClearLogButton = 2131230726;
+			// aapt resource value: 0x7f080008
+			public const int ClearLogButton = 2131230728;
 			
-			// aapt resource value: 0x7f080003
-			public const int FilterSettingsButton = 2131230723;
-			
-			// aapt resource value: 0x7f080004
-			public const int LogButton = 2131230724;
+			// aapt resource value: 0x7f08000a
+			public const int FilterSettingsButton = 2131230730;
 			
 			// aapt resource value: 0x7f080005
-			public const int ShowLogPlayerButton = 2131230725;
+			public const int GyroPlotView = 2131230725;
+			
+			// aapt resource value: 0x7f080007
+			public const int LogButton = 2131230727;
+			
+			// aapt resource value: 0x7f080006
+			public const int MagnetometerPlotView = 2131230726;
+			
+			// aapt resource value: 0x7f080003
+			public const int RootLinearLayot = 2131230723;
+			
+			// aapt resource value: 0x7f080009
+			public const int ShowLogPlayerButton = 2131230729;
 			
 			static Id()
 			{
@@ -196,14 +211,20 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f060001
 			public const int Calibrate = 2131099649;
 			
+			// aapt resource value: 0x7f060006
+			public const int Clear = 2131099654;
+			
 			// aapt resource value: 0x7f060002
 			public const int FilterSettings = 2131099650;
 			
 			// aapt resource value: 0x7f060003
-			public const int StartLog = 2131099651;
+			public const int LogPlayer = 2131099651;
 			
 			// aapt resource value: 0x7f060004
-			public const int StopLog = 2131099652;
+			public const int StartLog = 2131099652;
+			
+			// aapt resource value: 0x7f060005
+			public const int StopLog = 2131099653;
 			
 			static String()
 			{

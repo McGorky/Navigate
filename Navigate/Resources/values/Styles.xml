@@ -17,6 +17,6 @@
 
     <style name="DarkAndGray" parent="android:Theme.Black.NoTitleBar">
         <item name="android:windowBackground" >@color/GrayDark</item>
-        <item name="android:navigationBarColor" >@color/GrayVeryDark</item>
+        <item name="android:navigationBarColor" >@color/GrayLight</item>
     </style>
 </resources>

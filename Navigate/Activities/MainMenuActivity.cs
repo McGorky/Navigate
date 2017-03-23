@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Timers;
+
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -6,6 +8,11 @@ using Android.Views;
 using Android.Views.Animations;
 using Android.Widget;
 using Android.OS;
+
+using OxyPlot.Xamarin.Android;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -16,6 +23,9 @@ namespace Mirea.Snar2017.Navigate
             )]
     public class MainMenuActivity : Activity
     {
+        private Timer timer = new Timer();
+        private Random random = new Random(1);
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -27,6 +37,14 @@ namespace Mirea.Snar2017.Navigate
             Button logButton = ButtonBuilder.Create(this, Resource.Id.LogButton);
             Button logPlayerButton = ButtonBuilder.Create(this, Resource.Id.ShowLogPlayerButton);
             Button clearButton = ButtonBuilder.Create(this, Resource.Id.ClearLogButton);
+
+            PlotView accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
+            PlotView gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
+            PlotView magnetometerPlotView = FindViewById<PlotView>(Resource.Id.MagnetometerPlotView);
+            accelerometerPlotView.Model = CreatePlotModel("Time", "s", "Accelerometer", "m/s^2");
+            gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
+            magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "T");
+
 
             calibrateButton.Touch += (o, e) =>
             {
@@ -45,6 +63,55 @@ namespace Mirea.Snar2017.Navigate
                     }
                 }
             };
+            double time = 0;
+            double x = 0;
+            timer.Elapsed += (o, e) =>
+            {
+                RunOnUiThread(() =>
+                {
+                    time += timer.Interval;
+                    x += 1;
+                    var y1 = random.NextDouble() * random.Next(0, 7);
+                    var y2 = random.NextDouble() * random.Next(0, 7);
+                    var y3 = random.NextDouble() * random.Next(0, 7);
+
+                    (accelerometerPlotView.Model.Series[0] as LineSeries).Points.Add(new DataPoint(x, y1));
+                    accelerometerPlotView.Model.Axes[0].Minimum = x - 7;
+                    accelerometerPlotView.Model.Axes[0].Maximum = x + 3;
+                    accelerometerPlotView.InvalidatePlot();
+
+                    (gyroPlotView.Model.Series[0] as LineSeries).Points.Add(new DataPoint(x, y2));
+                    gyroPlotView.Model.Axes[0].Minimum = x - 7;
+                    gyroPlotView.Model.Axes[0].Maximum = x + 3;
+                    gyroPlotView.InvalidatePlot();
+
+                    (magnetometerPlotView.Model.Series[0] as LineSeries).Points.Add(new DataPoint(x, y3));
+                    magnetometerPlotView.Model.Axes[0].Minimum = x - 7;
+                    magnetometerPlotView.Model.Axes[0].Maximum = x + 3;
+                    magnetometerPlotView.InvalidatePlot();
+                });
+            };
+            timer.Interval = 100;
+            timer.Enabled = true;
+        }
+
+        private PlotModel CreatePlotModel(string xName, string xUnits, string yName, string yUnits)
+        {
+            var plotModel = new PlotModel();
+            double fontSize = 7;
+
+            plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, FontSize = fontSize, Title = $"{xName}, {xUnits}" });
+            plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Maximum = 10, Minimum = 0, FontSize = fontSize, Title = $"{yName}, {yUnits}"});
+
+            var series = new LineSeries
+            {
+                MarkerType = MarkerType.None,
+            };
+            series.Background = OxyColors.White;
+
+            plotModel.Series.Add(series);
+
+            return plotModel;
         }
     }
 }

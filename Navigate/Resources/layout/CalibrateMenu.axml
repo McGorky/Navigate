@@ -14,7 +14,7 @@
         android:layout_weight="6" />
     <Button
         android:id="@+id/CalibrateExit"
-        android:background="@drawable/SaladButton"
+        android:background="@drawable/WhiteButton"
         android:layout_below="@+id/CalibrateButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
