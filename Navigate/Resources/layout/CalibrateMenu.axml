@@ -6,20 +6,40 @@
     android:orientation="vertical"
     android:weightSum="10">
     <TextView
-        android:id="@+id/CalibrateText"
+        android:id="@+id/CalibrateTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:hint="sup"
         android:layout_weight="6" />
     <Button
-        android:id="@+id/CalibrateExit"
+        android:id="@+id/CalibrateXButton"
         android:background="@drawable/WhiteButton"
-        android:layout_below="@+id/CalibrateButton"
+        android:layout_below="@+id/CalibrateTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:text="Exit"
-        android:layout_weight="2"
+        android:text="Calibrate X"
+        android:layout_weight="1"
+        style="@style/ButtonText" />
+    <Button
+        android:id="@+id/CalibrateYButton"
+        android:background="@drawable/WhiteButton"
+        android:layout_below="@+id/CalibrateXButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:text="Calibrate Y"
+        android:layout_weight="1"
+        style="@style/ButtonText" />
+    <Button
+        android:id="@+id/CalibrateZButton"
+        android:background="@drawable/WhiteButton"
+        android:layout_below="@+id/CalibrateYButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:text="Calibrate Z"
+        android:layout_weight="1"
         style="@style/ButtonText" />
 </LinearLayout>
