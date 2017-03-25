@@ -7,10 +7,12 @@ using Android.Widget;
 namespace Mirea.Snar2017.Navigate
 {
     [Activity(Label = "CalibrateMenu",
-    Theme = "@style/DarkAndGray")]
+        Theme = "@style/DarkAndGray")]
     public class CalibrateMenuActivity : Activity
     {
         private Timer timer = new Timer();
+
+
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -18,7 +20,7 @@ namespace Mirea.Snar2017.Navigate
             SetContentView(Resource.Layout.CalibrateMenu);
             int count = 0;
             TextView calibrateTextView = FindViewById<TextView>(Resource.Id.CalibrateTextView);
-            Button exitButton = FindViewById<Button>(Resource.Id.CalibrateExitButton);
+            
             Button calibrateXButton = ButtonBuilder.Create(this, Resource.Id.CalibrateXButton);
             Button calibrateYButton = ButtonBuilder.Create(this, Resource.Id.CalibrateYButton);
             Button calibrateZButton = ButtonBuilder.Create(this, Resource.Id.CalibrateZButton);
@@ -29,12 +31,16 @@ namespace Mirea.Snar2017.Navigate
                 RunOnUiThread(() => calibrateTextView.Text = $"{++count} seconds elapsed");
             };
             timer.Interval = 1000;
-            timer.Enabled = true;
-            exitButton.Click += (o, e) =>
-            {
+            timer.Enabled = true;    
+        }
+
+        /*protected void OnBackButtonPressed()
+        {
                 Finish();
                 OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            };
         }
+        */
+        
+        
     }
 }

@@ -42,14 +42,4 @@
         android:text="Calibrate Z"
         android:layout_weight="1"
         style="@style/ButtonText" />
-    <Button
-        android:id="@+id/CalibrateExitButton"
-        android:background="@drawable/WhiteButton"
-        android:layout_below="@+id/CalibrateZButton"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:text="Exit"
-        android:layout_weight="1"
-        style="@style/ButtonText" />
 </LinearLayout>
