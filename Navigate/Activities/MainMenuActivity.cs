@@ -26,6 +26,7 @@ namespace Mirea.Snar2017.Navigate
         private Timer timer = new Timer();
         private Random random = new Random(1);
 
+        bool isLogging = false;
         Button logButton;
 
         protected override void OnCreate(Bundle bundle)
@@ -34,11 +35,11 @@ namespace Mirea.Snar2017.Navigate
 
             SetContentView(Resource.Layout.MainMenu);
 
-            Button calibrateButton = ButtonBuilder.Create(this, Resource.Id.CalibrateButton);
-            Button filterButton = ButtonBuilder.Create(this, Resource.Id.FilterSettingsButton);
-            logButton = ButtonBuilder.Create(this, Resource.Id.LogButton);
-            Button logPlayerButton = ButtonBuilder.Create(this, Resource.Id.ShowLogPlayerButton);
-            Button clearButton = ButtonBuilder.Create(this, Resource.Id.ClearLogButton);
+            Button calibrateButton = FindViewById<Button>(Resource.Id.CalibrateButton);
+            Button filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
+            logButton = FindViewById<Button>(Resource.Id.LogButton);
+            Button logPlayerButton = FindViewById<Button>(Resource.Id.ShowLogPlayerButton);
+            Button clearButton = FindViewById<Button>(Resource.Id.ClearLogButton);
 
             PlotView accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
             PlotView gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
@@ -48,6 +49,7 @@ namespace Mirea.Snar2017.Navigate
             magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "T");
 
             logButton.Click += logButtonClicked;
+
 
             logPlayerButton.Touch += (o, e) =>
             {
@@ -162,10 +164,11 @@ namespace Mirea.Snar2017.Navigate
             {
                 logButton.Text = "Stop";
             }
-            else (logButton.Text == "Stop")
+            else
             {
                 logButton.Text = "Start Log";
             }
         }
+        
     }
 }

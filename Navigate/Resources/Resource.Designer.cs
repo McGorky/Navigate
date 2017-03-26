@@ -140,11 +140,11 @@ namespace Mirea.Snar2017.Navigate
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f08000b
-			public const int AccelerometerPlotView = 2131230731;
+			// aapt resource value: 0x7f08000e
+			public const int AccelerometerPlotView = 2131230734;
 			
-			// aapt resource value: 0x7f080012
-			public const int CalibrateButton = 2131230738;
+			// aapt resource value: 0x7f080015
+			public const int CalibrateButton = 2131230741;
 			
 			// aapt resource value: 0x7f080000
 			public const int CalibrateTextView = 2131230720;
@@ -158,32 +158,35 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f080003
 			public const int CalibrateZButton = 2131230723;
 			
+			// aapt resource value: 0x7f080012
+			public const int ClearLogButton = 2131230738;
+			
+			// aapt resource value: 0x7f080014
+			public const int FilterSettingsButton = 2131230740;
+			
 			// aapt resource value: 0x7f08000f
-			public const int ClearLogButton = 2131230735;
+			public const int GyroPlotView = 2131230735;
 			
 			// aapt resource value: 0x7f080011
-			public const int FilterSettingsButton = 2131230737;
+			public const int LogButton = 2131230737;
 			
-			// aapt resource value: 0x7f08000c
-			public const int GyroPlotView = 2131230732;
-			
-			// aapt resource value: 0x7f08000e
-			public const int LogButton = 2131230734;
+			// aapt resource value: 0x7f080010
+			public const int MagnetometerPlotView = 2131230736;
 			
 			// aapt resource value: 0x7f08000d
-			public const int MagnetometerPlotView = 2131230733;
-			
-			// aapt resource value: 0x7f08000a
-			public const int RootLinearLayot = 2131230730;
+			public const int RootLinearLayot = 2131230733;
 			
 			// aapt resource value: 0x7f080004
 			public const int RootLinearLayot1 = 2131230724;
 			
-			// aapt resource value: 0x7f080010
-			public const int ShowLogPlayerButton = 2131230736;
+			// aapt resource value: 0x7f080013
+			public const int ShowLogPlayerButton = 2131230739;
 			
 			// aapt resource value: 0x7f080009
-			public const int ekspTV = 2131230729;
+			public const int ekspButton = 2131230729;
+			
+			// aapt resource value: 0x7f08000a
+			public const int ekspTV = 2131230730;
 			
 			// aapt resource value: 0x7f080008
 			public const int ekspText = 2131230728;
@@ -196,6 +199,12 @@ namespace Mirea.Snar2017.Navigate
 			
 			// aapt resource value: 0x7f080005
 			public const int madjText = 2131230725;
+			
+			// aapt resource value: 0x7f08000c
+			public const int magnSwitch = 2131230732;
+			
+			// aapt resource value: 0x7f08000b
+			public const int magnetText = 2131230731;
 			
 			static Id()
 			{
@@ -214,7 +223,7 @@ namespace Mirea.Snar2017.Navigate
 			public const int CalibrateMenu = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int FilSets = 2130903041;
+			public const int FilterSets = 2130903041;
 			
 			// aapt resource value: 0x7f030002
 			public const int LogPl = 2130903042;
@@ -255,6 +264,15 @@ namespace Mirea.Snar2017.Navigate
 			
 			// aapt resource value: 0x7f060005
 			public const int StopLog = 2131099653;
+			
+			// aapt resource value: 0x7f060008
+			public const int ekspButton = 2131099656;
+			
+			// aapt resource value: 0x7f060007
+			public const int madjButton = 2131099655;
+			
+			// aapt resource value: 0x7f060009
+			public const int magnetometr = 2131099657;
 			
 			static String()
 			{

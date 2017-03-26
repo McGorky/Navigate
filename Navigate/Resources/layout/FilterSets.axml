@@ -22,7 +22,7 @@
             android:id="@+id/madjText"
             android:background="@color/White" />
         <Button
-            android:text="Accept"
+            android:text="@string/madjButton"
             android:layout_width="177.0dp"
             android:layout_height="wrap_content"
             android:id="@+id/madjButton"
@@ -49,10 +49,10 @@
             android:id="@+id/ekspText"
             android:background="@color/White" />
         <Button
-            android:text="Accept"
+            android:text="@string/ekspButton"
             android:layout_width="177.0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/madjButton"
+            android:id="@+id/ekspButton"
             android:layout_marginRight="2dp" />
     </LinearLayout>
     <TextView
@@ -61,4 +61,23 @@
         android:layout_width="267.5dp"
         android:layout_height="wrap_content"
         android:id="@+id/ekspTV" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <TextView
+            android:text="@string/magnetometr"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="165.5dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/magnetText" />
+        <Switch
+            android:layout_width="183.5dp"
+            android:layout_height="match_parent"
+            android:id="@+id/magnSwitch" />
+    </LinearLayout>
 </LinearLayout>
