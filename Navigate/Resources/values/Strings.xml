@@ -4,7 +4,7 @@
     <string name="Calibrate">Calibrate</string>
     <string name="FilterSettings">Filter settings</string>
     <string name="LogPlayer">Log player</string>
-    <string name="StartLog">Log</string>
+    <string name="StartLog">Start Log</string>
     <string name="StopLog">Stop</string>
     <string name="Clear">Clear</string>
 </resources>

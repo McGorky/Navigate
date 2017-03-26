@@ -61,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\FilSetsActivity.cs" />
+    <Compile Include="Activities\LogPlayerActivity.cs" />
     <Compile Include="Activities\MainMenuActivity.cs" />
     <Compile Include="Activities\CalibrateMenuActivity.cs" />
     <Compile Include="Filter\Filter.cs" />
@@ -78,6 +80,8 @@
     <AndroidResource Include="Resources\layout\CalibrateMenu.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\LogPl.axml" />
+    <AndroidResource Include="Resources\layout\FilSets.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\MainMenu.axml">

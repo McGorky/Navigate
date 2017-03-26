@@ -26,6 +26,8 @@ namespace Mirea.Snar2017.Navigate
         private Timer timer = new Timer();
         private Random random = new Random(1);
 
+        Button logButton;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -34,7 +36,7 @@ namespace Mirea.Snar2017.Navigate
 
             Button calibrateButton = ButtonBuilder.Create(this, Resource.Id.CalibrateButton);
             Button filterButton = ButtonBuilder.Create(this, Resource.Id.FilterSettingsButton);
-            Button logButton = ButtonBuilder.Create(this, Resource.Id.LogButton);
+            logButton = ButtonBuilder.Create(this, Resource.Id.LogButton);
             Button logPlayerButton = ButtonBuilder.Create(this, Resource.Id.ShowLogPlayerButton);
             Button clearButton = ButtonBuilder.Create(this, Resource.Id.ClearLogButton);
 
@@ -45,6 +47,25 @@ namespace Mirea.Snar2017.Navigate
             gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
             magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "T");
 
+            logButton.Click += logButtonClicked;
+
+            logPlayerButton.Touch += (o, e) =>
+            {
+                switch (e.Event.Action)
+                {
+                    case MotionEventActions.Down:
+                        {
+                            break;
+                        }
+                    case MotionEventActions.Up:
+                        {
+                            var intent = new Intent(this, typeof(LogPlayerActivity));
+                            StartActivity(intent);
+                            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+                            break;
+                        }
+                }
+            };
 
             calibrateButton.Touch += (o, e) =>
             {
@@ -63,6 +84,26 @@ namespace Mirea.Snar2017.Navigate
                     }
                 }
             };
+
+            filterButton.Touch += (o, e) =>
+            {
+                switch (e.Event.Action)
+                {
+                    case MotionEventActions.Down:
+                        {
+                            break;
+                        }
+                    case MotionEventActions.Up:
+                        {
+                            var intent = new Intent(this, typeof(FilSetsActivity));
+                            StartActivity(intent);
+                            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+                            break;
+                        }
+                }
+            };
+
+
             double time = 0;
             double x = 0;
             timer.Elapsed += (o, e) =>
@@ -112,6 +153,19 @@ namespace Mirea.Snar2017.Navigate
             plotModel.Series.Add(series);
 
             return plotModel;
+        }
+        
+        
+        void logButtonClicked(object sender, EventArgs e)
+        {
+            if (logButton.Text == "Start Log")
+            {
+                logButton.Text = "Stop";
+            }
+            else (logButton.Text == "Stop")
+            {
+                logButton.Text = "Start Log";
+            }
         }
     }
 }

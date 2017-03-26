@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:orientation="vertical"
+    android:gravity="top"
+    android:weightSum="10"
+    android:id="@+id/RootLinearLayot1">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="177.0dp"
+            android:layout_height="40.0dp"
+            android:id="@+id/madjText"
+            android:background="@color/White" />
+        <Button
+            android:text="Accept"
+            android:layout_width="177.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/madjButton"
+            android:layout_marginRight="2dp" />
+    </LinearLayout>
+    <TextView
+        android:text="Коэф. фильтра Маджвика"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="267.5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/madjTV" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="177.0dp"
+            android:layout_height="40.0dp"
+            android:id="@+id/ekspText"
+            android:background="@color/White" />
+        <Button
+            android:text="Accept"
+            android:layout_width="177.0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/madjButton"
+            android:layout_marginRight="2dp" />
+    </LinearLayout>
+    <TextView
+        android:text="Коэф. эксп. фильтра"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="267.5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ekspTV" />
+</LinearLayout>
