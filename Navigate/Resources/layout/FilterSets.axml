@@ -1,83 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
-    android:orientation="vertical"
-    android:gravity="top"
-    android:weightSum="10"
-    android:id="@+id/RootLinearLayot1">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:weightSum="2"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp">
-        <EditText
-            android:inputType="numberDecimal"
-            android:layout_width="177.0dp"
-            android:layout_height="40.0dp"
-            android:id="@+id/madjText"
-            android:background="@color/White" />
-        <Button
-            android:text="@string/madjButton"
-            android:layout_width="177.0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/madjButton"
-            android:layout_marginRight="2dp" />
-    </LinearLayout>
+    android:id="@+id/RootRelativeLayot1">
     <TextView
-        android:text="Коэф. фильтра Маджвика"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="267.5dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/madjTV" />
-    <LinearLayout
-        android:orientation="horizontal"
+        android:text="@string/MadgwickText1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:weightSum="2"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp">
-        <EditText
-            android:inputType="numberDecimal"
-            android:layout_width="177.0dp"
-            android:layout_height="40.0dp"
-            android:id="@+id/ekspText"
-            android:background="@color/White" />
-        <Button
-            android:text="@string/ekspButton"
-            android:layout_width="177.0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/ekspButton"
-            android:layout_marginRight="2dp" />
-    </LinearLayout>
+        android:layout_height="40dp"
+        android:id="@+id/MadgwickTV"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" />
+    <EditText
+        android:inputType="numberDecimal|numberSigned"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:id="@+id/MadgwickTxt"
+        android:layout_below="@id/MadgwickTV"
+        android:layout_alignParentRight="true"
+        android:background="@color/White" />
+    <SeekBar
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar1"
+        android:layout_below="@id/MadgwickTV"
+        android:layout_alignLeft="@id/MadgwickTV"
+        android:max="100" />
     <TextView
-        android:text="Коэф. эксп. фильтра"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="267.5dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/ekspTV" />
-    <LinearLayout
-        android:orientation="horizontal"
+        android:text="@string/MadgwickText2"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:weightSum="2"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp">
-        <TextView
-            android:text="@string/magnetometr"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="165.5dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/magnetText" />
-        <Switch
-            android:layout_width="183.5dp"
-            android:layout_height="match_parent"
-            android:id="@+id/magnSwitch" />
-    </LinearLayout>
-</LinearLayout>
+        android:layout_height="40dp"
+        android:layout_below="@id/MadgwickTxt"
+        android:id="@+id/MadgwickTV1"
+        android:layout_alignParentLeft="true" />
+    <EditText
+        android:inputType="numberDecimal|numberSigned"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:id="@+id/MadgwickTxt2"
+        android:layout_below="@id/MadgwickTV1"
+        android:layout_alignParentRight="true"
+        android:background="@color/White" />
+    <SeekBar
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar2"
+        android:layout_below="@id/MadgwickTV1"
+        android:layout_alignLeft="@id/MadgwickTV1"
+        android:max="100" />
+    <TextView
+        android:text="@string/ExponentialText"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/MadgwickTxt2"
+        android:layout_alignLeft="@id/MadgwickTV"
+        android:id="@+id/ExponentialTV" />
+    <EditText
+        android:inputType="numberDecimal"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:id="@+id/ExponentialText"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/ExponentialTV"
+        android:background="@color/White" />
+    <SeekBar
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar3"
+        android:layout_below="@id/ExponentialTV"
+        android:layout_alignLeft="@id/MadgwickTV"
+        android:max="100" />
+    <TextView
+        android:text="@string/Magnetometer"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@id/MadgwickTV"
+        android:layout_below="@id/ExponentialText"
+        android:id="@+id/MagnetText" />
+    <Switch
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:id="@+id/MagnSwitch"
+        android:layout_below="@id/ExponentialText"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/MagnetText" />
+    <TextView
+        android:text="@string/GyroDriftComp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@id/MadgwickTV"
+        android:layout_below="@id/MagnetText"
+        android:id="@+id/GyrodriftText" />
+    <Switch
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@id/GyrodriftText"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/MagnetText"
+        android:id="@+id/GyrodriftSwitch" />
+    <TextView
+        android:text="@string/AccelCalibration"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@id/MadgwickTV"
+        android:layout_below="@id/GyrodriftText"
+        android:id="@+id/AccelCalibrationText" />
+    <Switch
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@id/AccelCalibrationText"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/GyrodriftText"
+        android:id="@+id/AccelCalibrationSwitch" />
+    <TextView
+        android:text="Draw Device Trajectory"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@id/MadgwickTV"
+        android:layout_below="@id/AccelCalibrationText"
+        android:id="@+id/DrawTrajectoryText" />
+    <Switch
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/AccelCalibrationText"
+        android:layout_alignParentRight="true"
+        android:id="@+id/DrawTrajectorySwitch"
+        android:layout_toRightOf="@id/DrawTrajectoryText" />
+</RelativeLayout>

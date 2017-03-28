@@ -26,7 +26,6 @@ namespace Mirea.Snar2017.Navigate
         private Timer timer = new Timer();
         private Random random = new Random(1);
 
-        bool isLogging = false;
         Button logButton;
 
         protected override void OnCreate(Bundle bundle)
@@ -49,6 +48,7 @@ namespace Mirea.Snar2017.Navigate
             magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "T");
 
             logButton.Click += logButtonClicked;
+            clearButton.Click += SaveButtonClicked;
 
 
             logPlayerButton.Touch += (o, e) =>
@@ -156,8 +156,29 @@ namespace Mirea.Snar2017.Navigate
 
             return plotModel;
         }
-        
-        
+
+        void SaveButtonClicked(object sender, EventArgs e)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.SetTitle("Name");
+            EditText inp = new EditText(this);
+            builder.SetView(inp);
+
+            builder.SetPositiveButton("OK", OkAction);
+            builder.SetNegativeButton("Cancel", CancelAction);
+            builder.Show();
+        }
+
+        private void OkAction(object sender, DialogClickEventArgs e)
+        {
+            
+        }
+
+        private void CancelAction(object sender, DialogClickEventArgs e)
+        {
+
+        }
+
         void logButtonClicked(object sender, EventArgs e)
         {
             if (logButton.Text == "Start Log")
