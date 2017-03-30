@@ -2,10 +2,10 @@
 
 namespace Mirea.Snar2017.Navigate
 {
-    // TODO: калибровка акселерометра
     // TODO: возможность опционального включения компенсации дрейфа нуля гироскопа
     // TODO: возможность опционального включения учета показаний магнитометра
     // TODO: фильтр для определения смещения по акселерометру
+    // TODO: использовать кватернион и матрицы из OpenTK
     public static class Filter
     {
         // TODO: поменять на калмана
@@ -25,21 +25,27 @@ namespace Mirea.Snar2017.Navigate
             return result;
         }
 
-        public static (float psi, float theta, float phi) Madgvic(ref Quaternion q, Quaternion s, Quaternion a, Quaternion m, float beta, float dt)
+        public static Quaternion Calibrate(Matrix calibrationMatrix, float[] uncalibratedDate)
+        {
+            // UNDONE: закончить калибровку
+            return new Quaternion(0, uncalibratedDate[0], uncalibratedDate[1], uncalibratedDate[2]); ;
+        }
+
+        public static (float psi, float theta, float phi) Madgvic(ref Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float dt)
         {
             /*var h = qPrev.Normalized().Multiply(m.Normalized()).Multiply(qPrev.Normalized().Inversed());
             var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]);
 
-            var g = GradF(qPrev.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
-            var qd = qPrev.Multiply(so).Multiply(0.5f).Add(g.Mul(-beta));
+            var gr = GradF(qPrev.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
+            var qd = qPrev.Multiply(so).Multiply(0.5f).Add(gr.Mul(-beta));
             var q = qPrev.Normalized().Add(qd.Mul(deltaTime));
             qPrev = q;*/
 
             var h = q.Normalized() * m.Normalized() * q.Normalized().Inversed();
             var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]);
 
-            var g = GradF(q.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
-            var qd = 0.5f * q * s - beta * g;
+            var gr = GradF(q.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
+            var qd = 0.5f * q * g - beta * gr;
             q = q.Normalized() + qd * dt;
 
             var psi = (float)Math.Atan2(2 * q[2] * q[3] - 2 * q[1] * q[4], 2 * q[1] * q[1] + 2 * q[2] * q[2] - 1);
