@@ -4,42 +4,102 @@
     android:layout_height="match_parent"
     android:padding="8dp"
     android:orientation="vertical"
+    android:gravity="center|bottom"
     android:weightSum="10">
     <TextView
-        android:id="@+id/CalibrateTextView"
+        android:text="Sup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/CalibrateTextView" />
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:hint="sup"
-        android:layout_weight="6" />
-    <Button
-        android:id="@+id/CalibrateXButton"
-        android:background="@drawable/WhiteButton"
-        android:layout_below="@+id/CalibrateTextView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:text="Calibrate X"
         android:layout_weight="1"
-        style="@style/ButtonText" />
-    <Button
-        android:id="@+id/CalibrateYButton"
-        android:background="@drawable/WhiteButton"
-        android:layout_below="@+id/CalibrateXButton"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <Button
+            android:text="Calibrate front side"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="2dp"
+android:background="@drawable/WhiteButton"
+            android:id="@+id/CalibrateFrontButton" />
+        <Button
+            android:text="Calibrate back side"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/WhiteButton"
+            android:id="@+id/CalibrateBackButton" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:text="Calibrate Y"
         android:layout_weight="1"
-        style="@style/ButtonText" />
-    <Button
-        android:id="@+id/CalibrateZButton"
-        android:background="@drawable/WhiteButton"
-        android:layout_below="@+id/CalibrateYButton"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <Button
+            android:text="Calibrate top side"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/WhiteButton"
+            android:id="@+id/CalibrateTopButton" />
+        <Button
+            android:text="Calibrate bottom side"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/WhiteButton"
+            android:id="@+id/CalibrateBottomButton" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:text="Calibrate Z"
         android:layout_weight="1"
-        style="@style/ButtonText" />
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <Button
+            android:text="Calibrate left side"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/WhiteButton"
+            android:id="@+id/CalibrateLeftButton" />
+        <Button
+            android:text="Calibrate right side"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/WhiteButton"
+            android:id="@+id/CalibrateRightButton" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <Button
+            android:text="Calibrate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/WhiteButton"
+            android:id="@+id/CalibrateButton" />
+    </LinearLayout>
 </LinearLayout>

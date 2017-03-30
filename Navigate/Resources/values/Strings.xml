@@ -21,13 +21,12 @@
     <string name="Clear">Save</string>
     <string name="MadgwickText1">Madgwick β</string>
     <string name="MadgwickText2">Madgwick ζ</string>
-    <string name="MadgwickButton">Accept</string>
     <string name="ExponentialText">Exponential γ</string>
     <string name="ExponentialButton">Accept</string>
-    <string name="Magnetometer">Magnetometer</string>
+    <string name="MagnetometerText">Magnetometer</string>
     <string name="GyroDriftComp">Gyroscope Drift Compensation</string>
     <string name="DrawTrajectory">Draw Device Trajectory</string>
-    <string name="AccelCalibration">Accelerometer Calibration</string>
+    <string name="AccelCalibrationText">Accelerometer Calibration</string>
 
 
 

@@ -27,11 +27,11 @@ namespace Mirea.Snar2017.Navigate
         private Random random = new Random(1);
 
         Button logButton;
+        int step;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
             SetContentView(Resource.Layout.MainMenu);
 
             Button calibrateButton = FindViewById<Button>(Resource.Id.CalibrateButton);
@@ -97,7 +97,7 @@ namespace Mirea.Snar2017.Navigate
                         }
                     case MotionEventActions.Up:
                         {
-                            var intent = new Intent(this, typeof(FilSetsActivity));
+                            var intent = new Intent(this, typeof(FilterSetsActivity));
                             StartActivity(intent);
                             OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
                             break;
@@ -163,10 +163,17 @@ namespace Mirea.Snar2017.Navigate
             builder.SetTitle("Name");
             EditText inp = new EditText(this);
             builder.SetView(inp);
+            inp.RequestFocus();
 
             builder.SetPositiveButton("OK", OkAction);
             builder.SetNegativeButton("Cancel", CancelAction);
             builder.Show();
+
+            
+            Android.Views.InputMethods.InputMethodManager inputManager = (Android.Views.InputMethods.InputMethodManager)GetSystemService(MainMenuActivity.InputMethodService);
+            inputManager.ShowSoftInput(inp, Android.Views.InputMethods.ShowFlags.Implicit);
+            inputManager.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
+                        
         }
 
         private void OkAction(object sender, DialogClickEventArgs e)
@@ -179,17 +186,38 @@ namespace Mirea.Snar2017.Navigate
 
         }
 
+
+
         void logButtonClicked(object sender, EventArgs e)
         {
             if (logButton.Text == "Start Log")
             {
                 logButton.Text = "Stop";
+
+                ProgressDialog progressBar = new ProgressDialog(this);
+                progressBar.SetProgressStyle(ProgressDialogStyle.Horizontal);
+                progressBar.SetMessage("Loading...");
+                progressBar.SetCancelable(false);
+                progressBar.Progress = 0;
+                progressBar.Max = 0;
+                
+                progressBar.Show();
+                step = 0;
+                new System.Threading.Thread(new System.Threading.ThreadStart(delegate
+                {
+                    while (step < 100)
+                    {
+                        step += 1;
+                        progressBar.Progress = step;
+                        System.Threading.Thread.Sleep(100);
+                    }
+                    RunOnUiThread(() => { progressBar.Dismiss(); });
+                })).Start();
             }
             else
             {
                 logButton.Text = "Start Log";
             }
         }
-        
     }
 }

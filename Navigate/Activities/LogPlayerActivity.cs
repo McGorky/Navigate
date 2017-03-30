@@ -13,7 +13,7 @@ namespace Mirea.Snar2017.Navigate
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            SetContentView(Resource.Layout.LogPl);
+            SetContentView(Resource.Layout.LogPlayer);
 
             Spinner dropdown = FindViewById<Spinner>(Resource.Id.spinner1);
 
