@@ -26,17 +26,19 @@ namespace Mirea.Snar2017.Navigate
         private Timer timer = new Timer();
         private Random random = new Random(1);
 
+        Button logButton;
+        int step;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
             SetContentView(Resource.Layout.MainMenu);
 
-            Button calibrateButton = ButtonBuilder.Create(this, Resource.Id.CalibrateButton);
-            Button filterButton = ButtonBuilder.Create(this, Resource.Id.FilterSettingsButton);
-            Button logButton = ButtonBuilder.Create(this, Resource.Id.LogButton);
-            Button logPlayerButton = ButtonBuilder.Create(this, Resource.Id.ShowLogPlayerButton);
-            Button clearButton = ButtonBuilder.Create(this, Resource.Id.ClearLogButton);
+            Button calibrateButton = FindViewById<Button>(Resource.Id.CalibrateButton);
+            Button filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
+            logButton = FindViewById<Button>(Resource.Id.LogButton);
+            Button logPlayerButton = FindViewById<Button>(Resource.Id.ShowLogPlayerButton);
+            Button clearButton = FindViewById<Button>(Resource.Id.ClearLogButton);
 
             PlotView accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
             PlotView gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
@@ -45,6 +47,27 @@ namespace Mirea.Snar2017.Navigate
             gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
             magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "T");
 
+            logButton.Click += logButtonClicked;
+            clearButton.Click += SaveButtonClicked;
+
+
+            logPlayerButton.Touch += (o, e) =>
+            {
+                switch (e.Event.Action)
+                {
+                    case MotionEventActions.Down:
+                        {
+                            break;
+                        }
+                    case MotionEventActions.Up:
+                        {
+                            var intent = new Intent(this, typeof(LogPlayerActivity));
+                            StartActivity(intent);
+                            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+                            break;
+                        }
+                }
+            };
 
             calibrateButton.Touch += (o, e) =>
             {
@@ -63,6 +86,26 @@ namespace Mirea.Snar2017.Navigate
                     }
                 }
             };
+
+            filterButton.Touch += (o, e) =>
+            {
+                switch (e.Event.Action)
+                {
+                    case MotionEventActions.Down:
+                        {
+                            break;
+                        }
+                    case MotionEventActions.Up:
+                        {
+                            var intent = new Intent(this, typeof(FilterSetsActivity));
+                            StartActivity(intent);
+                            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+                            break;
+                        }
+                }
+            };
+
+
             double time = 0;
             double x = 0;
             timer.Elapsed += (o, e) =>
@@ -112,6 +155,69 @@ namespace Mirea.Snar2017.Navigate
             plotModel.Series.Add(series);
 
             return plotModel;
+        }
+
+        void SaveButtonClicked(object sender, EventArgs e)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.SetTitle("Name");
+            EditText inp = new EditText(this);
+            builder.SetView(inp);
+            inp.RequestFocus();
+
+            builder.SetPositiveButton("OK", OkAction);
+            builder.SetNegativeButton("Cancel", CancelAction);
+            builder.Show();
+
+            
+            Android.Views.InputMethods.InputMethodManager inputManager = (Android.Views.InputMethods.InputMethodManager)GetSystemService(MainMenuActivity.InputMethodService);
+            inputManager.ShowSoftInput(inp, Android.Views.InputMethods.ShowFlags.Implicit);
+            inputManager.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
+                        
+        }
+
+        private void OkAction(object sender, DialogClickEventArgs e)
+        {
+            
+        }
+
+        private void CancelAction(object sender, DialogClickEventArgs e)
+        {
+
+        }
+
+
+
+        void logButtonClicked(object sender, EventArgs e)
+        {
+            if (logButton.Text == "Start Log")
+            {
+                logButton.Text = "Stop";
+
+                ProgressDialog progressBar = new ProgressDialog(this);
+                progressBar.SetProgressStyle(ProgressDialogStyle.Horizontal);
+                progressBar.SetMessage("Loading...");
+                progressBar.SetCancelable(false);
+                progressBar.Progress = 0;
+                progressBar.Max = 0;
+                
+                progressBar.Show();
+                step = 0;
+                new System.Threading.Thread(new System.Threading.ThreadStart(delegate
+                {
+                    while (step < 100)
+                    {
+                        step += 1;
+                        progressBar.Progress = step;
+                        System.Threading.Thread.Sleep(100);
+                    }
+                    RunOnUiThread(() => { progressBar.Dismiss(); });
+                })).Start();
+            }
+            else
+            {
+                logButton.Text = "Start Log";
+            }
         }
     }
 }
