@@ -33,7 +33,7 @@ namespace Mirea.Snar2017.Navigate
             Spinner dropdown = FindViewById<Spinner>(Resource.Id.spinner1);
 
             dropdown.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemsSelected);
-            var testData = new List<string>() { "A", "B", "C" };
+            var testData = new List<string>() { Storage.CurrentFile };
             var adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, testData);
 
             adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);

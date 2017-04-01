@@ -133,11 +133,20 @@ namespace Mirea.Snar2017.Navigate
                 }
             };
             UpdateFrame += updateCoordinates;
-            UpdateFrame += (oo, ee) =>
+
+            EventHandler<FrameEventArgs> tmp = null;
+            tmp = (oo, ee) =>
             {
                 if (Storage.currentFrame == Storage.numberOfFrames)
+                {
                     UpdateFrame -= updateCoordinates;
+                    /*for (int i = 4; i < 8; i++)
+                        orintation[i] = 0;*/
+
+                    UpdateFrame -= tmp;
+                }
             };
+            UpdateFrame += tmp;
 
             RenderFrame += delegate
             {
@@ -201,7 +210,7 @@ namespace Mirea.Snar2017.Navigate
             perspective_m[i + 2] = m.Row3.Z; perspective_m[i + 3] = m.Row3.W;
             GL.LoadIdentity();
             GL.LoadMatrix(perspective_m);
-            GL.Scale(0.01f, 0.01f, 0.01f);
+            GL.Scale(0.1f, 0.1f, 0.1f);
             GL.Rotate(-yangle / 10, 0, 1, 0);
             GL.Rotate(-xangle / 10, 1, 0, -1);
             GL.Scale(mScaleFactor, mScaleFactor, mScaleFactor);
@@ -240,9 +249,9 @@ namespace Mirea.Snar2017.Navigate
         {
             GL.PushMatrix();
 
-            x += orintation[5];
-            y += orintation[7];
-            z += orintation[6];
+            x = orintation[5];
+            y = orintation[7];
+            z = orintation[6];
 
             GL.Translate(x, y, z);
             GL.Rotate(orintation[1], orintation[2] + x, orintation[4] + y, orintation[3] + z);
@@ -291,14 +300,14 @@ namespace Mirea.Snar2017.Navigate
         }
 
         float[] cube = {
-            -8f, 1f, 5f, // vertex[0]
-			8f, 1f, 5f, // vertex[1]
-			8f, -1f, 5f, // vertex[2]
-			-8f, -1f, 5f, // vertex[3]
-			-8f, 1f, -5f, // vertex[4]
-			8f, 1f, -5f, // vertex[5]
-			8f, -1f, -5f, // vertex[6]
-			-8f, -1f, -5f, // vertex[7]
+            -3f, 0.2f, 1f, // vertex[0]
+			3f, 0.2f, 1f, // vertex[1]
+			3f, -0.2f, 1f, // vertex[2]
+			-3f, -0.2f, 1f, // vertex[3]
+			-3f, 0.2f, -1f, // vertex[4]
+			3f, 0.2f, -1f, // vertex[5]
+			3f, -0.2f, -1f, // vertex[6]
+			-3f, -0.2f, -1f, // vertex[7]
 		};
 
         float[] line = {
