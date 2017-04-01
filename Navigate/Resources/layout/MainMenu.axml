@@ -44,11 +44,11 @@
             android:layout_weight="1"
             android:layout_marginRight="2dp" />
         <Button
-            android:text="@string/Clear"
+            android:text="@string/Save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/WhiteButton"
-            android:id="@+id/ClearLogButton"
+            android:id="@+id/SaveLogButton"
             android:layout_weight="1"
             android:layout_marginLeft="2dp" />
     </LinearLayout>
@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/WhiteButton"
-        android:id="@+id/CalibrateButton"
+        android:id="@+id/CalibrateMenuButton"
         android:text="@string/Calibrate"
         android:layout_weight="1"
         android:layout_marginTop="2dp"

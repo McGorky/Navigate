@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:orientation="vertical"
+    android:gravity="top"
+    android:weightSum="10">
+    <TextView
+        android:text="@string/MadgwickText1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/MadgwickTextView1" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar1"
+            android:layout_weight="1.7"
+            android:max="1000"
+            android:layout_marginRight="13dp"
+            android:layout_gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_height="match_parent"
+            android:id="@+id/MadgwickEditText1"
+            android:background="@color/White"
+            android:layout_weight="0.3"
+            android:layout_width="100dp"
+            android:layout_marginLeft="7.0dp" />
+    </LinearLayout>
+    <TextView
+        android:text="@string/MadgwickText2"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/MadgwickTextView2" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar2"
+            android:layout_weight="1.7"
+            android:max="1000"
+            android:layout_marginRight="13dp"
+            android:layout_gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/MadgwickEditText2"
+            android:layout_weight="0.3"
+            android:background="@color/White"
+            android:layout_marginLeft="7dp" />
+    </LinearLayout>
+    <TextView
+        android:text="@string/ExponentialText"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/ExponentialTextView" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar3"
+            android:layout_weight="1.7"
+            android:max="1000"
+            android:layout_marginRight="13dp"
+            android:layout_gravity="center_vertical" />
+        <EditText
+            android:inputType="numberDecimal"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/ExponentialEditText"
+            android:layout_weight="0.3"
+            android:background="@color/White"
+            android:layout_marginLeft="7dp" />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="@string/MagnetometerText"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_below="@id/seekBar3"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/MagnetTextView" />
+        <Switch
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:id="@+id/MagnSwitch"
+            android:layout_below="@id/seekBar3"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/MagnetTextView" />
+        <TextView
+            android:text="@string/GyroDriftComp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/MagnetTextView"
+            android:id="@+id/GyrodriftTextView" />
+        <Switch
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/GyrodriftTextView"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/MagnetTextView"
+            android:id="@+id/GyrodriftSwitch" />
+        <TextView
+            android:text="@string/AccelCalibrationText"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/GyrodriftTextView"
+            android:id="@+id/AccelCalibrationTextView" />
+        <Switch
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/AccelCalibrationTextView"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/GyrodriftTextView"
+            android:id="@+id/AccelCalibrationSwitch" />
+        <TextView
+            android:text="Draw Device Trajectory"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/AccelCalibrationTextView"
+            android:id="@+id/DrawTrajectoryTextView" />
+        <Switch
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/AccelCalibrationTextView"
+            android:layout_alignParentRight="true"
+            android:id="@+id/DrawTrajectorySwitch"
+            android:layout_toRightOf="@id/DrawTrajectoryTextView" />
+    </RelativeLayout>
+</LinearLayout>

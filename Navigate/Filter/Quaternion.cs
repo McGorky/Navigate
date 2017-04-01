@@ -121,8 +121,8 @@ namespace Mirea.Snar2017.Navigate
             return this * (1 / norm);
         }
 
-        public Quaternion Inversed() => new Quaternion(w, -x, -y, -z);
+        public Quaternion Conjugated() => new Quaternion(w, -x, -y, -z);
 
-        public override string ToString() => $"{w}, {x}, {y}, {z}";
+        public override string ToString() => $"{w},{x},{y},{z}";
     }
 }
