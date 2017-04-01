@@ -32,6 +32,14 @@ namespace Mirea.Snar2017.Navigate
             madgewickEditText2 = FindViewById<EditText>(Resource.Id.MadgwickEditText2);
             exponentialEditText = FindViewById<EditText>(Resource.Id.ExponentialEditText);
 
+
+            RunOnUiThread(() =>
+            {
+                madgewickEditText1.Text = string.Format("{0:F3}", Storage.Beta);
+                madgewickEditText2.Text = string.Format("{0:F3}", Storage.Zeta);
+                exponentialEditText.Text = string.Format("{0:F3}", Storage.Gamma);
+            });
+
             madgewickEditText1.RequestFocus();
             Android.Views.InputMethods.InputMethodManager inputManager = (Android.Views.InputMethods.InputMethodManager)GetSystemService(FilterSettingsActivity.InputMethodService);
             inputManager.ShowSoftInput(madgewickEditText1, Android.Views.InputMethods.ShowFlags.Implicit);
@@ -42,9 +50,15 @@ namespace Mirea.Snar2017.Navigate
                 if (e.FromUser)
                 {
                     if (e.Progress == 0)
+                    {
+                        Storage.Beta = 0;
                         madgewickEditText1.Text = string.Format("0.000");
+                    }
                     else
-                        madgewickEditText1.Text = string.Format("{0:F3}", (((e.Progress * e.Progress) / 200) * Math.Log10(e.Progress) / 15000f));
+                    {
+                        Storage.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                        madgewickEditText1.Text = string.Format("{0:F3}", Storage.Beta);
+                    }
                 }
             };
 
@@ -53,9 +67,15 @@ namespace Mirea.Snar2017.Navigate
                 if (e.FromUser)
                 {
                     if (e.Progress == 0)
+                    {
+                        Storage.Zeta = 0;
                         madgewickEditText2.Text = string.Format("0.000");
+                    }
                     else
-                        madgewickEditText2.Text = string.Format("{0:F3}", (((e.Progress * e.Progress) / 200) * Math.Log10(e.Progress) / 15000f));
+                    {
+                        Storage.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                        madgewickEditText2.Text = string.Format("{0:F3}", Storage.Zeta);
+                    }
                 }
             };
 
@@ -64,9 +84,15 @@ namespace Mirea.Snar2017.Navigate
                 if (e.FromUser)
                 {
                     if (e.Progress == 0)
+                    {
+                        Storage.Gamma = 0;
                         exponentialEditText.Text = string.Format("0.000");
+                    }
                     else
-                        exponentialEditText.Text = string.Format("{0:F3}", (((e.Progress * e.Progress)/200)*Math.Log10(e.Progress)/ 15000f));
+                    {
+                        Storage.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                        exponentialEditText.Text = string.Format("{0:F3}", Storage.Gamma);
+                    }
                 }
             };
 

@@ -50,7 +50,7 @@ namespace Mirea.Snar2017.Navigate
         public static float[] Offset = new float[3];
 
         public static float Beta = 0.1f;
-        public static float Zeta;
+        public static float Zeta = 0;
         public static float Gamma = 0.7f;
 
         public static System.TimeSpan Uptime = new System.TimeSpan();

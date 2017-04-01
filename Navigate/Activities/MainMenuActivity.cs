@@ -254,11 +254,11 @@ namespace Mirea.Snar2017.Navigate
                         var localRotation = Filter.CalculateDifferenceQuaternion(startRotation, q);
                         aLinear = (0, data[10], data[11], data[12]);
                         var aGlobal = localRotation * aLinear * localRotation.Conjugated();
-                        var accelerationCurrent = Filter.Exponential(acceleration, new float[] { aGlobal.x, aGlobal.y, aGlobal.z - 9.81f }, Storage.Gamma);
+                        var accelerationCurrent = Filter.Exponential(acceleration, new float[] { aGlobal.x, aGlobal.y, aGlobal.z }, Storage.Gamma);
                         var velocityCurrent = Filter.Integrate(acceleration, accelerationCurrent, Storage.Velocity, dt);
                         offset = Filter.Integrate(velocity, velocityCurrent, offset, dt);
-                        //sw.WriteLine($"{dt * 1000},{q.ToString()},{offset[0]},{offset[1]},{offset[2]}");
-                        sw.WriteLine($"{dt * 1000},{q.ToString()},{0},{0},{0}");
+                        sw.WriteLine($"{dt * 1000},{q.ToString()},{offset[0]},{offset[1]},{offset[2]}");
+                        //sw.WriteLine($"{dt * 1000},{q.ToString()},{0},{0},{0}");
                     }
                 }
             }

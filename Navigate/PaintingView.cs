@@ -107,10 +107,15 @@ namespace Mirea.Snar2017.Navigate
 
             EventHandler<FrameEventArgs> updateCoordinates = delegate (object sender, FrameEventArgs args)
             {
-                if (first == true) koef = 1000000 / orintation[0] / 60;
-                first = false;
-
+                orintation = Storage.data[Storage.currentFrame];
                 Storage.currentFrame++;
+
+                if (first)
+                {
+                    koef = 1000000 / orintation[0] / 60;
+                    first = false;
+                }
+
                 var angle = Math.Acos(orintation[1]) * 2;
                 if (speedUp == false)
                 {
@@ -155,7 +160,7 @@ namespace Mirea.Snar2017.Navigate
 
             GL.Viewport(0, 0, viewportWidth, viewportWidth);
 
-            Matrix4 M = Matrix4.CreatePerspectiveFieldOfView(ToRadians(67), (float)viewportWidth / (float)viewportHeight, 0.01f, 500.0f);
+            Matrix4 M = Matrix4.CreatePerspectiveFieldOfView(ToRadians(90), (float)viewportWidth / (float)viewportHeight, 0.001f, 1000.0f);
 
             float[] perspective_m1 = new float[16];
             int i = 0;
@@ -233,38 +238,26 @@ namespace Mirea.Snar2017.Navigate
 
         void RenderCube()
         {
-            GL.MatrixMode(All.Modelview);
+            GL.PushMatrix();
 
+            x += orintation[5];
+            y += orintation[7];
+            z += orintation[6];
+
+            GL.Translate(x, y, z);
+            GL.Rotate(orintation[1], orintation[2] + x, orintation[4] + y, orintation[3] + z);
+            trace.Add(x);
+            trace.Add(y);
+            trace.Add(z);
+
+            float[] tr = new float[trace.Count];
+            for (int j = 0; j < trace.Count; j++)
+                tr[j] = trace[j];
             
-
             GL.ClearColor(0, 0.7f, 0.5f, 0.3f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             unsafe
             {
-                fixed (float* pline = line, plineColor = lineColor)
-                {
-                    GL.VertexPointer(3, All.Float, 0, new IntPtr(pline));
-                    GL.EnableClientState(All.VertexArray);
-                    GL.ColorPointer(4, All.Float, 0, new IntPtr(plineColor));
-                    GL.EnableClientState(All.ColorArray);
-                    GL.DrawArrays(All.Lines, 0, 6);
-                }
-                GL.PushMatrix();
-
-                x += orintation[5];
-                y += orintation[7];
-                z += orintation[6];
-                GL.Translate(x, y, z);
-                trace.Add(orintation[5]);
-                trace.Add(orintation[7]);
-                trace.Add(orintation[6]);
-
-                //GL.Rotate(orintation[1] * 180 / 3.1416f, orintation[2], orintation[4], orintation[3]);
-                GL.Rotate(35, 0.2f, 0.2f, 0.2f);
-
-                float[] tr = new float[trace.Count];
-                for (int j = 0; j < trace.Count; j++)
-                    tr[j] = trace[j];
                 fixed (float* pcube = cube, pcubeColors = cubeColors)
                 {
                     fixed (byte* ptriangles = triangles)
@@ -277,6 +270,14 @@ namespace Mirea.Snar2017.Navigate
                     }
                 }
                 GL.PopMatrix();
+                fixed (float* pline = line, plineColor = lineColor)
+                {
+                    GL.VertexPointer(3, All.Float, 0, new IntPtr(pline));
+                    GL.EnableClientState(All.VertexArray);
+                    GL.ColorPointer(4, All.Float, 0, new IntPtr(plineColor));
+                    GL.EnableClientState(All.ColorArray);
+                    GL.DrawArrays(All.Lines, 0, 6);
+                }
 
                 fixed (float* pline = tr)
                 {
