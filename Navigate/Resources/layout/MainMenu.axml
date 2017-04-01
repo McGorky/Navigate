@@ -5,27 +5,27 @@
     android:padding="8dp"
     android:orientation="vertical"
     android:gravity="center|bottom"
-    android:weightSum="10"
+    android:weightSum="16"
     android:id="@+id/RootLinearLayot">
     <OxyPlot.Xamarin.Android.PlotView
         android:id="@+id/AccelerometerPlotView"
         android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:tag="Accelerometer"
         android:background="@drawable/border" />
     <OxyPlot.Xamarin.Android.PlotView
         android:id="@+id/GyroPlotView"
         android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:tag="Gyro"
         android:background="@drawable/border" />
     <OxyPlot.Xamarin.Android.PlotView
         android:id="@+id/MagnetometerPlotView"
         android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:background="@drawable/border" />
     <LinearLayout
         android:orientation="horizontal"
@@ -44,11 +44,11 @@
             android:layout_weight="1"
             android:layout_marginRight="2dp" />
         <Button
-            android:text="@string/Clear"
+            android:text="@string/Save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/WhiteButton"
-            android:id="@+id/ClearLogButton"
+            android:id="@+id/SaveLogButton"
             android:layout_weight="1"
             android:layout_marginLeft="2dp" />
     </LinearLayout>
@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/WhiteButton"
-        android:id="@+id/CalibrateButton"
+        android:id="@+id/CalibrateMenuButton"
         android:text="@string/Calibrate"
         android:layout_weight="1"
         android:layout_marginTop="2dp"

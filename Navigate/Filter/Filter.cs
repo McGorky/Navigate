@@ -2,51 +2,73 @@
 
 namespace Mirea.Snar2017.Navigate
 {
-    // TODO: калибровка акселерометра
     // TODO: возможность опционального включения компенсации дрейфа нуля гироскопа
     // TODO: возможность опционального включения учета показаний магнитометра
     // TODO: фильтр для определения смещения по акселерометру
+    // TODO: использовать кватернион и матрицы из OpenTK
     public static class Filter
     {
         // TODO: поменять на калмана
-        public static float[] Exponential(float[] previous, float[] current, float k1, float k2)
+        public static float[] Exponential(float[] previous, float[] current, float k)
         {
             float[] result = new float[3];
             for (int i = 0; i < 3; i++)
             {
-                if (Math.Abs(current[i] - previous[i]) < k2)
-                {
-                    continue;
-                }
-
-                result[i] = k1 * current[i] + (1 - k1) * previous[i];
+                result[i] = k * current[i] + (1 - k) * previous[i];
             }
 
             return result;
         }
 
-        public static (float psi, float theta, float phi) Madgvic(ref Quaternion q, Quaternion s, Quaternion a, Quaternion m, float beta, float dt)
+        public static Quaternion Calibrate(Matrix calibrationMatrix, Quaternion notCalibratedData)
+        {
+            var notCalibratedMatrix = new Matrix(4, 1);
+            for (int i = 0; i < 3; i++)
+                notCalibratedMatrix[i, 0] = notCalibratedData[i+2];
+            notCalibratedMatrix[3, 0] = 1;
+
+            var calibratedMatrix = calibrationMatrix * notCalibratedMatrix;
+            return new Quaternion(0, calibratedMatrix[0, 0], calibratedMatrix[1, 0], calibratedMatrix[2, 0]);
+        }
+
+        //public static (float psi, float theta, float phi, Quaternion q) Madgvic(Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float dt)
+        public static Quaternion Madgvic(Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float zeta, float dt)
         {
             /*var h = qPrev.Normalized().Multiply(m.Normalized()).Multiply(qPrev.Normalized().Inversed());
             var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]);
 
-            var g = GradF(qPrev.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
-            var qd = qPrev.Multiply(so).Multiply(0.5f).Add(g.Mul(-beta));
+            var gr = GradF(qPrev.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
+            var qd = qPrev.Multiply(so).Multiply(0.5f).Add(gr.Mul(-beta));
             var q = qPrev.Normalized().Add(qd.Mul(deltaTime));
             qPrev = q;*/
 
-            var h = q.Normalized() * m.Normalized() * q.Normalized().Inversed();
+            //var h = q.Normalized() * m.Normalized() * q.Normalized().Conjugated();
+            var h = q * m.Normalized() * q.Conjugated();
             var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]);
 
-            var g = GradF(q.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
-            var qd = 0.5f * q * s - beta * g;
-            q = q.Normalized() + qd * dt;
+            var gr = GradF(q.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
+            var qd = 0.5f * q * g - beta * gr;
+            q = (q.Normalized() + qd * dt).Normalized();
 
-            var psi = (float)Math.Atan2(2 * q[2] * q[3] - 2 * q[1] * q[4], 2 * q[1] * q[1] + 2 * q[2] * q[2] - 1);
-            var theta = (float)-Math.Asin(2 * q[2] * q[4] + 2 * q[1] * q[3]);
-            var phi = (float)Math.Atan2(2 * q[3] * q[4] - 2 * q[1] * q[2], 2 * q[1] * q[1] + 2 * q[4] * q[4] - 1);
+            //var psi = (float)Math.Atan2(2 * q[2] * q[3] - 2 * q[1] * q[4], 2 * q[1] * q[1] + 2 * q[2] * q[2] - 1);
+            //var theta = (float)-Math.Asin(2 * q[2] * q[4] + 2 * q[1] * q[3]);
+            //var phi = (float)Math.Atan2(2 * q[3] * q[4] - 2 * q[1] * q[2], 2 * q[1] * q[1] + 2 * q[4] * q[4] - 1);
 
-            return (psi, theta, phi);
+            return q;
+        }
+
+        /// <summary>
+        /// a = b * d. 
+        /// находит d
+        /// </summary>
+        /// <param name="a">поворот из положения x в положение y</param>
+        /// <param name="b">поворот из положения x в положение z</param>
+        /// <returns>поворот из положения y в положение z></returns>
+        public static Quaternion CalculateDifferenceQuaternion(Quaternion a, Quaternion b)
+        {
+            //a = a.Normalized();
+            //b = b.Normalized();
+            return b.Conjugated() * a;
         }
 
         private static Quaternion GradF(Quaternion q, Quaternion a, Quaternion b, Quaternion m)
@@ -93,6 +115,15 @@ namespace Mirea.Snar2017.Navigate
             Matrix g = JT * f;
 
             return new Quaternion(g[0, 0], g[1, 0], g[2, 0], g[3, 0]);
+        }
+
+        public static float[] Integrate(float[] previous, float[] current, float[] condition, float dt)
+        {
+            float[] result = new float[3];
+            for (int i = 0; i < 3; i++)
+                result[i] = condition[i] + (current[i] + previous[i]) * 0.5f * dt;
+
+            return result;
         }
     }
 }

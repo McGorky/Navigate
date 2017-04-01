@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <declare-styleable name="PaintingView">
+        <attr name="MvxItemTemplateSelector" format="string" />
+    </declare-styleable>
+</resources>
+<!--
+md53be20fe680e7cb93885c8c308ec121ec/PaintingView'
+'Mirea.Snar2017.Navigate.PaintingView'.
+
+System.NotSupportedException: Could not activate JNI Handle 0x7fd50199f0 (key_handle 0xc562a2b) of Java type 'md53be20fe680e7cb93885c8c308ec121ec/PaintingView' as managed type 'Mirea.Snar2017.Navigate.PaintingView'.
+-->
