@@ -15,4 +15,5 @@
     <string name="GyroDriftComp">Gyroscope Drift Compensation</string>
     <string name="DrawTrajectory">Draw Device Trajectory</string>
     <string name="AccelCalibrationText">Accelerometer Calibration</string>
+  <string name="PlayPlots">Play Plots</string>
 </resources>

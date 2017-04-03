@@ -34,13 +34,14 @@ namespace Mirea.Snar2017.Navigate
         PlotView accelerometerPlotView;
         PlotView gyroPlotView;
         PlotView magnetometerPlotView;
+        LinearLayout plotsLayout;
+        Spinner plotsSpinner;
 
         Button calibrateMenuButton;
         Button filterButton;
         Button logButton;
         Button logPlayerButton;
-        Button saveButton;
-
+        Button playPlotsButton;
         int step;
 
         protected override void OnCreate(Bundle bundle)
@@ -49,25 +50,59 @@ namespace Mirea.Snar2017.Navigate
             
             SetContentView(Resource.Layout.MainMenu);
 
+            AlertDialog.Builder startAlert = new AlertDialog.Builder(this);
+            startAlert.SetTitle("Do calibrate?");
+            startAlert.SetPositiveButton("YES", calibrateMenuButton_Clicked);
+            startAlert.SetNegativeButton("NO", CancelAction);
+
             calibrateMenuButton = FindViewById<Button>(Resource.Id.CalibrateMenuButton);
             filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
             logButton = FindViewById<Button>(Resource.Id.LogButton);
-            logPlayerButton = FindViewById<Button>(Resource.Id.ShowLogPlayerButton);
-            saveButton = FindViewById<Button>(Resource.Id.SaveLogButton);
+            logPlayerButton = FindViewById<Button>(Resource.Id.LogButton);
+            playPlotsButton = FindViewById<Button>(Resource.Id.PlayPlotsButton);
 
             accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
             gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
             magnetometerPlotView = FindViewById<PlotView>(Resource.Id.MagnetometerPlotView);
-            logButton = FindViewById<Button>(Resource.Id.LogButton);
 
+            plotsSpinner = FindViewById<Spinner>(Resource.Id.PlotsSpinner);
+
+            plotsLayout = FindViewById<LinearLayout>(Resource.Id.PlotsLayout);
+            
             accelerometerPlotView.Model = CreatePlotModel("Time", "s", "Accelerometer", "m/s^2");
             gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
             magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "μT");
 
-            logButton.Click += logButtonClicked;
-            saveButton.Click += SaveButtonClicked;
+            calibrateMenuButton.Click += calibrateMenuButton_Clicked;
+            filterButton.Click += filterButton_Clicked;
+            logButton.Click += logButton_Clicked;
+            logPlayerButton.Click += logPlayerButton_Clicked;
+            playPlotsButton.Click += playPlotsButton_Clicked;
 
-            logPlayerButton.Click += (o, e) =>
+            void calibrateMenuButton_Clicked(object sender, EventArgs e)
+            {
+                var intent = new Intent(this, typeof(CalibrateMenuActivity));
+                StartActivity(intent);
+                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+            }
+
+            void filterButton_Clicked(object sender, EventArgs e)
+            {
+                var intent = new Intent(this, typeof(FilterSettingsActivity));
+                StartActivity(intent);
+                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+            }
+
+            void logButton_Clicked(object sender, EventArgs e)
+            {
+                plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 0f);
+                plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 2f);
+                var intent = new Intent(this, typeof(LogMenuActivity));
+                StartActivity(intent);
+                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+            }
+
+            void logPlayerButton_Clicked(object sender, EventArgs e)
             {
                 using (var sr = new StreamReader(Storage.CurrentFile))
                 {
@@ -88,21 +123,20 @@ namespace Mirea.Snar2017.Navigate
                 var intent = new Intent(this, typeof(LogPlayerActivity));
                 StartActivity(intent);
                 OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            };
+            }            
 
-            calibrateMenuButton.Click += (o, e) =>
+            
+
+            void playPlotsButton_Clicked(object sender, EventArgs e)
             {
-                var intent = new Intent(this, typeof(CalibrateMenuActivity));
+                plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 1f);
+                plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 0f);
+                var intent = new Intent(this, typeof(LogMenuActivity));
                 StartActivity(intent);
                 OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            };
+            }
 
-            filterButton.Click += (o, e) =>
-            {
-                var intent = new Intent(this, typeof(FilterSettingsActivity));
-                StartActivity(intent);
-                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            };
+
 
             timer.Elapsed += (o, e) => RunOnUiThread(() => UpdatePlots());
             timer.Interval = 100;
@@ -163,27 +197,19 @@ namespace Mirea.Snar2017.Navigate
         }
 
         private EditText inp;
-        void SaveButtonClicked(object sender, EventArgs e)
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.SetTitle("Name");
-            inp = new EditText(this);
-            builder.SetView(inp);
-            inp.RequestFocus();
+         /*void SaveButtonClicked(object sender, EventArgs e)
+         {
+             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+             builder.SetTitle("Name");
+             inp = new EditText(this);
+             builder.SetView(inp);
+             inp.RequestFocus();
 
-            builder.SetPositiveButton("OK", OkAction);
-            builder.SetNegativeButton("Cancel", CancelAction);
-            builder.Show();
-            
-            Android.Views.InputMethods.InputMethodManager inputManager = (Android.Views.InputMethods.InputMethodManager)GetSystemService(MainMenuActivity.InputMethodService);
-            inputManager.ShowSoftInput(inp, Android.Views.InputMethods.ShowFlags.Implicit);
-            inputManager.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
-        }
-
-        private void OkAction(object sender, DialogClickEventArgs e)
-        {
-            Compile(inp.Text);
-        }
+             builder.SetPositiveButton("OK", OkAction);
+             builder.SetNegativeButton("Cancel", CancelAction);
+             builder.Show();
+         }
+         */
 
         private void CancelAction(object sender, DialogClickEventArgs e)
         {
@@ -264,37 +290,6 @@ namespace Mirea.Snar2017.Navigate
             }
         }
 
-        void logButtonClicked(object sender, EventArgs e)
-        {
-            if (logButton.Text == GetString(Resource.String.StartLog))
-            {
-                logButton.Text = GetString(Resource.String.StopLog);
-
-                ProgressDialog progressBar = new ProgressDialog(this);
-                progressBar.SetProgressStyle(ProgressDialogStyle.Horizontal);
-                progressBar.SetMessage("Loading...");
-                progressBar.SetCancelable(false);
-                progressBar.Progress = 0;
-                progressBar.Max = 0;
-                progressBar.Show();
-                step = 0;
-                StartService(new Intent(this, typeof(SensorsDataService)));
-                new Thread(new ThreadStart(() =>
-                {
-                    while (step < 100)
-                    {
-                        step += 1;
-                        progressBar.Progress = step;
-                        System.Threading.Thread.Sleep(50);
-                    }
-                    RunOnUiThread(() => { progressBar.Dismiss(); });
-                })).Start();
-            }
-            else
-            {
-                StopService(new Intent(this, typeof(SensorsDataService)));
-                logButton.Text = GetString(Resource.String.StartLog);
-            }
-        }
+        
     }
 }

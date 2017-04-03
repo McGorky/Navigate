@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/DarkRed"
+    android:orientation="vertical">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:weightSum="2"
+        android:id="@+id/PlotsLayout"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp"
+        android:layout_weight="0">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="TIMER"
+            android:id="@+id/LogTimer"
+            android:layout_weight="1"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:gravity="center" />
+        <Button
+            android:background="@drawable/Pink"
+            android:id="@+id/PlayStopButton"
+            android:text="Play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+    <Spinner
+        android:layout_width="match_parent"
+        android:id="@+id/PlotsSpinner"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" />
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:orientation="vertical"
+            android:gravity="center|bottom"
+            android:weightSum="14"
+            android:id="@+id/RootLinearLayot">
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView1"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:tag="A"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView2"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Ae"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView2"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="V"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView3"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Ve"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView4"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:tag="S"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView5"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Se"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView6"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Fi"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView7"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Fie"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView8"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Psi"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView9"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Psie"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView10"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Theta"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView11"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="Thetae"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView12"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="A"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView13"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="G"
+                android:background="@drawable/border" />
+            <OxyPlot.Xamarin.Android.PlotView
+                android:id="@+id/PlotView14"
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:tag="M"
+                android:background="@drawable/border" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

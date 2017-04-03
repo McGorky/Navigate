@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown" />
-    <mirea.snar2017.navigate.PaintingView
-        android:id="@+id/paintingview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp" />
+    android:layout_height="match_parent"
+    android:background="@drawable/DarkRed" >
+  <Spinner
+      android:id="@+id/spinner1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:drawable/btn_dropdown"
+      android:spinnerMode="dropdown" />
+  <mirea.snar2017.navigate.PaintingView
+      android:id="@+id/paintingview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="50dp" />
 </FrameLayout>
