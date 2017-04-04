@@ -10,5 +10,14 @@
     <color name="GrayVeryDark">#575757</color>
     <color name="BlueLight">#1697E1</color>
     <color name="Side">#471524</color>
-  <color name="Main">#8C1D3F</color>
+    <color name="Main">#8C1D3F</color>
+  <color name="DarkRedGradientStart">#7a2f46</color>
+  <color name="PinkGradientStart">#AA1D48</color>
+  <color name="Failure">#8E0607</color>
+  <color name="FailureGradientStart">#D00B0C</color>
+  <color name="Luck">#166427</color>
+  <color name="LuckGradientStart">#218C38</color>
+  <color name="Grey">#363636</color>
+  <color name="GreyGradientStart">#5D5B5B</color>
+  
 </resources>

@@ -60,106 +60,106 @@
             android:weightSum="14"
             android:id="@+id/RootLinearLayot">
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView1"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewA"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:tag="A"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView2"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewAe"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Ae"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView2"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewV"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="V"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView3"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewVe"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Ve"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView4"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewS"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
                 android:tag="S"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView5"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewSe"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Se"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView6"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewFi"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Fi"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView7"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewFie"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Fie"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView8"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewPsi"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Psi"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView9"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewPsie"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Psie"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView10"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewTheta"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Theta"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView11"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewThetae"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="Thetae"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView12"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewAccelerometer"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="A"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView13"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewGyroscope"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="G"
                 android:background="@drawable/border" />
             <OxyPlot.Xamarin.Android.PlotView
-                android:id="@+id/PlotView14"
-                android:layout_height="100dp"
+                android:id="@+id/PlotViewMagnetometer"
+                android:layout_height="150dp"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:tag="M"

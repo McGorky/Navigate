@@ -21,8 +21,8 @@ namespace Mirea.Snar2017.Navigate
     {
         System.Diagnostics.Stopwatch logstopwatch = new System.Diagnostics.Stopwatch();
 
-        Button playStop;
-        EditText logStopwatchText;
+        Button playStopButton;
+        TextView logStopwatchText;
         bool pressed = false;
         int count;
 
@@ -31,9 +31,9 @@ namespace Mirea.Snar2017.Navigate
             base.OnCreate(bundle);
             SetContentView(Resource.Layout.LogMenu);
 
-            logStopwatchText = FindViewById<EditText>(Resource.Id.LogTimer);
-            playStop = FindViewById<Button>(Resource.Id.PlayStopButton);
-            playStop.Click += OnPlayStopClicked;
+            logStopwatchText = FindViewById<TextView>(Resource.Id.LogTimer);
+            playStopButton = FindViewById<Button>(Resource.Id.PlayStopButton);
+            playStopButton.Click += OnPlayStopClicked;
 
         }
 
@@ -44,14 +44,14 @@ namespace Mirea.Snar2017.Navigate
             {
                 logstopwatch.Start();
                 logStopwatchText.Text = string.Format("{0}:{1}", logstopwatch.Elapsed.Seconds, logstopwatch.Elapsed.Milliseconds);
-                playStop.Text = "Stop";
+                playStopButton.Text = "Stop";
                 pressed = true;
             }
             else
             {
                 logstopwatch.Stop();
-                
-                playStop.Text = "Play";
+
+                playStopButton.Text = "Play";
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.SetTitle("Name");
                 inp = new EditText(this);

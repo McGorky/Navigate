@@ -3,11 +3,11 @@
   <item android:state_pressed="true" >
     <shape android:shape="rectangle">
       <solid
-          android:color="#166427"
+          android:color="@color/Luck"
             />
       <stroke
           android:width="1dp"
-          android:color="#166427"
+          android:color="@color/Luck"
             />
       <corners
           android:radius="1dp"
@@ -29,13 +29,13 @@
   <item android:state_enabled="false" >
     <shape android:shape="rectangle">
       <gradient
-          android:startColor="#218C38"
-          android:endColor="#166427"
+          android:startColor="@color/LuckGradientStart"
+          android:endColor="@color/Luck"
           android:angle="270"
             />
       <stroke
           android:width="1dp"
-          android:color="#166427"
+          android:color="@color/Luck"
             />
       <corners
           android:radius="1dp"
@@ -58,13 +58,13 @@
   <item>
     <shape android:shape="rectangle">
       <gradient
-          android:startColor="#218C38"
-          android:endColor="#166427"
+          android:startColor="@color/LuckGradientStart"
+          android:endColor="@color/Luck"
           android:angle="270"
             />
       <stroke
           android:width="2dp"
-          android:color="#218C38"
+          android:color="@color/LuckGradientStart"
             />
       <corners
           android:radius="1dp"

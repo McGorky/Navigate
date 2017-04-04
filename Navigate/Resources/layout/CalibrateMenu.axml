@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/GreyButtonDef"
+            android:background="@drawable/GreyButton"
             android:id="@+id/CalibrateButton"
             android:textColor="#000000" />
     </LinearLayout>

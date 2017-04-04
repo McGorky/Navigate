@@ -1112,6 +1112,15 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f0b0050
 			public const int BlueLight = 2131427408;
 			
+			// aapt resource value: 0x7f0b0053
+			public const int DarkRedGradientStart = 2131427411;
+			
+			// aapt resource value: 0x7f0b0055
+			public const int Failure = 2131427413;
+			
+			// aapt resource value: 0x7f0b0056
+			public const int FailureGradientStart = 2131427414;
+			
 			// aapt resource value: 0x7f0b004e
 			public const int GrayDark = 2131427406;
 			
@@ -1124,8 +1133,23 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f0b004d
 			public const int GrayVeryLight = 2131427405;
 			
+			// aapt resource value: 0x7f0b0059
+			public const int Grey = 2131427417;
+			
+			// aapt resource value: 0x7f0b005a
+			public const int GreyGradientStart = 2131427418;
+			
+			// aapt resource value: 0x7f0b0057
+			public const int Luck = 2131427415;
+			
+			// aapt resource value: 0x7f0b0058
+			public const int LuckGradientStart = 2131427416;
+			
 			// aapt resource value: 0x7f0b0052
 			public const int Main = 2131427410;
+			
+			// aapt resource value: 0x7f0b0054
+			public const int PinkGradientStart = 2131427412;
 			
 			// aapt resource value: 0x7f0b004b
 			public const int SaladDark = 2131427403;
@@ -1139,32 +1163,32 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f0b0048
 			public const int White = 2131427400;
 			
-			// aapt resource value: 0x7f0b0054
-			public const int abc_background_cache_hint_selector_material_dark = 2131427412;
+			// aapt resource value: 0x7f0b005b
+			public const int abc_background_cache_hint_selector_material_dark = 2131427419;
 			
-			// aapt resource value: 0x7f0b0055
-			public const int abc_background_cache_hint_selector_material_light = 2131427413;
+			// aapt resource value: 0x7f0b005c
+			public const int abc_background_cache_hint_selector_material_light = 2131427420;
 			
-			// aapt resource value: 0x7f0b0056
-			public const int abc_color_highlight_material = 2131427414;
+			// aapt resource value: 0x7f0b005d
+			public const int abc_color_highlight_material = 2131427421;
 			
 			// aapt resource value: 0x7f0b0004
 			public const int abc_input_method_navigation_guard = 2131427332;
 			
-			// aapt resource value: 0x7f0b0057
-			public const int abc_primary_text_disable_only_material_dark = 2131427415;
+			// aapt resource value: 0x7f0b005e
+			public const int abc_primary_text_disable_only_material_dark = 2131427422;
 			
-			// aapt resource value: 0x7f0b0058
-			public const int abc_primary_text_disable_only_material_light = 2131427416;
+			// aapt resource value: 0x7f0b005f
+			public const int abc_primary_text_disable_only_material_light = 2131427423;
 			
-			// aapt resource value: 0x7f0b0059
-			public const int abc_primary_text_material_dark = 2131427417;
+			// aapt resource value: 0x7f0b0060
+			public const int abc_primary_text_material_dark = 2131427424;
 			
-			// aapt resource value: 0x7f0b005a
-			public const int abc_primary_text_material_light = 2131427418;
+			// aapt resource value: 0x7f0b0061
+			public const int abc_primary_text_material_light = 2131427425;
 			
-			// aapt resource value: 0x7f0b005b
-			public const int abc_search_url_text = 2131427419;
+			// aapt resource value: 0x7f0b0062
+			public const int abc_search_url_text = 2131427426;
 			
 			// aapt resource value: 0x7f0b0005
 			public const int abc_search_url_text_normal = 2131427333;
@@ -1175,20 +1199,17 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f0b0007
 			public const int abc_search_url_text_selected = 2131427335;
 			
-			// aapt resource value: 0x7f0b005c
-			public const int abc_secondary_text_material_dark = 2131427420;
+			// aapt resource value: 0x7f0b0063
+			public const int abc_secondary_text_material_dark = 2131427427;
 			
-			// aapt resource value: 0x7f0b005d
-			public const int abc_secondary_text_material_light = 2131427421;
+			// aapt resource value: 0x7f0b0064
+			public const int abc_secondary_text_material_light = 2131427428;
 			
 			// aapt resource value: 0x7f0b0008
 			public const int accent_material_dark = 2131427336;
 			
 			// aapt resource value: 0x7f0b0009
 			public const int accent_material_light = 2131427337;
-			
-			// aapt resource value: 0x7f0b0053
-			public const int apptheme_color = 2131427411;
 			
 			// aapt resource value: 0x7f0b000a
 			public const int background_floating_material_dark = 2131427338;
@@ -1382,11 +1403,11 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f0b003b
 			public const int switch_thumb_disabled_material_light = 2131427387;
 			
-			// aapt resource value: 0x7f0b005e
-			public const int switch_thumb_material_dark = 2131427422;
+			// aapt resource value: 0x7f0b0065
+			public const int switch_thumb_material_dark = 2131427429;
 			
-			// aapt resource value: 0x7f0b005f
-			public const int switch_thumb_material_light = 2131427423;
+			// aapt resource value: 0x7f0b0066
+			public const int switch_thumb_material_light = 2131427430;
 			
 			// aapt resource value: 0x7f0b003c
 			public const int switch_thumb_normal_material_dark = 2131427388;
@@ -2213,10 +2234,10 @@ namespace Mirea.Snar2017.Navigate
 			public const int design_snackbar_background = 2130837651;
 			
 			// aapt resource value: 0x7f020094
-			public const int GreenButtonDef = 2130837652;
+			public const int GreenButton = 2130837652;
 			
 			// aapt resource value: 0x7f020095
-			public const int GreyButtonDef = 2130837653;
+			public const int GreyButton = 2130837653;
 			
 			// aapt resource value: 0x7f020096
 			public const int ic_audiotrack = 2130837654;
@@ -2498,8 +2519,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070086
 			public const int AccelCalibrationTextView = 2131165318;
 			
-			// aapt resource value: 0x7f07009f
-			public const int AccelerometerPlotView = 2131165343;
+			// aapt resource value: 0x7f0700a0
+			public const int AccelerometerPlotView = 2131165344;
 			
 			// aapt resource value: 0x7f07006a
 			public const int CalibrateBackButton = 2131165290;
@@ -2516,8 +2537,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07006d
 			public const int CalibrateLeftButton = 2131165293;
 			
-			// aapt resource value: 0x7f0700a4
-			public const int CalibrateMenuButton = 2131165348;
+			// aapt resource value: 0x7f0700a5
+			public const int CalibrateMenuButton = 2131165349;
 			
 			// aapt resource value: 0x7f07006e
 			public const int CalibrateRightButton = 2131165294;
@@ -2537,11 +2558,11 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07007f
 			public const int ExponentialTextView = 2131165311;
 			
-			// aapt resource value: 0x7f0700a3
-			public const int FilterSettingsButton = 2131165347;
+			// aapt resource value: 0x7f0700a4
+			public const int FilterSettingsButton = 2131165348;
 			
-			// aapt resource value: 0x7f0700a0
-			public const int GyroPlotView = 2131165344;
+			// aapt resource value: 0x7f0700a1
+			public const int GyroPlotView = 2131165345;
 			
 			// aapt resource value: 0x7f070085
 			public const int GyrodriftSwitch = 2131165317;
@@ -2549,11 +2570,11 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070084
 			public const int GyrodriftTextView = 2131165316;
 			
-			// aapt resource value: 0x7f0700a2
-			public const int LogButton = 2131165346;
+			// aapt resource value: 0x7f0700a3
+			public const int LogButton = 2131165347;
 			
-			// aapt resource value: 0x7f0700a5
-			public const int LogPlayerButton = 2131165349;
+			// aapt resource value: 0x7f0700a6
+			public const int LogPlayerButton = 2131165350;
 			
 			// aapt resource value: 0x7f07008b
 			public const int LogTimer = 2131165323;
@@ -2576,56 +2597,59 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070082
 			public const int MagnetTextView = 2131165314;
 			
-			// aapt resource value: 0x7f0700a1
-			public const int MagnetometerPlotView = 2131165345;
+			// aapt resource value: 0x7f0700a2
+			public const int MagnetometerPlotView = 2131165346;
 			
-			// aapt resource value: 0x7f0700a6
-			public const int PlayPlotsButton = 2131165350;
+			// aapt resource value: 0x7f0700a7
+			public const int PlayPlotsButton = 2131165351;
 			
 			// aapt resource value: 0x7f07008c
 			public const int PlayStopButton = 2131165324;
 			
 			// aapt resource value: 0x7f07008f
-			public const int PlotView1 = 2131165327;
-			
-			// aapt resource value: 0x7f070098
-			public const int PlotView10 = 2131165336;
-			
-			// aapt resource value: 0x7f070099
-			public const int PlotView11 = 2131165337;
-			
-			// aapt resource value: 0x7f07009a
-			public const int PlotView12 = 2131165338;
+			public const int PlotViewA = 2131165327;
 			
 			// aapt resource value: 0x7f07009b
-			public const int PlotView13 = 2131165339;
-			
-			// aapt resource value: 0x7f07009c
-			public const int PlotView14 = 2131165340;
+			public const int PlotViewAccelerometer = 2131165339;
 			
 			// aapt resource value: 0x7f070090
-			public const int PlotView2 = 2131165328;
-			
-			// aapt resource value: 0x7f070091
-			public const int PlotView3 = 2131165329;
-			
-			// aapt resource value: 0x7f070092
-			public const int PlotView4 = 2131165330;
-			
-			// aapt resource value: 0x7f070093
-			public const int PlotView5 = 2131165331;
-			
-			// aapt resource value: 0x7f070094
-			public const int PlotView6 = 2131165332;
+			public const int PlotViewAe = 2131165328;
 			
 			// aapt resource value: 0x7f070095
-			public const int PlotView7 = 2131165333;
+			public const int PlotViewFi = 2131165333;
 			
 			// aapt resource value: 0x7f070096
-			public const int PlotView8 = 2131165334;
+			public const int PlotViewFie = 2131165334;
+			
+			// aapt resource value: 0x7f07009c
+			public const int PlotViewGyroscope = 2131165340;
+			
+			// aapt resource value: 0x7f07009d
+			public const int PlotViewMagnetometer = 2131165341;
 			
 			// aapt resource value: 0x7f070097
-			public const int PlotView9 = 2131165335;
+			public const int PlotViewPsi = 2131165335;
+			
+			// aapt resource value: 0x7f070098
+			public const int PlotViewPsie = 2131165336;
+			
+			// aapt resource value: 0x7f070093
+			public const int PlotViewS = 2131165331;
+			
+			// aapt resource value: 0x7f070094
+			public const int PlotViewSe = 2131165332;
+			
+			// aapt resource value: 0x7f070099
+			public const int PlotViewTheta = 2131165337;
+			
+			// aapt resource value: 0x7f07009a
+			public const int PlotViewThetae = 2131165338;
+			
+			// aapt resource value: 0x7f070091
+			public const int PlotViewV = 2131165329;
+			
+			// aapt resource value: 0x7f070092
+			public const int PlotViewVe = 2131165330;
 			
 			// aapt resource value: 0x7f07008a
 			public const int PlotsLayout = 2131165322;
@@ -2636,8 +2660,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07008e
 			public const int RootLinearLayot = 2131165326;
 			
-			// aapt resource value: 0x7f0700c0
-			public const int action0 = 2131165376;
+			// aapt resource value: 0x7f0700c1
+			public const int action0 = 2131165377;
 			
 			// aapt resource value: 0x7f07005a
 			public const int action_bar = 2131165274;
@@ -2663,8 +2687,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07005b
 			public const int action_context_bar = 2131165275;
 			
-			// aapt resource value: 0x7f0700c4
-			public const int action_divider = 2131165380;
+			// aapt resource value: 0x7f0700c5
+			public const int action_divider = 2131165381;
 			
 			// aapt resource value: 0x7f070003
 			public const int action_menu_divider = 2131165187;
@@ -2699,8 +2723,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070044
 			public const int buttonPanel = 2131165252;
 			
-			// aapt resource value: 0x7f0700c1
-			public const int cancel_action = 2131165377;
+			// aapt resource value: 0x7f0700c2
+			public const int cancel_action = 2131165378;
 			
 			// aapt resource value: 0x7f07002b
 			public const int center = 2131165227;
@@ -2714,8 +2738,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070052
 			public const int checkbox = 2131165266;
 			
-			// aapt resource value: 0x7f0700c7
-			public const int chronometer = 2131165383;
+			// aapt resource value: 0x7f0700c8
+			public const int chronometer = 2131165384;
 			
 			// aapt resource value: 0x7f070033
 			public const int clip_horizontal = 2131165235;
@@ -2765,8 +2789,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07001c
 			public const int end = 2131165212;
 			
-			// aapt resource value: 0x7f0700cc
-			public const int end_padder = 2131165388;
+			// aapt resource value: 0x7f0700cd
+			public const int end_padder = 2131165389;
 			
 			// aapt resource value: 0x7f070023
 			public const int enterAlways = 2131165219;
@@ -2810,8 +2834,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07003f
 			public const int image = 2131165247;
 			
-			// aapt resource value: 0x7f0700cb
-			public const int info = 2131165387;
+			// aapt resource value: 0x7f0700cc
+			public const int info = 2131165388;
 			
 			// aapt resource value: 0x7f070000
 			public const int item_touch_helper_previous_elevation = 2131165184;
@@ -2819,11 +2843,11 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07002f
 			public const int left = 2131165231;
 			
-			// aapt resource value: 0x7f0700c5
-			public const int line1 = 2131165381;
+			// aapt resource value: 0x7f0700c6
+			public const int line1 = 2131165382;
 			
-			// aapt resource value: 0x7f0700c9
-			public const int line3 = 2131165385;
+			// aapt resource value: 0x7f0700ca
+			public const int line3 = 2131165386;
 			
 			// aapt resource value: 0x7f07000b
 			public const int listMode = 2131165195;
@@ -2831,8 +2855,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070041
 			public const int list_item = 2131165249;
 			
-			// aapt resource value: 0x7f0700c3
-			public const int media_actions = 2131165379;
+			// aapt resource value: 0x7f0700c4
+			public const int media_actions = 2131165380;
 			
 			// aapt resource value: 0x7f07001d
 			public const int middle = 2131165213;
@@ -2840,77 +2864,77 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070037
 			public const int mini = 2131165239;
 			
-			// aapt resource value: 0x7f0700b2
-			public const int mr_art = 2131165362;
-			
-			// aapt resource value: 0x7f0700a7
-			public const int mr_chooser_list = 2131165351;
-			
-			// aapt resource value: 0x7f0700aa
-			public const int mr_chooser_route_desc = 2131165354;
+			// aapt resource value: 0x7f0700b3
+			public const int mr_art = 2131165363;
 			
 			// aapt resource value: 0x7f0700a8
-			public const int mr_chooser_route_icon = 2131165352;
-			
-			// aapt resource value: 0x7f0700a9
-			public const int mr_chooser_route_name = 2131165353;
-			
-			// aapt resource value: 0x7f0700af
-			public const int mr_close = 2131165359;
-			
-			// aapt resource value: 0x7f0700b5
-			public const int mr_control_divider = 2131165365;
-			
-			// aapt resource value: 0x7f0700bb
-			public const int mr_control_play_pause = 2131165371;
-			
-			// aapt resource value: 0x7f0700be
-			public const int mr_control_subtitle = 2131165374;
-			
-			// aapt resource value: 0x7f0700bd
-			public const int mr_control_title = 2131165373;
-			
-			// aapt resource value: 0x7f0700bc
-			public const int mr_control_title_container = 2131165372;
-			
-			// aapt resource value: 0x7f0700b0
-			public const int mr_custom_control = 2131165360;
-			
-			// aapt resource value: 0x7f0700b1
-			public const int mr_default_control = 2131165361;
-			
-			// aapt resource value: 0x7f0700ac
-			public const int mr_dialog_area = 2131165356;
+			public const int mr_chooser_list = 2131165352;
 			
 			// aapt resource value: 0x7f0700ab
-			public const int mr_expandable_area = 2131165355;
+			public const int mr_chooser_route_desc = 2131165355;
 			
-			// aapt resource value: 0x7f0700bf
-			public const int mr_group_expand_collapse = 2131165375;
+			// aapt resource value: 0x7f0700a9
+			public const int mr_chooser_route_icon = 2131165353;
 			
-			// aapt resource value: 0x7f0700b3
-			public const int mr_media_main_control = 2131165363;
+			// aapt resource value: 0x7f0700aa
+			public const int mr_chooser_route_name = 2131165354;
 			
-			// aapt resource value: 0x7f0700ae
-			public const int mr_name = 2131165358;
-			
-			// aapt resource value: 0x7f0700b4
-			public const int mr_playback_control = 2131165364;
-			
-			// aapt resource value: 0x7f0700ad
-			public const int mr_title_bar = 2131165357;
+			// aapt resource value: 0x7f0700b0
+			public const int mr_close = 2131165360;
 			
 			// aapt resource value: 0x7f0700b6
-			public const int mr_volume_control = 2131165366;
+			public const int mr_control_divider = 2131165366;
+			
+			// aapt resource value: 0x7f0700bc
+			public const int mr_control_play_pause = 2131165372;
+			
+			// aapt resource value: 0x7f0700bf
+			public const int mr_control_subtitle = 2131165375;
+			
+			// aapt resource value: 0x7f0700be
+			public const int mr_control_title = 2131165374;
+			
+			// aapt resource value: 0x7f0700bd
+			public const int mr_control_title_container = 2131165373;
+			
+			// aapt resource value: 0x7f0700b1
+			public const int mr_custom_control = 2131165361;
+			
+			// aapt resource value: 0x7f0700b2
+			public const int mr_default_control = 2131165362;
+			
+			// aapt resource value: 0x7f0700ad
+			public const int mr_dialog_area = 2131165357;
+			
+			// aapt resource value: 0x7f0700ac
+			public const int mr_expandable_area = 2131165356;
+			
+			// aapt resource value: 0x7f0700c0
+			public const int mr_group_expand_collapse = 2131165376;
+			
+			// aapt resource value: 0x7f0700b4
+			public const int mr_media_main_control = 2131165364;
+			
+			// aapt resource value: 0x7f0700af
+			public const int mr_name = 2131165359;
+			
+			// aapt resource value: 0x7f0700b5
+			public const int mr_playback_control = 2131165365;
+			
+			// aapt resource value: 0x7f0700ae
+			public const int mr_title_bar = 2131165358;
 			
 			// aapt resource value: 0x7f0700b7
-			public const int mr_volume_group_list = 2131165367;
+			public const int mr_volume_control = 2131165367;
 			
-			// aapt resource value: 0x7f0700b9
-			public const int mr_volume_item_icon = 2131165369;
+			// aapt resource value: 0x7f0700b8
+			public const int mr_volume_group_list = 2131165368;
 			
 			// aapt resource value: 0x7f0700ba
-			public const int mr_volume_slider = 2131165370;
+			public const int mr_volume_item_icon = 2131165370;
+			
+			// aapt resource value: 0x7f0700bb
+			public const int mr_volume_slider = 2131165371;
 			
 			// aapt resource value: 0x7f070016
 			public const int multiply = 2131165206;
@@ -2927,8 +2951,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07000c
 			public const int normal = 2131165196;
 			
-			// aapt resource value: 0x7f07009e
-			public const int paintingview = 2131165342;
+			// aapt resource value: 0x7f07009f
+			public const int paintingview = 2131165343;
 			
 			// aapt resource value: 0x7f070028
 			public const int parallax = 2131165224;
@@ -3035,8 +3059,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070045
 			public const int spacer = 2131165253;
 			
-			// aapt resource value: 0x7f07009d
-			public const int spinner1 = 2131165341;
+			// aapt resource value: 0x7f07009e
+			public const int spinner1 = 2131165342;
 			
 			// aapt resource value: 0x7f070008
 			public const int split_action_bar = 2131165192;
@@ -3053,8 +3077,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070031
 			public const int start = 2131165233;
 			
-			// aapt resource value: 0x7f0700c2
-			public const int status_bar_latest_event_content = 2131165378;
+			// aapt resource value: 0x7f0700c3
+			public const int status_bar_latest_event_content = 2131165379;
 			
 			// aapt resource value: 0x7f070065
 			public const int submit_area = 2131165285;
@@ -3062,17 +3086,17 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07000d
 			public const int tabMode = 2131165197;
 			
-			// aapt resource value: 0x7f0700ca
-			public const int text = 2131165386;
+			// aapt resource value: 0x7f0700cb
+			public const int text = 2131165387;
 			
-			// aapt resource value: 0x7f0700c8
-			public const int text2 = 2131165384;
+			// aapt resource value: 0x7f0700c9
+			public const int text2 = 2131165385;
 			
 			// aapt resource value: 0x7f07004d
 			public const int textSpacerNoButtons = 2131165261;
 			
-			// aapt resource value: 0x7f0700c6
-			public const int time = 2131165382;
+			// aapt resource value: 0x7f0700c7
+			public const int time = 2131165383;
 			
 			// aapt resource value: 0x7f070043
 			public const int title = 2131165251;
@@ -3098,8 +3122,8 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07000a
 			public const int view_offset_helper = 2131165194;
 			
-			// aapt resource value: 0x7f0700b8
-			public const int volume_item_container = 2131165368;
+			// aapt resource value: 0x7f0700b9
+			public const int volume_item_container = 2131165369;
 			
 			// aapt resource value: 0x7f070022
 			public const int withText = 2131165218;
@@ -3565,9 +3589,6 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f0a015a
 			public const int Animation_Design_BottomSheetDialog = 2131362138;
 			
-			// aapt resource value: 0x7f0a0179
-			public const int AppTheme = 2131362169;
-			
 			// aapt resource value: 0x7f0a00a5
 			public const int Base_AlertDialog_AppCompat = 2131361957;
 			
@@ -4000,9 +4021,6 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f0a015b
 			public const int Base_Widget_Design_TabLayout = 2131362139;
 			
-			// aapt resource value: 0x7f0a0174
-			public const int ButtonAppTheme = 2131362164;
-			
 			// aapt resource value: 0x7f0a0172
 			public const int ButtonText = 2131362162;
 			
@@ -4017,9 +4035,6 @@ namespace Mirea.Snar2017.Navigate
 			
 			// aapt resource value: 0x7f0a0173
 			public const int DarkAndGray = 2131362163;
-			
-			// aapt resource value: 0x7f0a0175
-			public const int ImageButtonAppTheme = 2131362165;
 			
 			// aapt resource value: 0x7f0a0032
 			public const int Platform_AppCompat = 2131361842;
@@ -4050,9 +4065,6 @@ namespace Mirea.Snar2017.Navigate
 			
 			// aapt resource value: 0x7f0a0036
 			public const int Platform_Widget_AppCompat_Spinner = 2131361846;
-			
-			// aapt resource value: 0x7f0a0177
-			public const int ProgressBarAppTheme = 2131362167;
 			
 			// aapt resource value: 0x7f0a0043
 			public const int RtlOverlay_DialogWindowTitle_AppCompat = 2131361859;
@@ -4095,12 +4107,6 @@ namespace Mirea.Snar2017.Navigate
 			
 			// aapt resource value: 0x7f0a0050
 			public const int RtlUnderlay_Widget_AppCompat_ActionButton_Overflow = 2131361872;
-			
-			// aapt resource value: 0x7f0a0178
-			public const int SeekBarAppTheme = 2131362168;
-			
-			// aapt resource value: 0x7f0a0176
-			public const int SpinnerAppTheme = 2131362166;
 			
 			// aapt resource value: 0x7f0a00d1
 			public const int TextAppearance_AppCompat = 2131362001;

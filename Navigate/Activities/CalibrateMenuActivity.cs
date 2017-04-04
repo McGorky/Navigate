@@ -178,63 +178,83 @@ namespace Mirea.Snar2017.Navigate
 
         void frontButtonClicked(object sender, EventArgs e)
         {
+            if (rightbool && topbool && backbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             frontbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnFront;
             CollectData();
-            frontButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
+            frontButton.SetBackgroundResource(Resource.Drawable.GreenButton);
         }
 
         void backButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && rightbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             backbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnBack;
             CollectData();
-            backButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
+            backButton.SetBackgroundResource(Resource.Drawable.GreenButton);
         }
 
         void topButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && rightbool && backbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             topbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnTop;
             CollectData();
-            topButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
+            topButton.SetBackgroundResource(Resource.Drawable.GreenButton);
         }
 
         void bottomButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && backbool && rightbool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             bottombool = true;
             ShowProgressBar();
-            bottomButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
+            bottomButton.SetBackgroundResource(Resource.Drawable.GreenButton);
         }
 
         void leftButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && backbool && bottombool && rightbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             leftbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnLeft;
             CollectData();
-            leftButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
+            leftButton.SetBackgroundResource(Resource.Drawable.GreenButton);
         }
 
         void rightButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && backbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             rightbool = true;
             ShowProgressBar();
-            rightButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
+            rightButton.SetBackgroundResource(Resource.Drawable.GreenButton);
         }
 
         void calibrateButtonClicked(object sender, EventArgs e)
         {
-            if (frontbool && topbool && backbool && bottombool && leftbool && rightbool)
-            {
-                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
-                Storage.AccelerometerCalibrationMatrix = R * r.Inversed();
-                // calibrateTextView.Text = Storage.AccelerometerCalibrationMatrix.ToString();
-            }
-
+            calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            Storage.AccelerometerCalibrationMatrix = R * r.Inversed();
+         // calibrateTextView.Text = Storage.AccelerometerCalibrationMatrix.ToString();
         }
     }
 }
