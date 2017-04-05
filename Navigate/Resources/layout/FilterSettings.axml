@@ -6,27 +6,30 @@
     android:orientation="vertical"
     android:background="@drawable/DarkRed"
     android:gravity="top"
-    android:weightSum="10">
+    android:weightSum="14">
     <TextView
         android:text="@string/MadgwickText1"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:id="@+id/MadgwickTextView1" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:weightSum="2"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <SeekBar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/seekBar1"
             android:layout_weight="1.7"
             android:max="1000"
+            android:progress="0"
+            android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_dark"
+            android:thumb="@drawable/apptheme_scrubber_control_selector_holo_dark"
             android:layout_marginRight="13dp"
             android:layout_gravity="center_vertical" />
         <EditText
@@ -42,22 +45,25 @@
         android:text="@string/MadgwickText2"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:id="@+id/MadgwickTextView2" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:weightSum="2"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <SeekBar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/seekBar2"
             android:layout_weight="1.7"
             android:max="1000"
+            android:progress="0"
+            android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_dark"
+            android:thumb="@drawable/apptheme_scrubber_control_selector_holo_dark"
             android:layout_marginRight="13dp"
             android:layout_gravity="center_vertical" />
         <EditText
@@ -73,22 +79,25 @@
         android:text="@string/ExponentialText"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:id="@+id/ExponentialTextView" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:weightSum="2"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <SeekBar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/seekBar3"
             android:layout_weight="1.7"
             android:max="1000"
+            android:progress="0"
+            android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_dark"
+            android:thumb="@drawable/apptheme_scrubber_control_selector_holo_dark"
             android:layout_marginRight="13dp"
             android:layout_gravity="center_vertical" />
         <EditText
@@ -100,68 +109,92 @@
             android:background="@color/White"
             android:layout_marginLeft="7dp" />
     </LinearLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
         <TextView
             android:text="@string/MagnetometerText"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_below="@id/seekBar3"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/MagnetTextView" />
+            android:id="@+id/MagnetTextView"
+            android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
             android:layout_height="50dp"
             android:id="@+id/MagnSwitch"
-            android:layout_below="@id/seekBar3"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/MagnetTextView" />
+            android:layout_weight="0.3"
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
         <TextView
             android:text="@string/GyroDriftComp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/MagnetTextView"
-            android:id="@+id/GyrodriftTextView" />
+            android:layout_height="match_parent"
+            android:id="@+id/GyrodriftTextView"
+            android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@id/GyrodriftTextView"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/MagnetTextView"
-            android:id="@+id/GyrodriftSwitch" />
+            android:id="@+id/GyrodriftSwitch"
+            android:layout_weight="0.3"
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
         <TextView
             android:text="@string/AccelCalibrationText"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/GyrodriftTextView"
-            android:id="@+id/AccelCalibrationTextView" />
+            android:layout_height="match_parent"
+            android:id="@+id/AccelCalibrationTextView"
+            android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@id/AccelCalibrationTextView"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/GyrodriftTextView"
-            android:id="@+id/AccelCalibrationSwitch" />
+            android:id="@+id/AccelCalibrationSwitch"
+            android:layout_weight="0.3"
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
         <TextView
             android:text="Draw Device Trajectory"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/AccelCalibrationTextView"
-            android:id="@+id/DrawTrajectoryTextView" />
+            android:layout_height="match_parent"
+            android:id="@+id/DrawTrajectoryTextView"
+            android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
             android:layout_height="50dp"
-            android:layout_below="@id/AccelCalibrationTextView"
-            android:layout_alignParentRight="true"
             android:id="@+id/DrawTrajectorySwitch"
-            android:layout_toRightOf="@id/DrawTrajectoryTextView" />
-    </RelativeLayout>
+            android:layout_weight="0.3"
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch" />
+    </LinearLayout>
 </LinearLayout>

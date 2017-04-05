@@ -11,6 +11,7 @@ using Android.Widget;
 
 namespace Mirea.Snar2017.Navigate
 {
+    // TODO: переименовать?
     public class Storage
     {
         public static class ForegroundServiceId
@@ -34,6 +35,11 @@ namespace Mirea.Snar2017.Navigate
         public static float[] MagnetometerData { get; } = new float[3];
         // TODO: использовать только данные акселерометра для определения перемещений
         public static float[] LinearAccelerationData { get; } = new float[3];
+
+        //public static (float X, float Y, float Z) AccelerometerData { get; } = (0, 0, 0);
+        //public static (float X, float Y, float Z) GyroscopeData { get; } = (0, 0, 0);
+        //public static (float X, float Y, float Z) MagnetometerData { get; } = (0, 0, 0);
+        //public static (float X, float Y, float Z) LinearAccelerationData { get; } = (0, 0, 0);
         #endregion
 
         #region Filtered data
@@ -54,6 +60,10 @@ namespace Mirea.Snar2017.Navigate
         public static float[] Acceleration { get; } = new float[3];
         public static float[] Velocity { get; } = new float[3];
         public static float[] Offset { get; } = new float[3];
+
+        //public static (float X, float Y, float Z) Acceleration { get; } = (0, 0, 0);
+        //public static (float X, float Y, float Z) Velocity { get; } = (0, 0, 0);
+        //public static (float X, float Y, float Z) Offset { get; } = (0, 0, 0);
         #endregion
 
         #region Filter parameters
@@ -62,11 +72,16 @@ namespace Mirea.Snar2017.Navigate
         public static Quaternion StartRotation { get; set; } = (1, 0, 0, 0);
 
         public static float Beta { get; set; } = 0.1f;
-        public static float Zeta { get; set; } = 0;
+        public static float Zeta { get; set; } = 0.1f;
         public static float Gamma { get; set; } = 0.7f;
 
-        public static System.TimeSpan Uptime { get; set; } = new System.TimeSpan();
-        public static System.DateTime StartTime { get; set; }
+        public static bool MagnetometerEnabled { get; set; }
+        public static bool GyroscopeDriftCompensationEnabled { get; set; }
+        public static bool AccelerometerCalibrationEnabled { get; set; }
+        public static bool TrajectoryTracingEnabled { get; set; }
+
+        public static TimeSpan Uptime { get; set; } = new TimeSpan();
+        public static DateTime StartTime { get; set; }
         #endregion
 
         #region File parameters

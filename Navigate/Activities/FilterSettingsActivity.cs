@@ -32,18 +32,12 @@ namespace Mirea.Snar2017.Navigate
             madgewickEditText2 = FindViewById<EditText>(Resource.Id.MadgwickEditText2);
             exponentialEditText = FindViewById<EditText>(Resource.Id.ExponentialEditText);
 
-
             RunOnUiThread(() =>
             {
                 madgewickEditText1.Text = string.Format("{0:F3}", Storage.Beta);
                 madgewickEditText2.Text = string.Format("{0:F3}", Storage.Zeta);
                 exponentialEditText.Text = string.Format("{0:F3}", Storage.Gamma);
             });
-
-            madgewickEditText1.RequestFocus();
-            Android.Views.InputMethods.InputMethodManager inputManager = (Android.Views.InputMethods.InputMethodManager)GetSystemService(FilterSettingsActivity.InputMethodService);
-            inputManager.ShowSoftInput(madgewickEditText1, Android.Views.InputMethods.ShowFlags.Implicit);
-            inputManager.ToggleSoftInput(Android.Views.InputMethods.ShowFlags.Forced, Android.Views.InputMethods.HideSoftInputFlags.ImplicitOnly);
 
             seekbar1.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
             {
@@ -96,10 +90,12 @@ namespace Mirea.Snar2017.Navigate
                 }
             };
 
-            madgewickEditText1.TextChanged += (object sender, Android.Text.TextChangedEventArgs e) =>
+           /* madgewickEditText1.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
             {
-                //seekbar1.Progress = Convert.ToInt32(madgewickEditText1.Text);
+                seekbar1.Progress = Convert.ToInt32(madgewickEditText1.Text);
             };
+            */
+
         }
     }
 }  

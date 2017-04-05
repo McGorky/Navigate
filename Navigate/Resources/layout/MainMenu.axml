@@ -36,7 +36,11 @@
         android:id="@+id/LogButton"
         android:layout_weight="1"
         android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="2dp"
+        android:textColor="#FFFFFF"
+        android:typeface="normal"
+        android:textSize="12dp"
+        android:textStyle="bold" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -45,7 +49,11 @@
         android:text="@string/FilterSettings"
         android:layout_weight="1"
         android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="2dp"
+        android:textColor="#FFFFFF"
+        android:typeface="normal"
+        android:textSize="12dp"
+        android:textStyle="bold" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -54,7 +62,11 @@
         android:text="@string/Calibrate"
         android:layout_weight="1"
         android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginBottom="2dp"
+        android:textColor="#FFFFFF"
+        android:typeface="normal"
+        android:textSize="12dp"
+        android:textStyle="bold" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -70,7 +82,11 @@
             android:background="@drawable/Pink"
             android:id="@+id/LogPlayerButton"
             android:layout_weight="1"
-            android:layout_marginRight="2dp" />
+            android:layout_marginRight="2dp"
+            android:textColor="#FFFFFF"
+            android:typeface="normal"
+            android:textSize="12dp"
+            android:textStyle="bold" />
         <Button
             android:text="@string/PlayPlots"
             android:layout_width="wrap_content"
@@ -78,6 +94,10 @@
             android:background="@drawable/Pink"
             android:id="@+id/PlayPlotsButton"
             android:layout_weight="1"
-            android:layout_marginLeft="2dp" />
+            android:layout_marginLeft="2dp"
+            android:textColor="#FFFFFF"
+            android:typeface="normal"
+            android:textSize="12dp"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

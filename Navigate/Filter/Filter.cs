@@ -2,8 +2,6 @@
 
 namespace Mirea.Snar2017.Navigate
 {
-    // TODO: возможность опционального включения компенсации дрейфа нуля гироскопа
-    // TODO: возможность опционального включения учета показаний магнитометра
     public static class Filter
     {
         // TODO: поменять на калмана
@@ -32,27 +30,35 @@ namespace Mirea.Snar2017.Navigate
             return new Quaternion(0, calibratedMatrix[0, 0], calibratedMatrix[1, 0], calibratedMatrix[2, 0]);
         }
 
+        // UNDONE: компенсация дрифта
         public static Quaternion Madgvic(Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float zeta, float dt)
         {
-            var h = q * m.Normalized() * q.Conjugated(); // q.Normalized() * m.Normalized() * q.Normalized().Conjugated();
-            var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]);
+            if (!Storage.GyroscopeDriftCompensationEnabled)
+                zeta = 0;
+            q = q.Normalized();
+            //g = g.Normalized();
+            a = a.Normalized();
+            m = m.Normalized();
+            var h = q * m * q.Conjugated(); // q.Normalized() * m.Normalized() * q.Normalized().Conjugated();
+            var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]).Normalized();
 
-            var gr = GradF(q.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
+            var gr = GradF(q, a, b, m).Normalized();
             var qd = 0.5f * q * g - beta * gr;
-            q = (q.Normalized() + qd * dt).Normalized();
 
-            return q;
+            return q + qd * dt;
         }
 
-        /// <summary>
-        /// a = b * d. 
-        /// находит d
-        /// a и b - единичные кватернионы
-        /// </summary>
-        /// <param name="a">поворот из положения x в положение y</param>
-        /// <param name="b">поворот из положения x в положение z</param>
-        /// <returns>поворот из положения y в положение z></returns>
-        public static Quaternion CalculateDifferenceQuaternion(Quaternion a, Quaternion b) => b.Conjugated() * a; // b.Normalized().Conjugated() * a.Normalized();
+        public static Quaternion Madgvic(Quaternion q, Quaternion g, Quaternion a, float beta, float dt)
+        {
+            q = q.Normalized();
+            //g = g.Normalized();
+            a = a.Normalized();
+
+            var gr = GradF(q, a).Normalized();
+            var qd = 0.5f * q * g - beta * gr;
+
+            return q + qd * dt;
+        }
 
         private static Quaternion GradF(Quaternion q, Quaternion a, Quaternion b, Quaternion m)
         {
@@ -95,9 +101,38 @@ namespace Mirea.Snar2017.Navigate
             JT[3, 4] = -2 * b[2] * q[1] + 2 * b[4] * q[3];
             JT[3, 5] = 2 * b[2] * q[2];
 
-            Matrix g = JT * f;
+            Matrix grad = JT * f;
 
-            return new Quaternion(g[0, 0], g[1, 0], g[2, 0], g[3, 0]);
+            return new Quaternion(grad[0, 0], grad[1, 0], grad[2, 0], grad[3, 0]);
+        }
+
+        private static Quaternion GradF(Quaternion q, Quaternion a)
+        {
+            var f = new Matrix(3, 1);
+            f[0, 0] = 2.0f * (q[2] * q[4] - q[1] * q[3]) - a.X;
+            f[1, 0] = 2.0f * (q[1] * q[2] + q[3] * q[4]) - a.Y;
+            f[2, 0] = 2.0f * (0.5f - q[2] * q[2] - q[3] * q[3]) - a.Z;
+
+            var JT = new Matrix(4, 3);
+            JT[0, 0] = -2.0f * q[3];
+            JT[0, 1] = 2.0f * q[2];
+            JT[0, 2] = 0.0f;
+
+            JT[1, 0] = 2.0f * q[4];
+            JT[1, 1] = 2.0f * q[1];
+            JT[1, 2] = -4.0f * q[3];
+
+            JT[2, 0] = -2.0f * q[1];
+            JT[2, 1] = 2.0f * q[4];
+            JT[2, 2] = -4.0f * q[3];
+
+            JT[3, 0] = 2.0f * q[2];
+            JT[3, 1] = 2.0f * q[3];
+            JT[3, 2] = 0.0f;
+
+            Matrix grad = JT * f;
+
+            return new Quaternion(grad[0, 0], grad[1, 0], grad[2, 0], grad[3, 0]);
         }
 
         public static float[] Integrate(float[] previous, float[] current, float[] condition, float dt)
@@ -108,5 +143,34 @@ namespace Mirea.Snar2017.Navigate
 
             return result;
         }
+
+        /*public static Quaternion Integrate(Quaternion previous, Quaternion current, Quaternion condition, float dt)
+        {
+            var result = new Quaternion();
+            for (int i = 1; i < 4; i++)
+                result[i] = condition[i] + (current[i] + previous[i]) * 0.5f * dt;
+
+            return result;
+        }
+
+        public static (float x,float y,float z) Integrate((float x, float y, float z) previous, (float x, float y, float z) current, (float x, float y, float z) condition, float dt)
+        {
+            (float x, float y, float z) result;
+            result.x = condition.x + (current.x + previous.x) * 0.5f * dt;
+            result.y = condition.y + (current.y + previous.y) * 0.5f * dt;
+            result.z = condition.z + (current.z + previous.z) * 0.5f * dt;
+
+            return result;
+        }*/
+
+        /// <summary>
+        /// a = b * d. 
+        /// находит d 
+        /// a и b - единичные кватернионы
+        /// </summary>
+        /// <param name="a">поворот из положения x в положение y</param>
+        /// <param name="b">поворот из положения x в положение z</param>
+        /// <returns>поворот из положения y в положение z></returns>
+        public static Quaternion CalculateDifferenceQuaternion(Quaternion a, Quaternion b) => b.Conjugated() * a; // b.Normalized().Conjugated() * a.Normalized();
     }
 }

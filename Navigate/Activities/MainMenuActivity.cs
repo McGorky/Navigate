@@ -19,6 +19,7 @@ using OxyPlot.Xamarin.Android;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using Android.Graphics;
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -57,7 +58,7 @@ namespace Mirea.Snar2017.Navigate
             calibrateMenuButton = FindViewById<Button>(Resource.Id.CalibrateMenuButton);
             filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
             logButton = FindViewById<Button>(Resource.Id.LogButton);
-            logPlayerButton = FindViewById<Button>(Resource.Id.LogButton);
+            logPlayerButton = FindViewById<Button>(Resource.Id.LogPlayerButton);
             playPlotsButton = FindViewById<Button>(Resource.Id.PlayPlotsButton);
 
             accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
@@ -94,8 +95,8 @@ namespace Mirea.Snar2017.Navigate
 
             void logButton_Clicked(object sender, EventArgs e)
             {
-                plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 0f);
-                plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 2f);
+                //plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 0f);
+                //plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 2f);
                 var intent = new Intent(this, typeof(LogMenuActivity));
                 StartActivity(intent);
                 OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
@@ -103,7 +104,7 @@ namespace Mirea.Snar2017.Navigate
 
             void logPlayerButton_Clicked(object sender, EventArgs e)
             {
-                using (var sr = new StreamReader(Storage.CurrentFile))
+                /*using (var sr = new StreamReader(Storage.CurrentFile))
                 {
                     var line = sr.ReadLine();
                     Storage.numberOfFrames = int.Parse(line, CultureInfo.InvariantCulture);
@@ -119,6 +120,7 @@ namespace Mirea.Snar2017.Navigate
                         }
                     }
                 }
+                */
                 var intent = new Intent(this, typeof(LogPlayerActivity));
                 StartActivity(intent);
                 OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
@@ -128,8 +130,8 @@ namespace Mirea.Snar2017.Navigate
 
             void playPlotsButton_Clicked(object sender, EventArgs e)
             {
-                plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 1f);
-                plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 0f);
+               // plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 1f);
+               // plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 0f);
                 var intent = new Intent(this, typeof(LogMenuActivity));
                 StartActivity(intent);
                 OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
@@ -261,6 +263,7 @@ namespace Mirea.Snar2017.Navigate
                     }
                     dt = (data[0] - tPrev)*0.001f;
                     tPrev = data[0];
+                    // FIXME: данные должны нормироваться
                     a = (0, data[1], data[2], data[3]);
                     a = Filter.Calibrate(calibrationMatrix, a);
                     g = (0, data[4], data[5], data[6]);
@@ -288,7 +291,5 @@ namespace Mirea.Snar2017.Navigate
                 }
             }
         }
-
-        
     }
 }

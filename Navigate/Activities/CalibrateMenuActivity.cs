@@ -118,7 +118,6 @@ namespace Mirea.Snar2017.Navigate
 
         private void ManageData()
         {
-            // TODO: обработка в зависимости от ориентации
             var meanSample = new float[3];
             for (int i = 0; i < samplesToGather; i++)
                 for (int j = 0; j < 3; j++)
@@ -127,7 +126,7 @@ namespace Mirea.Snar2017.Navigate
             isGathering = false;
             SamplesGathered -= ManageData; 
             stopwatch.Stop();
-          //  RunOnUiThread(() => calibrateTextView.Text = $"{stopwatch.Elapsed.TotalSeconds} \n {meanSample[0]} | {meanSample[1]} | {meanSample[2]}");
+            //  RunOnUiThread(() => calibrateTextView.Text = $"{stopwatch.Elapsed.TotalSeconds} \n {meanSample[0]} | {meanSample[1]} | {meanSample[2]}");
             stopwatch.Reset();
             int column = -1;
             switch (orientaion)
@@ -175,6 +174,10 @@ namespace Mirea.Snar2017.Navigate
 
         void frontButtonClicked(object sender, EventArgs e)
         {
+            if (rightbool && topbool && backbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             frontbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnFront;
@@ -184,6 +187,10 @@ namespace Mirea.Snar2017.Navigate
 
         void backButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && rightbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             backbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnBack;
@@ -193,6 +200,10 @@ namespace Mirea.Snar2017.Navigate
 
         void topButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && rightbool && backbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             topbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnTop;
@@ -202,6 +213,10 @@ namespace Mirea.Snar2017.Navigate
 
         void bottomButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && backbool && rightbool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             bottombool = true;
             ShowProgressBar();
             bottomButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
@@ -209,6 +224,10 @@ namespace Mirea.Snar2017.Navigate
 
         void leftButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && backbool && bottombool && rightbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             leftbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnLeft;
@@ -218,6 +237,10 @@ namespace Mirea.Snar2017.Navigate
 
         void rightButtonClicked(object sender, EventArgs e)
         {
+            if (frontbool && topbool && backbool && bottombool && leftbool)
+            {
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
             rightbool = true;
             ShowProgressBar();
             rightButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
@@ -225,13 +248,9 @@ namespace Mirea.Snar2017.Navigate
 
         void calibrateButtonClicked(object sender, EventArgs e)
         {
-            if (frontbool && topbool && backbool && bottombool && leftbool && rightbool)
-            {
-                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
-                Storage.AccelerometerCalibrationMatrix = R * r.Inversed();
-                // calibrateTextView.Text = Storage.AccelerometerCalibrationMatrix.ToString();
-            }
-
+            calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            Storage.AccelerometerCalibrationMatrix = R * r.Inversed();
+         // calibrateTextView.Text = Storage.AccelerometerCalibrationMatrix.ToString();
         }
     }
 }
