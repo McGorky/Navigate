@@ -4,8 +4,6 @@ namespace Mirea.Snar2017.Navigate
 {
     // TODO: возможность опционального включения компенсации дрейфа нуля гироскопа
     // TODO: возможность опционального включения учета показаний магнитометра
-    // TODO: фильтр для определения смещения по акселерометру
-    // TODO: использовать кватернион и матрицы из OpenTK
     public static class Filter
     {
         // TODO: поменять на калмана
@@ -24,35 +22,24 @@ namespace Mirea.Snar2017.Navigate
         {
             var notCalibratedMatrix = new Matrix(4, 1);
             for (int i = 0; i < 3; i++)
+            {
                 notCalibratedMatrix[i, 0] = notCalibratedData[i+2];
+            }
+
             notCalibratedMatrix[3, 0] = 1;
 
             var calibratedMatrix = calibrationMatrix * notCalibratedMatrix;
             return new Quaternion(0, calibratedMatrix[0, 0], calibratedMatrix[1, 0], calibratedMatrix[2, 0]);
         }
 
-        //public static (float psi, float theta, float phi, Quaternion q) Madgvic(Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float dt)
         public static Quaternion Madgvic(Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float zeta, float dt)
         {
-            /*var h = qPrev.Normalized().Multiply(m.Normalized()).Multiply(qPrev.Normalized().Inversed());
-            var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]);
-
-            var gr = GradF(qPrev.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
-            var qd = qPrev.Multiply(so).Multiply(0.5f).Add(gr.Mul(-beta));
-            var q = qPrev.Normalized().Add(qd.Mul(deltaTime));
-            qPrev = q;*/
-
-            //var h = q.Normalized() * m.Normalized() * q.Normalized().Conjugated();
-            var h = q * m.Normalized() * q.Conjugated();
+            var h = q * m.Normalized() * q.Conjugated(); // q.Normalized() * m.Normalized() * q.Normalized().Conjugated();
             var b = new Quaternion(0, (float)Math.Sqrt(h[2] * h[2] + h[3] * h[3]), 0, h[4]);
 
             var gr = GradF(q.Normalized(), a.Normalized(), b.Normalized(), m.Normalized()).Normalized();
             var qd = 0.5f * q * g - beta * gr;
             q = (q.Normalized() + qd * dt).Normalized();
-
-            //var psi = (float)Math.Atan2(2 * q[2] * q[3] - 2 * q[1] * q[4], 2 * q[1] * q[1] + 2 * q[2] * q[2] - 1);
-            //var theta = (float)-Math.Asin(2 * q[2] * q[4] + 2 * q[1] * q[3]);
-            //var phi = (float)Math.Atan2(2 * q[3] * q[4] - 2 * q[1] * q[2], 2 * q[1] * q[1] + 2 * q[4] * q[4] - 1);
 
             return q;
         }
@@ -60,16 +47,12 @@ namespace Mirea.Snar2017.Navigate
         /// <summary>
         /// a = b * d. 
         /// находит d
+        /// a и b - единичные кватернионы
         /// </summary>
         /// <param name="a">поворот из положения x в положение y</param>
         /// <param name="b">поворот из положения x в положение z</param>
         /// <returns>поворот из положения y в положение z></returns>
-        public static Quaternion CalculateDifferenceQuaternion(Quaternion a, Quaternion b)
-        {
-            //a = a.Normalized();
-            //b = b.Normalized();
-            return b.Conjugated() * a;
-        }
+        public static Quaternion CalculateDifferenceQuaternion(Quaternion a, Quaternion b) => b.Conjugated() * a; // b.Normalized().Conjugated() * a.Normalized();
 
         private static Quaternion GradF(Quaternion q, Quaternion a, Quaternion b, Quaternion m)
         {

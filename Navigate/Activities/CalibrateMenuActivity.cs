@@ -20,12 +20,14 @@ namespace Mirea.Snar2017.Navigate
         Theme = "@style/DarkAndGray")]
     public class CalibrateMenuActivity : Activity, ISensorEventListener
     {
+        // TODO: привести в порядок поля
         SensorManager sensorManager;
-        TextView calibrateTextView;
+        //TextView calibrateTextView;
         Stopwatch stopwatch = new Stopwatch();
 
         Button calibrateButton, frontButton, backButton, topButton, bottomButton, leftButton, rightButton;
-        int step;
+
+        private bool frontbool, topbool, backbool, bottombool, leftbool, rightbool = false;
 
         private bool isGathering = false;
         private static int samplesToGather = 300;
@@ -45,7 +47,7 @@ namespace Mirea.Snar2017.Navigate
 
             SetContentView(Resource.Layout.CalibrateMenu);
 
-            calibrateTextView = FindViewById<TextView>(Resource.Id.CalibrateTextView);
+           // calibrateTextView = FindViewById<TextView>(Resource.Id.CalibrateTextView);
 
             calibrateButton = FindViewById<Button>(Resource.Id.CalibrateButton);
             frontButton = FindViewById<Button>(Resource.Id.CalibrateFrontButton);
@@ -125,7 +127,7 @@ namespace Mirea.Snar2017.Navigate
             isGathering = false;
             SamplesGathered -= ManageData; 
             stopwatch.Stop();
-            RunOnUiThread(() => calibrateTextView.Text = $"{stopwatch.Elapsed.TotalSeconds} \n {meanSample[0]} | {meanSample[1]} | {meanSample[2]}");
+          //  RunOnUiThread(() => calibrateTextView.Text = $"{stopwatch.Elapsed.TotalSeconds} \n {meanSample[0]} | {meanSample[1]} | {meanSample[2]}");
             stopwatch.Reset();
             int column = -1;
             switch (orientaion)
@@ -147,7 +149,7 @@ namespace Mirea.Snar2017.Navigate
                 r[i, column] = meanSample[i];
 
             r[3, column] = 1;
-            calibrateTextView.Text = r.ToString();
+           // calibrateTextView.Text = r.ToString();
         }
 
         private void ShowProgressBar()
@@ -159,7 +161,6 @@ namespace Mirea.Snar2017.Navigate
             progressBar.Progress = 0;
             progressBar.Max = samplesToGather;
             progressBar.Show();
-            step = 0;
 
             new Thread(new ThreadStart(() =>
             {
@@ -172,82 +173,65 @@ namespace Mirea.Snar2017.Navigate
             })).Start();
         }
 
-        void calibrateButtonClicked(object sender, EventArgs e)
-        {
-            Storage.AccelerometerCalibrationMatrix = R * r.Inversed();
-            calibrateTextView.Text = Storage.AccelerometerCalibrationMatrix.ToString();
-        }
-
         void frontButtonClicked(object sender, EventArgs e)
         {
+            frontbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnFront;
             CollectData();
+            frontButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
         }
 
         void backButtonClicked(object sender, EventArgs e)
         {
+            backbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnBack;
             CollectData();
+            backButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
         }
 
         void topButtonClicked(object sender, EventArgs e)
         {
+            topbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnTop;
             CollectData();
+            topButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
         }
 
         void bottomButtonClicked(object sender, EventArgs e)
         {
-            ProgressDialog progressBar = new ProgressDialog(this);
-            progressBar.SetProgressStyle(ProgressDialogStyle.Horizontal);
-            progressBar.SetMessage("Loading...");
-            progressBar.SetCancelable(false);
-            progressBar.Progress = 0;
-            progressBar.Max = 0;
-            progressBar.Show();
-            step = 0;
-            new System.Threading.Thread(new System.Threading.ThreadStart(delegate
-            {
-                while (step < 100)
-                {
-                    step += 1;
-                    progressBar.Progress = step;
-                    System.Threading.Thread.Sleep(100);
-                }
-                RunOnUiThread(() => { progressBar.Dismiss(); });
-            })).Start();
+            bottombool = true;
+            ShowProgressBar();
+            bottomButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
         }
 
         void leftButtonClicked(object sender, EventArgs e)
         {
+            leftbool = true;
             ShowProgressBar();
             orientaion = PhoneOrientation.OnLeft;
             CollectData();
+            leftButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
         }
 
         void rightButtonClicked(object sender, EventArgs e)
         {
-            ProgressDialog progressBar = new ProgressDialog(this);
-            progressBar.SetProgressStyle(ProgressDialogStyle.Horizontal);
-            progressBar.SetMessage("Loading...");
-            progressBar.SetCancelable(false);
-            progressBar.Progress = 0;
-            progressBar.Max = 0;
-            progressBar.Show();
-            step = 0;
-            new System.Threading.Thread(new System.Threading.ThreadStart(delegate
+            rightbool = true;
+            ShowProgressBar();
+            rightButton.SetBackgroundResource(Resource.Drawable.GreenButtonDef);
+        }
+
+        void calibrateButtonClicked(object sender, EventArgs e)
+        {
+            if (frontbool && topbool && backbool && bottombool && leftbool && rightbool)
             {
-                while (step < 100)
-                {
-                    step += 1;
-                    progressBar.Progress = step;
-                    System.Threading.Thread.Sleep(100);
-                }
-                RunOnUiThread(() => { progressBar.Dismiss(); });
-            })).Start();
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+                Storage.AccelerometerCalibrationMatrix = R * r.Inversed();
+                // calibrateTextView.Text = Storage.AccelerometerCalibrationMatrix.ToString();
+            }
+
         }
     }
 }

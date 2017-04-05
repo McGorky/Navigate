@@ -23,8 +23,70 @@ namespace Mirea.Snar2017.Navigate
 
             matrix = new float[Rows][];
             for (int i = 0; i < Rows; i++)
+            {
                 matrix[i] = new float[Columns];
+            }
         }
+
+        public Matrix(int rows, int columns, MatrixInitializationValue initializationValue)
+            : this(rows, columns)
+        {
+            switch (initializationValue)
+            {
+                case MatrixInitializationValue.Identity:
+                {
+                    if (rows != columns)
+                        throw new ArgumentException($"Number of {nameof(rows)} are not equal to number of {nameof(columns)}\nMatrix should be square to be identity matrix");
+
+                    for (int i = 0; i < Rows; i++)
+                        matrix[i][i] = 1;
+
+                    return;
+                }
+                case MatrixInitializationValue.Zeros:
+                {
+                    return;
+                }
+                case MatrixInitializationValue.Ones:
+                {
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        for (int j = 0; j < Columns; j++)
+                        {
+                            matrix[i][j] = 1;
+                        }
+                    }
+                    return;
+                }
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        #region Operators and casts
+        public static Matrix operator *(Matrix a, Matrix b)
+        {
+            // TODO: проверка размеров
+            var output = new Matrix(a.Rows, b.Columns);
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < b.Columns; j++)
+                {
+                    for (int k = 0; k < a.Columns; k++)
+                    {
+                        output[i, j] += a[i, k] * b[k, j];
+                    }
+                }
+            }
+            return output;
+        }
+
+        public static Matrix operator +(Matrix a, Matrix b)
+        {
+            // TODO: проверка размеров
+            throw new NotImplementedException();
+        }
+        #endregion
 
         public Matrix Transposed()
         {
@@ -40,22 +102,6 @@ namespace Mirea.Snar2017.Navigate
             return output;
         }
 
-        public static Matrix operator *(Matrix a, Matrix b)
-        {
-            var output = new Matrix(a.Rows, b.Columns);
-            for (int i = 0; i < a.Rows; i++)
-            {
-                for (int j = 0; j < b.Columns; j++)
-                {
-                    for (int k = 0; k < a.Columns; k++)
-                    {
-                        output[i, j] += a[i, k] * b[k, j];
-                    }
-                }
-            }
-            return output;
-        }
-
         public Matrix Inversed()
         {
             if (Rows != Columns)
@@ -67,7 +113,7 @@ namespace Mirea.Snar2017.Navigate
             this.matrix.CopyTo(matrix, 0);
 
             var result = new Matrix(Rows, Columns);
-            ref var identity = ref result.matrix;
+            ref float[][] identity = ref result.matrix;
             for (int i = 0; i < Rows; i++)
                 identity[i][i] = 1;
 
@@ -133,7 +179,7 @@ namespace Mirea.Snar2017.Navigate
 
         public override string ToString()
         {
-            var output = new StringBuilder();
+            var output = new StringBuilder(Rows * Columns * 7);
 
             for (int i = 0; i < Rows; i++)
             {

@@ -5,7 +5,12 @@ namespace Mirea.Snar2017.Navigate
 {
     public struct Quaternion
     {
-        public float w, x, y, z;
+        private float w, x, y, z;
+
+        public float W { get => w; set => w = value; }
+        public float X { get => x; set => x = value; }
+        public float Y { get => y; set => y = value; }
+        public float Z { get => z; set => z = value; }
 
         /// <summary>
         /// Нумерация идет с 1, что сделано для удобства работы с литературой
@@ -59,11 +64,6 @@ namespace Mirea.Snar2017.Navigate
                 }
             }
         }
-
-        /*public float W { get => w; set => w = value; }
-        public float X { get => x; set => x = value; }
-        public float Y { get => y; set => y = value; }
-        public float Z { get => z; set => z = value; }*/
 
         public Quaternion(float w, float x, float y, float z)
         {

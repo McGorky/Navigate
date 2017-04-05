@@ -5,6 +5,7 @@
     android:padding="8dp"
     android:orientation="vertical"
     android:gravity="center|bottom"
+    android:background="@drawable/DarkRed"
     android:weightSum="16"
     android:id="@+id/RootLinearLayot">
     <OxyPlot.Xamarin.Android.PlotView
@@ -27,6 +28,33 @@
         android:layout_width="match_parent"
         android:layout_weight="4"
         android:background="@drawable/border" />
+    <Button
+        android:text="@string/StartLog"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/Pink"
+        android:id="@+id/LogButton"
+        android:layout_weight="1"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/Pink"
+        android:id="@+id/FilterSettingsButton"
+        android:text="@string/FilterSettings"
+        android:layout_weight="1"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/Pink"
+        android:id="@+id/CalibrateMenuButton"
+        android:text="@string/Calibrate"
+        android:layout_weight="1"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -36,47 +64,20 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <Button
-            android:text="@string/StartLog"
+            android:text="@string/LogPlayer"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/WhiteButton"
-            android:id="@+id/LogButton"
+            android:background="@drawable/Pink"
+            android:id="@+id/LogPlayerButton"
             android:layout_weight="1"
             android:layout_marginRight="2dp" />
         <Button
-            android:text="@string/Save"
+            android:text="@string/PlayPlots"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/WhiteButton"
-            android:id="@+id/SaveLogButton"
+            android:background="@drawable/Pink"
+            android:id="@+id/PlayPlotsButton"
             android:layout_weight="1"
             android:layout_marginLeft="2dp" />
     </LinearLayout>
-    <Button
-        android:text="@string/LogPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/WhiteButton"
-        android:id="@+id/ShowLogPlayerButton"
-        android:layout_weight="1"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp" />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/WhiteButton"
-        android:id="@+id/FilterSettingsButton"
-        android:text="@string/FilterSettings"
-        android:layout_weight="1"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp" />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/WhiteButton"
-        android:id="@+id/CalibrateMenuButton"
-        android:text="@string/Calibrate"
-        android:layout_weight="1"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp" />
 </LinearLayout>

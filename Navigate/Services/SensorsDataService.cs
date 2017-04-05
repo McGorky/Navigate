@@ -17,6 +17,7 @@ namespace Mirea.Snar2017.Navigate
     [Service]
     public class SensorsDataService : Service, ISensorEventListener
     {
+        // TODO: привести в порядок поля
         private SensorManager sensorManager;
         private Timer timer = new Timer();
         private Timer starter = new Timer();
@@ -53,7 +54,7 @@ namespace Mirea.Snar2017.Navigate
 
             timer.Elapsed += (o, e) =>
             {
-                lock (Storage.SyncLock)
+                lock (Storage.DataAccessSync)
                 {
                     builder.Append($"{DateTime.Now.Subtract(st).TotalMilliseconds.ToString()},");
                     for (int i = 0; i < 3; i++)
@@ -76,6 +77,7 @@ namespace Mirea.Snar2017.Navigate
                                 sensorManager.GetDefaultSensor(SensorType.Accelerometer),
                                 SensorDelay.Game);
 
+            // TODO: использовать некалиброванные данные
             sensorManager.RegisterListener(this,
                                             sensorManager.GetDefaultSensor(SensorType.Gyroscope),
                                             SensorDelay.Game);
@@ -88,6 +90,7 @@ namespace Mirea.Snar2017.Navigate
                                             SensorDelay.Game);
         }
 
+        // TODO: разобраться с этим
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
             return StartCommandResult.NotSticky;

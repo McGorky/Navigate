@@ -9,5 +9,6 @@
     <color name="GrayDark">#7B7D7C</color>
     <color name="GrayVeryDark">#575757</color>
     <color name="BlueLight">#1697E1</color>
-    <color name="BlueDark">#0E6CA2</color>
+    <color name="Side">#471524</color>
+  <color name="Main">#8C1D3F</color>
 </resources>

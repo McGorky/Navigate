@@ -13,48 +13,68 @@ namespace Mirea.Snar2017.Navigate
 {
     public class Storage
     {
-        public static object SyncLock = new object();
-
-        /*public static Quaternion AccelerometerData = (0, 0.01f, 0.01f, 0.01f);
-        public static Quaternion GyroscopeData = (0, 0.01f, 0.01f, 0.01f);
-        public static Quaternion MagnetometerData = (0, 0.01f, 0.01f, 0.01f);*/
-
         public static class ForegroundServiceId
         {
             public static int SenorsData = 812563123;
         }
 
+        public static object DataAccessSync { get; } = new object();
+
+        #region LogPlayer data
+        // UNDONE: разобраться
         public static int currentFrame = 0;
         public static int numberOfFrames;
         public static float[][] data;
+        #endregion
 
-        public static float[] AccelerometerData = new float[3];
-        public static float[] GyroscopeData = new float[3];
-        public static float[] MagnetometerData = new float[3];
-        public static float[] LinearAccelerationData = new float[3];
+        #region Raw data
+        // TODO: разобраться, нужен ли тут set
+        public static float[] AccelerometerData { get; } = new float[3];
+        public static float[] GyroscopeData { get; } = new float[3];
+        public static float[] MagnetometerData { get; } = new float[3];
+        // TODO: использовать только данные акселерометра для определения перемещений
+        public static float[] LinearAccelerationData { get; } = new float[3];
+        #endregion
 
-        public static string Path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);//(string)Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments);//(string)Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments); 
-        public static string Filename = System.IO.Path.Combine(Path, "data.txt");
+        #region Filtered data
+        public static Quaternion Rotation { get; set; } = (1, 0, 0, 0);
+        public static (float Psi, float Theta, float Phi) EulerAngles
+        {
+            get
+            {
+                var q = Rotation;
+                var psi = (float)Math.Atan2(2 * q[2] * q[3] - 2 * q[1] * q[4], 2 * q[1] * q[1] + 2 * q[2] * q[2] - 1);
+                var theta = (float)-Math.Asin(2 * q[2] * q[4] + 2 * q[1] * q[3]);
+                var phi = (float)Math.Atan2(2 * q[3] * q[4] - 2 * q[1] * q[2], 2 * q[1] * q[1] + 2 * q[4] * q[4] - 1);
 
-        public static Matrix AccelerometerCalibrationMatrix;
+                return (psi, theta, phi);
+            }
+        }
 
-        public static Quaternion StartRotation = (1, 0, 0, 0);
-        public static Quaternion Rotation = (1, 0, 0, 0);
+        public static float[] Acceleration { get; } = new float[3];
+        public static float[] Velocity { get; } = new float[3];
+        public static float[] Offset { get; } = new float[3];
+        #endregion
 
+        #region Filter parameters
+        public static Matrix AccelerometerCalibrationMatrix { get; set; } = new Matrix(4, 4, MatrixInitializationValue.Identity);
+
+        public static Quaternion StartRotation { get; set; } = (1, 0, 0, 0);
+
+        public static float Beta { get; set; } = 0.1f;
+        public static float Zeta { get; set; } = 0;
+        public static float Gamma { get; set; } = 0.7f;
+
+        public static System.TimeSpan Uptime { get; set; } = new System.TimeSpan();
+        public static System.DateTime StartTime { get; set; }
+        #endregion
+
+        #region File parameters
+        public static string Path { get; set; } = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);//(string)Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments);//(string)Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments); 
+        // TODO: название не должно содержать полный путь
+        public static string Filename { get; set; } = System.IO.Path.Combine(Path, "data.txt");
+        // UNDONE: название файла
         public static string CurrentFile = System.IO.Path.Combine(Path, "f.txt");
-
-        public static (float psi, float theta, float phi) EulerAngles;
-
-        public static float[] Acceleration = new float[3];
-        public static float[] Velocity = new float[3];
-        public static float[] Offset = new float[3];
-
-        public static float Beta = 0.1f;
-        public static float Zeta = 0;
-        public static float Gamma = 0.7f;
-
-        public static System.TimeSpan Uptime = new System.TimeSpan();
-
-        public static System.DateTime StartTime;
+        #endregion
     }
 }
