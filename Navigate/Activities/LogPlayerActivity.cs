@@ -10,65 +10,80 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-
 using Android.Util;
 using Android.Content.PM;
 
 namespace Mirea.Snar2017.Navigate
 {
-    [Activity(
-#if __ANDROID_11__
-        HardwareAccelerated = false,
-#endif
-        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.KeyboardHidden,// LaunchMode = LaunchMode.SingleTask,
-        Label = "Log Player",
-        Theme = "@style/DarkAndGray")]
+    [Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.KeyboardHidden,// LaunchMode = LaunchMode.SingleTask,
+        Label = "LogPlayer",
+        Theme = "@style/DarkRedAndPink")]
     public class LogPlayerActivity : Activity
     {
+        private List<string> SavedLogs
+        {
+            // UNDONE: искать в папке логи возвращать список с их именами
+            get;
+        } = new List<string>() { "A", "B" };
+
+        #region Views and related fields
+        private PaintingView paintingView;
+        private Spinner logSelectSpinner;
+        #endregion
+
+        #region Activity methods
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             SetContentView(Resource.Layout.LogPlayer);
 
-            Spinner dropdown = FindViewById<Spinner>(Resource.Id.spinner1);
+            paintingView = FindViewById<PaintingView>(Resource.Id.LogPaintingView);
+            logSelectSpinner = FindViewById<Spinner>(Resource.Id.LogSelectSpinner);
 
-            dropdown.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemsSelected);
-            var testData = new List<string>() { Storage.CurrentFile };
-            var adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, testData);
-
+            logSelectSpinner.ItemSelected += OnSpinnerItemSelected; //new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemsSelected);
+            var adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, SavedLogs);
             adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
-            dropdown.Adapter = adapter;
-
-            // Load the view
-            FindViewById(Resource.Id.paintingview);
+            logSelectSpinner.Adapter = adapter;            
         }
 
         protected override void OnPause()
         {
+            paintingView.Pause();
             base.OnPause();
-            var view = FindViewById<PaintingView>(Resource.Id.paintingview);
-            view.Pause();
         }
 
         protected override void OnResume()
         {
+            paintingView.Pause();
             base.OnResume();
-            var view = FindViewById<PaintingView>(Resource.Id.paintingview);
-            view.Resume();
         }
 
-        private void spinner_ItemsSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        protected override void OnStop()
+        {
+            paintingView.Stop();
+            base.OnStop();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+
+        public override void OnBackPressed()
+        {
+            base.OnBackPressed();
+            Finish();
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+        #endregion
+
+        #region Handlers
+        private void OnSpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             Spinner dropdown = (Spinner)sender;
             string toast = string.Format("{0}", dropdown.GetItemAtPosition(e.Position));
-            Toast.MakeText(this, toast, ToastLength.Long).Show();
-
+            Toast.MakeText(this, toast, ToastLength.Short).Show();
         }
-        /*protected void OnBackButtonPressed()
-        {
-                Finish();
-                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-        }
-        */
+        #endregion
     }
 }

@@ -128,7 +128,7 @@
     <Compile Include="Filter\Matrix.cs" />
     <Compile Include="Filter\MatrixInitializationValue.cs" />
     <Compile Include="Filter\Quaternion.cs" />
-    <Compile Include="PaintingView.cs" />
+    <Compile Include="Views\PaintingView.cs" />
     <Compile Include="PhoneOrientation.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -173,7 +173,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\DarkRed.xml">
+    <AndroidResource Include="Resources\drawable\DarkRedBackground.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -213,24 +213,6 @@
     <AndroidResource Include="Resources\drawable\Border.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_activated_background_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_edit_text_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_item_background_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_list_selector_background_transition_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_list_selector_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\apptheme_progress_horizontal_holo_dark.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -241,60 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\apptheme_scrubber_progress_horizontal_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_spinner_background_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_inner_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_track_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_off_disabled_focused_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_off_disabled_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_off_focused_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_off_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_off_pressed_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_on_disabled_focused_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_on_disabled_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_on_focused_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_on_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_radio_on_pressed_holo_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_list_activated_holo.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_list_focused_holo.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_list_longpressed_holo.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_list_pressed_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_list_selector_disabled_holo_dark.9.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\apptheme_progress_bg_holo_dark.9.png" />
@@ -351,82 +279,6 @@
     <AndroidResource Include="Resources\drawable\apptheme_scrubber_track_holo_dark.9.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_spinner_default_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_spinner_disabled_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_spinner_focused_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_spinner_pressed_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_bg_disabled_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_bg_focused_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_bg_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_thumb_activated_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_thumb_disabled_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_thumb_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_switch_thumb_pressed_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_textfield_activated_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_textfield_default_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_textfield_disabled_focused_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_textfield_disabled_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_textfield_focused_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_default_disabled_focused_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_default_disabled_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_default_focused_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_default_holo_dark.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_default_normal_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\apptheme_btn_default_pressed_holo_dark.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\GreenButtonDef.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\GreyButtonDef.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\Pink.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
@@ -435,6 +287,12 @@
     <AndroidResource Include="Resources\drawable\RedButton.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\GreenButton.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\GreyButton.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets')" />

@@ -11,7 +11,12 @@ using Android.Widget;
 
 namespace Mirea.Snar2017.Navigate
 {
-    // TODO: переименовать?
+    // REMARK ALL: код должен выглядеть идеально и должен читаться с первого раза
+    // REMARK ALL: используйте #region - #endregion для того, чтобы сгруппировать код (не использовать внутри методов)
+    // REMARK ALL: давайте всем переменным адекватные имена сразу, чтобы потом не приходилось заниматься рефакторингом https://msdn.microsoft.com/ru-ru/library/ms229002(v=vs.110).aspx
+    // REMARK ALL: не задумывайтесь над оптимизацией
+
+    // CONSIDER: переименовать
     public class Storage
     {
         public static class ForegroundServiceId
@@ -23,13 +28,13 @@ namespace Mirea.Snar2017.Navigate
 
         #region LogPlayer data
         // UNDONE: разобраться
-        public static int currentFrame = 0;
-        public static int numberOfFrames;
-        public static float[][] data;
+        public static int CurrentFrame = 0;
+        public static int NumberOfFrames = 0;
+        public static float[][] Data = null;
         #endregion
 
         #region Raw data
-        // TODO: разобраться, нужен ли тут set
+        // CONSIDER: разобраться, нужен ли тут set
         public static float[] AccelerometerData { get; } = new float[3];
         public static float[] GyroscopeData { get; } = new float[3];
         public static float[] MagnetometerData { get; } = new float[3];

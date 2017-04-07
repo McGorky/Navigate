@@ -34,7 +34,11 @@ namespace Mirea.Snar2017.Navigate
         public static Quaternion Madgvic(Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float zeta, float dt)
         {
             if (!Storage.GyroscopeDriftCompensationEnabled)
+            {
                 zeta = 0;
+            }
+
+            // TODO: проверить правильность
             q = q.Normalized();
             //g = g.Normalized();
             a = a.Normalized();
@@ -162,15 +166,5 @@ namespace Mirea.Snar2017.Navigate
 
             return result;
         }*/
-
-        /// <summary>
-        /// a = b * d. 
-        /// находит d 
-        /// a и b - единичные кватернионы
-        /// </summary>
-        /// <param name="a">поворот из положения x в положение y</param>
-        /// <param name="b">поворот из положения x в положение z</param>
-        /// <returns>поворот из положения y в положение z></returns>
-        public static Quaternion CalculateDifferenceQuaternion(Quaternion a, Quaternion b) => b.Conjugated() * a; // b.Normalized().Conjugated() * a.Normalized();
     }
 }

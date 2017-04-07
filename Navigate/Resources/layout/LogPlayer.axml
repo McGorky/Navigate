@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/DarkRed" >
-  <Spinner
-      android:id="@+id/spinner1"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@android:drawable/btn_dropdown"
-      android:spinnerMode="dropdown" />
-  <mirea.snar2017.navigate.PaintingView
-      android:id="@+id/paintingview"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginTop="50dp" />
-</FrameLayout>
+    android:orientation="vertical"
+    android:weightSum="100">
+    <Spinner
+        android:id="@+id/LogSelectSpinner"
+        android:layout_weight="10"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown" />
+    <mirea.snar2017.navigate.PaintingView
+        android:id="@+id/LogPaintingView"
+        android:layout_weight="90"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+</LinearLayout>

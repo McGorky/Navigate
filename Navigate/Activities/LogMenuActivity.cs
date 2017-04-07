@@ -12,20 +12,24 @@ using Android.Hardware;
 using Android.Widget;
 using Android.Runtime;
 
-
 namespace Mirea.Snar2017.Navigate
 {
     [Activity(Label = "LogMenu",
-        Theme = "@style/DarkAndGray")]
+        Theme = "@style/DarkRedAndPink")]
     public class LogMenuActivity : Activity
     {
+        // REMARK KK: зачем? и camelCase
         System.Diagnostics.Stopwatch logstopwatch = new System.Diagnostics.Stopwatch();
 
-        Button playStopButton;
-        TextView logStopwatchText;
+        // REMARK KK: привести в пор€док имена (пкм - переименовать)
+        #region Views and related fields
+        private Button playStopButton;
+        private TextView logStopwatchText;
+        private EditText input;
         bool pressed = false;
-        int count;
+        #endregion
 
+        #region Activity methods
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -34,10 +38,38 @@ namespace Mirea.Snar2017.Navigate
             logStopwatchText = FindViewById<TextView>(Resource.Id.LogTimer);
             playStopButton = FindViewById<Button>(Resource.Id.PlayStopButton);
             playStopButton.Click += OnPlayStopClicked;
-
         }
 
-        private EditText inp;
+        protected override void OnPause()
+        {
+            base.OnPause();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+
+        public override void OnBackPressed()
+        {
+            base.OnBackPressed();
+            Finish();
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+        #endregion
+
+        #region Handlers
+        // REMARK KK: интерпол€ци€ строк
         void OnPlayStopClicked(object sender, EventArgs e)
         {
             if (!pressed)
@@ -53,9 +85,9 @@ namespace Mirea.Snar2017.Navigate
                 playStopButton.Text = "Play";
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.SetTitle("Name");
-                inp = new EditText(this);
-                builder.SetView(inp);
-                inp.Text = "f.txt";
+                input = new EditText(this);
+                builder.SetView(input);
+                input.Text = "f.txt";
 
                 builder.SetPositiveButton("OK", OkAction);
                 builder.SetNegativeButton("Cancel", CancelAction);
@@ -65,7 +97,7 @@ namespace Mirea.Snar2017.Navigate
             }
         }
 
-
+        // REMARK KK: привести в пор€док имена - <blabla>OkAction
         private void OkAction(object sender, DialogClickEventArgs e)
         {
         }
@@ -73,6 +105,6 @@ namespace Mirea.Snar2017.Navigate
         private void CancelAction(object sender, DialogClickEventArgs e)
         {
         }
-
+        #endregion
     }
 }

@@ -1,7 +1,7 @@
-using System.Timers;
-using Xamarin.Forms;
-
 using System;
+using System.Timers;
+
+using Xamarin.Forms;
 
 using Android.App;
 using Android.Content;
@@ -15,87 +15,132 @@ using Android.Text;
 namespace Mirea.Snar2017.Navigate
 {
     [Activity(Label = "Filter Settings",
-        Theme = "@style/DarkAndGray")]
+        Theme = "@style/DarkRedAndPink")]
     public class FilterSettingsActivity : Activity
     {
-        SeekBar seekbar1, seekbar2, seekbar3;
-        EditText madgewickEditText1, madgewickEditText2, exponentialEditText;
+        #region Views and related fields
+        SeekBar betaSeekbar,
+            zetaSeekbar,
+            gammaSeekbar;
+        EditText betaEditText,
+            zetaEditText,
+            gammaEditText;
+        #endregion
+
+        #region Activity methods
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             SetContentView(Resource.Layout.FilterSettings);
 
-            seekbar1 = FindViewById<SeekBar>(Resource.Id.seekBar1);
-            seekbar2 = FindViewById<SeekBar>(Resource.Id.seekBar2);
-            seekbar3 = FindViewById<SeekBar>(Resource.Id.seekBar3);
-            madgewickEditText1 = FindViewById<EditText>(Resource.Id.MadgwickEditText1);
-            madgewickEditText2 = FindViewById<EditText>(Resource.Id.MadgwickEditText2);
-            exponentialEditText = FindViewById<EditText>(Resource.Id.ExponentialEditText);
+            // TODO: привести в пор€док имена в axml
+            betaSeekbar = FindViewById<SeekBar>(Resource.Id.seekBar1);
+            zetaSeekbar = FindViewById<SeekBar>(Resource.Id.seekBar2);
+            gammaSeekbar = FindViewById<SeekBar>(Resource.Id.seekBar3);
+            betaEditText = FindViewById<EditText>(Resource.Id.MadgwickEditText1);
+            zetaEditText = FindViewById<EditText>(Resource.Id.MadgwickEditText2);
+            gammaEditText = FindViewById<EditText>(Resource.Id.ExponentialEditText);
 
             RunOnUiThread(() =>
             {
-                madgewickEditText1.Text = string.Format("{0:F3}", Storage.Beta);
-                madgewickEditText2.Text = string.Format("{0:F3}", Storage.Zeta);
-                exponentialEditText.Text = string.Format("{0:F3}", Storage.Gamma);
+                betaEditText.Text = $"{Storage.Beta:F3}";
+                zetaEditText.Text = $"{Storage.Zeta:F3}";
+                gammaEditText.Text = $"{Storage.Gamma:F3}";
             });
 
-            seekbar1.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
+            // TODO: создать обработчики вместо л€мбд, поместить в Handlers (внизу)
+            // TODO: заменить все string.Format на интерпол€цию строк
+            // string.Format("{0:F3}", Storage.Beta)
+            //           V
+            // $"{Storage.Beta:F3}"
+            betaSeekbar.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
             {
                 if (e.FromUser)
                 {
                     if (e.Progress == 0)
                     {
                         Storage.Beta = 0;
-                        madgewickEditText1.Text = string.Format("0.000");
+                        betaEditText.Text = string.Format("0.000");
                     }
                     else
                     {
                         Storage.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                        madgewickEditText1.Text = string.Format("{0:F3}", Storage.Beta);
+                        betaEditText.Text = string.Format("{0:F3}", Storage.Beta);
                     }
                 }
             };
 
-            seekbar2.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
+            zetaSeekbar.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
             {
                 if (e.FromUser)
                 {
                     if (e.Progress == 0)
                     {
                         Storage.Zeta = 0;
-                        madgewickEditText2.Text = string.Format("0.000");
+                        zetaEditText.Text = string.Format("0.000");
                     }
                     else
                     {
                         Storage.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                        madgewickEditText2.Text = string.Format("{0:F3}", Storage.Zeta);
+                        zetaEditText.Text = string.Format("{0:F3}", Storage.Zeta);
                     }
                 }
             };
 
-            seekbar3.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
+            gammaSeekbar.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
             {
                 if (e.FromUser)
                 {
                     if (e.Progress == 0)
                     {
                         Storage.Gamma = 0;
-                        exponentialEditText.Text = string.Format("0.000");
+                        gammaEditText.Text = string.Format("0.000");
                     }
                     else
                     {
                         Storage.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                        exponentialEditText.Text = string.Format("{0:F3}", Storage.Gamma);
+                        gammaEditText.Text = string.Format("{0:F3}", Storage.Gamma);
                     }
                 }
             };
 
-           /* madgewickEditText1.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
+            /* betaEditText.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
             {
-                seekbar1.Progress = Convert.ToInt32(madgewickEditText1.Text);
+                // нужно использовать int.Parse();
+                betaSeekbar.Progress = Convert.ToInt32(betaEditText.Text);
             };
             */
-
         }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+
+        public override void OnBackPressed()
+        {
+            base.OnBackPressed();
+            Finish();
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+        #endregion
+
+        #region Handlers
+        #endregion
     }
 }  

@@ -17,7 +17,7 @@ namespace Mirea.Snar2017.Navigate
     [Service]
     public class SensorsDataService : Service, ISensorEventListener
     {
-        // TODO: привести в порядок поля
+        // REFACTOR: привести в порядок поля
         private SensorManager sensorManager;
         private Timer timer = new Timer();
         private Timer starter = new Timer();
@@ -29,12 +29,6 @@ namespace Mirea.Snar2017.Navigate
         {
             base.OnCreate();
             StartForeground(Storage.ForegroundServiceId.SenorsData, new Notification());
-            if (Storage.AccelerometerCalibrationMatrix == null)
-            {
-                Storage.AccelerometerCalibrationMatrix = new Matrix(4, 4);
-                for (int i = 0; i < 4; i++)
-                    Storage.AccelerometerCalibrationMatrix[i, i] = 1;
-            }
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
             //File.SetAttributes(Storage.Filename, FileAttributes.Normal);
@@ -98,7 +92,6 @@ namespace Mirea.Snar2017.Navigate
 
         public override IBinder OnBind(Intent intent)
         {
-            // This is a started service, not a bound service, so we just return null.
             return null;
         }
 
@@ -109,6 +102,7 @@ namespace Mirea.Snar2017.Navigate
             StopForeground(true);
             base.OnDestroy();
         }
+
 
         public void OnAccuracyChanged(Sensor sensor, SensorStatus accuracy)
         {
@@ -144,7 +138,7 @@ namespace Mirea.Snar2017.Navigate
                         for (int i = 0; i < 3; i++)
                             Storage.LinearAccelerationData[i] = e.Values[i];
                         break;
-                        }
+                    }
                 }
             }
         }

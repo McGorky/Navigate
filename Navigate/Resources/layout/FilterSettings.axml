@@ -4,15 +4,15 @@
     android:layout_height="match_parent"
     android:padding="8dp"
     android:orientation="vertical"
-    android:background="@drawable/DarkRed"
+    android:background="@drawable/DarkRedBackground"
     android:gravity="top"
     android:weightSum="14">
     <TextView
-        android:text="@string/MadgwickText1"
+        android:text="@string/MadgwickBeta"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/MadgwickTextView1" />
+        android:id="@+id/MadgwickBeta" />
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -42,7 +42,7 @@
             android:layout_marginLeft="7.0dp" />
     </LinearLayout>
     <TextView
-        android:text="@string/MadgwickText2"
+        android:text="@string/MadgwickZeta"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <TextView
-            android:text="@string/GyroDriftComp"
+            android:text="@string/GyroscopeDriftCompensation"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -184,7 +184,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <TextView
-            android:text="Draw Device Trajectory"
+            android:text="@string/DrawTrajectory"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 
 using Android.App;
 using Android.Content;
@@ -12,6 +13,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.Util;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -19,28 +21,28 @@ using OpenTK.Graphics.ES11;
 using OpenTK.Platform;
 using OpenTK.Platform.Android;
 
-using System.Runtime.InteropServices;
-using Android.Util;
-
 namespace Mirea.Snar2017.Navigate
 {
     class PaintingView : AndroidGameView
     {
-        float prevx, prevy;
-        float xangle, yangle;
+        // REMARK ZH: привести в порядок имена (пкм - переименовать)
+        float xPrevious, yPrevious;
+        float xAngle, yAngle;
 
-        private ScaleGestureDetector mScaleDetector;
-        private static float mScaleFactor = 1.0f;
+        private ScaleGestureDetector scaleDetector;
+        private static float scaleFactor = 1.0f;
 
         List<float> trace = new List<float>();
         float x, y, z;
         float koef;
+
+        // REMARK ZH: сделать нормальный коэффициент скорости
         bool speedUp = false;
         bool first = true;
-        float[] orintation = new float[8];
+        float[] stateVector = new float[8];
         int viewportWidth, viewportHeight;
-        Context context;
 
+        #region Constructors
         public PaintingView(Context context, IAttributeSet attrs) :
             base(context, attrs)
         {
@@ -55,17 +57,18 @@ namespace Mirea.Snar2017.Navigate
 
         private void Initialize()
         {
-            context = Context;
-            mScaleDetector = new ScaleGestureDetector(Context, new ScaleListener());
-            xangle = 0;
-            yangle = 0;
+            scaleDetector = new ScaleGestureDetector(Context, new ScaleListener());
+            xAngle = 0;
+            yAngle = 0;
         }
+        #endregion
 
         protected override void CreateFrameBuffer()
         {
             ContextRenderingApi = GLVersion.ES1;
             try
             {
+                // REMARK ZH: зачем тут Log?
                 Log.Verbose("GLCube", "Loading with default settings");
                 base.CreateFrameBuffer();
                 return;
@@ -105,48 +108,40 @@ namespace Mirea.Snar2017.Navigate
             GL.Hint(All.PerspectiveCorrectionHint, All.Nicest);
 
 
-            EventHandler<FrameEventArgs> updateCoordinates = delegate (object sender, FrameEventArgs args)
+            EventHandler<FrameEventArgs> updateCoordinates = null;
+            updateCoordinates = delegate
             {
-                orintation = Storage.data[Storage.currentFrame];
-                Storage.currentFrame++;
+                if (Storage.CurrentFrame == Storage.NumberOfFrames)
+                {
+                    UpdateFrame -= updateCoordinates;
+                    return;
+                }
+                stateVector = Storage.Data[Storage.CurrentFrame];
+                Storage.CurrentFrame++;
 
                 if (first)
                 {
-                    koef = 1000000 / orintation[0] / 60;
+                    koef = 1000000 / stateVector[0] / 60;
                     first = false;
                 }
 
-                var angle = Math.Acos(orintation[1]) * 2;
+                var angle = Math.Acos(stateVector[1]) * 2;
                 if (speedUp == false)
                 {
-                    orintation[1] = (float)angle * koef;
-                    orintation[5] *= koef;
-                    orintation[6] *= koef;
-                    orintation[7] *= koef;
+                    stateVector[1] = (float)angle * koef;
+                    stateVector[5] *= koef;
+                    stateVector[6] *= koef;
+                    stateVector[7] *= koef;
                 }
                 else
                 {
-                    orintation[1] = 2 * (float)angle * koef;
-                    orintation[5] *= 2 * koef;
-                    orintation[6] *= 2 * koef;
-                    orintation[7] *= 2 * koef;
+                    stateVector[1] = 2 * (float)angle * koef;
+                    stateVector[5] *= 2 * koef;
+                    stateVector[6] *= 2 * koef;
+                    stateVector[7] *= 2 * koef;
                 }
             };
             UpdateFrame += updateCoordinates;
-
-            EventHandler<FrameEventArgs> tmp = null;
-            tmp = (oo, ee) =>
-            {
-                if (Storage.currentFrame == Storage.numberOfFrames)
-                {
-                    UpdateFrame -= updateCoordinates;
-                    /*for (int i = 4; i < 8; i++)
-                        orintation[i] = 0;*/
-
-                    UpdateFrame -= tmp;
-                }
-            };
-            UpdateFrame += tmp;
 
             RenderFrame += delegate
             {
@@ -155,11 +150,6 @@ namespace Mirea.Snar2017.Navigate
             };
 
             Run(60);
-        }
-
-        public static float ToRadians(float degrees)
-        {
-            return (float)(degrees * (System.Math.PI / 180.0));
         }
 
         void SetupCamera()
@@ -173,6 +163,9 @@ namespace Mirea.Snar2017.Navigate
 
             float[] perspective_m1 = new float[16];
             int i = 0;
+
+            // REMARK ZH: никогда не пиши несколько команд на одной строке
+            // REMARK ZH: и нужно отрефакторить все
             perspective_m1[i + 0] = M.Row0.X;perspective_m1[i + 1] = M.Row0.Y;
             perspective_m1[i + 2] = M.Row0.Z; perspective_m1[i + 3] = M.Row0.W;
             i += 4;
@@ -211,50 +204,21 @@ namespace Mirea.Snar2017.Navigate
             GL.LoadIdentity();
             GL.LoadMatrix(perspective_m);
             GL.Scale(0.1f, 0.1f, 0.1f);
-            GL.Rotate(-yangle / 10, 0, 1, 0);
-            GL.Rotate(-xangle / 10, 1, 0, -1);
-            GL.Scale(mScaleFactor, mScaleFactor, mScaleFactor);
-        }
-
-        public override bool OnTouchEvent(MotionEvent e)
-        {
-            mScaleDetector.OnTouchEvent(e);
-
-            if (e.Action == MotionEventActions.Down)
-            {
-                prevx = e.GetX();
-                prevy = e.GetY();
-            }
-            if (e.Action == MotionEventActions.Move)
-            {
-                if (!mScaleDetector.IsInProgress)
-                {
-                    float e_x = e.GetX();
-                    float e_y = e.GetY();
-
-                    float xdiff = (prevx - e_x);
-                    float ydiff = (prevy - e_y);
-                    xangle = xangle + ydiff;
-                    yangle = yangle + xdiff;
-                    prevx = e_x;
-                    prevy = e_y;
-                }
-            }
-            if (e.Action == MotionEventActions.Down || e.Action == MotionEventActions.Move)
-                RenderCube();
-            return true;
+            GL.Rotate(-yAngle / 10, 0, 1, 0);
+            GL.Rotate(-xAngle / 10, 1, 0, -1);
+            GL.Scale(scaleFactor, scaleFactor, scaleFactor);
         }
 
         void RenderCube()
         {
             GL.PushMatrix();
 
-            x = orintation[5];
-            y = orintation[7];
-            z = orintation[6];
+            x = stateVector[5];
+            y = stateVector[7];
+            z = stateVector[6];
 
             GL.Translate(x, y, z);
-            GL.Rotate(orintation[1], orintation[2] + x, orintation[4] + y, orintation[3] + z);
+            GL.Rotate(stateVector[1], stateVector[2] + x, stateVector[4] + y, stateVector[3] + z);
             trace.Add(x);
             trace.Add(y);
             trace.Add(z);
@@ -299,6 +263,43 @@ namespace Mirea.Snar2017.Navigate
             }
         }
 
+        private static float ToRadians(float degrees)
+        {
+            return (float)(degrees * (System.Math.PI / 180.0));
+        }
+
+        #region View handlers
+        public override bool OnTouchEvent(MotionEvent e)
+        {
+            scaleDetector.OnTouchEvent(e);
+
+            if (e.Action == MotionEventActions.Down)
+            {
+                xPrevious = e.GetX();
+                yPrevious = e.GetY();
+            }
+            if (e.Action == MotionEventActions.Move)
+            {
+                if (!scaleDetector.IsInProgress)
+                {
+                    float e_x = e.GetX();
+                    float e_y = e.GetY();
+
+                    float xdiff = (xPrevious - e_x);
+                    float ydiff = (yPrevious - e_y);
+                    xAngle = xAngle + ydiff;
+                    yAngle = yAngle + xdiff;
+                    xPrevious = e_x;
+                    yPrevious = e_y;
+                }
+            }
+            if (e.Action == MotionEventActions.Down || e.Action == MotionEventActions.Move)
+                RenderCube();
+            return true;
+        }
+        #endregion
+
+        #region Arrays for OpenGl
         float[] cube = {
             -3f, 0.2f, 1f, // vertex[0]
 			3f, 0.2f, 1f, // vertex[1]
@@ -309,7 +310,6 @@ namespace Mirea.Snar2017.Navigate
 			3f, -0.2f, -1f, // vertex[6]
 			-3f, -0.2f, -1f, // vertex[7]
 		};
-
         float[] line = {
             0, 500, 0,
             0, -500, 0,
@@ -350,12 +350,13 @@ namespace Mirea.Snar2017.Navigate
             0.0f, 1.0f, 0.0f, 0f,
             0.0f, 1.0f, 0.0f, 0f,
         };
+        #endregion
 
         private class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
         {
             public override bool OnScale(ScaleGestureDetector detector)
             {
-                mScaleFactor *= detector.ScaleFactor;
+                scaleFactor *= detector.ScaleFactor;
                 return true;
             }
         }

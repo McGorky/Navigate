@@ -5,7 +5,7 @@
     android:padding="8dp"
     android:orientation="vertical"
     android:gravity="center|bottom"
-    android:background="@drawable/DarkRed"
+    android:background="@drawable/DarkRedBackground"
     android:weightSum="16"
     android:id="@+id/RootLinearLayot">
     <OxyPlot.Xamarin.Android.PlotView

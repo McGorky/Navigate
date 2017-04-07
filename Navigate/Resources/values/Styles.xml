@@ -15,8 +15,14 @@
         <item name="android:shadowRadius" >3</item>
     </style>
 
-    <style name="DarkAndGray" parent="android:Theme.Black.NoTitleBar">
-        <item name="android:windowBackground" >@color/GrayDark</item>
-        <item name="android:navigationBarColor" >@color/GrayLight</item>
+    <style name="DarkRedAndPink" parent="android:Theme.Black.NoTitleBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowBackground">@color/Primary</item>
+        <item name="android:navigationBarColor">@color/Secondary</item>
+        <item name="android:statusBarColor">@color/Secondary</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
     </style>
 </resources>

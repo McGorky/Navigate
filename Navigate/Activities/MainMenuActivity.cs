@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
-using System.Timers;
+using System.Threading.Tasks;
 
 using Xamarin.Android;
 
@@ -14,36 +16,43 @@ using Android.Views;
 using Android.Views.Animations;
 using Android.Widget;
 using Android.OS;
+using Android.Graphics;
 
 using OxyPlot.Xamarin.Android;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using Android.Graphics;
 
 namespace Mirea.Snar2017.Navigate
 {
     [Activity(Label = "@string/ApplicationName",
             MainLauncher = true,
             Icon = "@drawable/ApplicationIcon",
-            Theme = "@style/DarkAndGray"
+            Theme = "@style/DarkRedAndPink"
             )]
     public class MainMenuActivity : Activity
     {
-        private System.Timers.Timer timer = new System.Timers.Timer();
+        private Timer timer;
+        private Random random = new Random(1);
 
-        PlotView accelerometerPlotView;
-        PlotView gyroPlotView;
-        PlotView magnetometerPlotView;
-        LinearLayout plotsLayout;
-        Spinner plotsSpinner;
+        #region Views and related fields
+        private PlotView accelerometerPlotView;
+        private PlotView gyroPlotView;
+        private PlotView magnetometerPlotView;
+        private LinearLayout plotsLayout;
+        private Spinner plotsSpinner;
+        private EditText inputEditText;
 
-        Button calibrateMenuButton;
-        Button filterButton;
-        Button logButton;
-        Button logPlayerButton;
-        Button playPlotsButton;
+        private Button calibrateMenuButton;
+        private Button filterButton;
+        private Button logButton;
+        private Button logPlayerButton;
+        private Button playPlotsButton;
 
+        private bool backButtonPressed = false;
+        #endregion
+
+        #region Activity methods
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -64,6 +73,11 @@ namespace Mirea.Snar2017.Navigate
             accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
             gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
             magnetometerPlotView = FindViewById<PlotView>(Resource.Id.MagnetometerPlotView);
+
+            var t = 0.0f;
+            timer = new Timer((o) => { UpdatePlot(accelerometerPlotView, new float[] { random.Next(10) - 5, random.Next(10) - 5, random.Next(10) - 5 }, t); t += 0.05f; });
+            timer.Change(1000, 50);
+
 
             plotsSpinner = FindViewById<Spinner>(Resource.Id.PlotsSpinner);
 
@@ -139,10 +153,50 @@ namespace Mirea.Snar2017.Navigate
 
 
 
-            timer.Elapsed += (o, e) => RunOnUiThread(() => UpdatePlots());
+            /*timer.Elapsed += (o, e) => RunOnUiThread(() => UpdatePlots());
             timer.Interval = 100;
-            timer.Enabled = true;
+            timer.Enabled = true;*/
         }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+
+        public override void OnBackPressed()
+        {
+            if (backButtonPressed)
+            {
+                base.OnBackPressed();
+                Process.KillProcess(Process.MyPid());
+            }
+            else
+            {
+                backButtonPressed = true;
+                Toast.MakeText(this, GetString(Resource.String.PressBackToExit), ToastLength.Long).Show();
+                Task.Run(async () =>
+                {
+                    await Task.Delay(3500);
+                    backButtonPressed = false;
+                });
+            }
+        }
+        #endregion
 
         private void UpdatePlots()
         {
@@ -175,45 +229,48 @@ namespace Mirea.Snar2017.Navigate
             magnetometerPlotView.InvalidatePlot();
         }
 
+        //-------------------------------------------------------------------------------------------------------------
+        private void UpdatePlot(PlotView plotView, float[] data, float t)
+        {
+            lock (Storage.DataAccessSync)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    var s = plotView.Model.Series[i] as LineSeries;
+                    s.Points.Add(new DataPoint(t, data[i]));
+                    if (s.Points.Count == 150)
+                        s.Points.RemoveAt(0);
+                }
+
+                plotView.Model.Axes[0].Minimum = t - 10;
+                plotView.Model.Axes[0].Maximum = t + 3;
+                plotView.Model.Axes[1].Minimum = -6;
+                plotView.Model.Axes[1].Maximum = 5;
+                RunOnUiThread(() => plotView.InvalidatePlot());
+            }
+        }
+        //-------------------------------------------------------------------------------------------------------------
+
         private PlotModel CreatePlotModel(string xName, string xUnits, string yName, string yUnits)
         {
             var plotModel = new PlotModel();
             double fontSize = 7;
 
-            var timeAxis = new LinearAxis { Position = AxisPosition.Bottom, FontSize = fontSize, Title = $"{xName}, {xUnits}" };
-            var valueAxis = new LinearAxis { Position = AxisPosition.Left, FontSize = fontSize, Title = $"{yName}, {yUnits}" };
+            var timeAxis = new LinearAxis { Position = AxisPosition.Bottom, FontSize = fontSize, Title = $"{xName}, {xUnits}", MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot };
+            var valueAxis = new LinearAxis { Position = AxisPosition.Left, FontSize = fontSize, Title = $"{yName}, {yUnits}", MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot };
 
             plotModel.Axes.Add(timeAxis);
             plotModel.Axes.Add(valueAxis);
 
-            var seriesX = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Red};
-            var seriesY = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Green };
-            var seriesZ = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue };
+            var seriesX = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Red, MarkerSize = 0.5};
+            var seriesY = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Green, MarkerSize = 0.5 };
+            var seriesZ = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.5 };
 
             plotModel.Series.Add(seriesX);
             plotModel.Series.Add(seriesY);
             plotModel.Series.Add(seriesZ);
 
             return plotModel;
-        }
-
-        private EditText inp;
-         /*void SaveButtonClicked(object sender, EventArgs e)
-         {
-             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-             builder.SetTitle("Name");
-             inp = new EditText(this);
-             builder.SetView(inp);
-             inp.RequestFocus();
-
-             builder.SetPositiveButton("OK", OkAction);
-             builder.SetNegativeButton("Cancel", CancelAction);
-             builder.Show();
-         }
-         */
-
-        private void CancelAction(object sender, DialogClickEventArgs e)
-        {
         }
 
         private void Compile(string fileName)
@@ -261,7 +318,7 @@ namespace Mirea.Snar2017.Navigate
                     {
                         data[j] = float.Parse(s[j], CultureInfo.InvariantCulture);
                     }
-                    dt = (data[0] - tPrev)*0.001f;
+                    dt = (data[0] - tPrev) * 0.001f;
                     tPrev = data[0];
                     // FIXME: данные должны нормироваться
                     a = (0, data[1], data[2], data[3]);
@@ -279,7 +336,7 @@ namespace Mirea.Snar2017.Navigate
                     q = Filter.Madgvic(q, g, a, m, beta, Storage.Zeta, dt);
                     if (calibrated)
                     {
-                        var localRotation = Filter.CalculateDifferenceQuaternion(startRotation, q);
+                        var localRotation = Quaternion.CalculateDifference(startRotation, q);
                         aLinear = (0, data[10], data[11], data[12]);
                         var aGlobal = localRotation * aLinear * localRotation.Conjugated();
                         var accelerationCurrent = Filter.Exponential(acceleration, new float[] { aGlobal.X, aGlobal.Y, aGlobal.Z }, Storage.Gamma);
@@ -291,5 +348,16 @@ namespace Mirea.Snar2017.Navigate
                 }
             }
         }
+
+        #region Handlers
+        // REMARK KK: привести в порядок имена - <blabla>OkAction
+        private void OkAction(object sender, DialogClickEventArgs e)
+        {
+        }
+
+        private void CancelAction(object sender, DialogClickEventArgs e)
+        {
+        }
+        #endregion        
     }
 }

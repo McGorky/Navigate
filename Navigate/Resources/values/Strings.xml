@@ -7,13 +7,14 @@
     <string name="StartLog">Start Log</string>
     <string name="StopLog">Stop</string>
     <string name="Save">Save</string>
-    <string name="MadgwickText1">Madgwick β</string>
-    <string name="MadgwickText2">Madgwick ζ</string>
-    <string name="ExponentialText">Exponential γ</string>
-    <string name="ExponentialButton">Accept</string>
+    <string name="MadgwickBeta">Madgwick β</string>
+    <string name="MadgwickZeta">Madgwick ζ</string>
+    <string name="ExponentialText">Sample text</string>
     <string name="MagnetometerText">Magnetometer</string>
-    <string name="GyroDriftComp">Gyroscope Drift Compensation</string>
+    <string name="GyroscopeDriftCompensation">Gyroscope Drift Compensation</string>
     <string name="DrawTrajectory">Draw Device Trajectory</string>
     <string name="AccelCalibrationText">Accelerometer Calibration</string>
-  <string name="PlayPlots">Play Plots</string>
+    <string name="PlayPlots">Play Plots</string>
+    <string name="CollectingData">Collecting data...</string>
+    <string name="PressBackToExit">Press back again to exit</string>
 </resources>

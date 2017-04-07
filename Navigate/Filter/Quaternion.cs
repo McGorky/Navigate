@@ -65,6 +65,8 @@ namespace Mirea.Snar2017.Navigate
             }
         }
 
+        public float Norm { get => (float)Sqrt(w * w + x * x + y * y + z * z); }
+
         public Quaternion(float w, float x, float y, float z)
         {
             this.w = w;
@@ -86,6 +88,8 @@ namespace Mirea.Snar2017.Navigate
         public static Quaternion operator *(Quaternion q, float scalar) => new Quaternion(q.w * scalar, q.x * scalar, q.y * scalar, q.z * scalar);
         public static Quaternion operator *(float scalar, Quaternion q) => q * scalar;
 
+        public static Quaternion operator /(Quaternion q, float scalar) => new Quaternion(q.w / scalar, q.x / scalar, q.y / scalar, q.z / scalar);
+
         public static Quaternion operator +(Quaternion a, Quaternion b)
         {
             return new Quaternion(a.w + b.w,
@@ -93,6 +97,7 @@ namespace Mirea.Snar2017.Navigate
                 a.y + b.y,
                 a.z + b.z);
         }
+
         public static Quaternion operator -(Quaternion a, Quaternion b)
         {
             return new Quaternion(a.w - b.w,
@@ -115,13 +120,21 @@ namespace Mirea.Snar2017.Navigate
         }
         #endregion
 
-        public Quaternion Normalized()
-        {
-            float norm = (float)Sqrt(w*w + x*x + y*y + z*z);
-            return this * (1 / norm);
-        }
+        public Quaternion Normalized() => this / Norm;
 
         public Quaternion Conjugated() => new Quaternion(w, -x, -y, -z);
+
+        public Quaternion Inversed() => Conjugated() / (Norm * Norm);
+
+        /// <summary>
+        /// a = b * d. 
+        /// Находит d.  
+        /// a и b - единичные кватернионы
+        /// </summary>
+        /// <param name="a">поворот из положения x в положение y</param>
+        /// <param name="b">поворот из положения x в положение z</param>
+        /// <returns>поворот из положения y в положение z></returns>
+        public static Quaternion CalculateDifference(Quaternion a, Quaternion b) => b.Conjugated() * a; // b.Normalized().Conjugated() * a.Normalized();
 
         public override string ToString() => $"{w},{x},{y},{z}";
     }
