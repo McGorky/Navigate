@@ -60,8 +60,9 @@ namespace Mirea.Snar2017.Navigate
             SetContentView(Resource.Layout.MainMenu);
 
             AlertDialog.Builder startAlert = new AlertDialog.Builder(this);
+            // REMARK KK: добавить в values/Strings, использовать через GetString(Resource.String.***)
             startAlert.SetTitle("Do calibrate?");
-            startAlert.SetPositiveButton("YES", calibrateMenuButton_Clicked);
+            startAlert.SetPositiveButton("YES", OnCalibrateMenuButtonClicked);
             startAlert.SetNegativeButton("NO", CancelAction);
 
             calibrateMenuButton = FindViewById<Button>(Resource.Id.CalibrateMenuButton);
@@ -75,7 +76,11 @@ namespace Mirea.Snar2017.Navigate
             magnetometerPlotView = FindViewById<PlotView>(Resource.Id.MagnetometerPlotView);
 
             var t = 0.0f;
-            timer = new Timer((o) => { UpdatePlot(accelerometerPlotView, new float[] { random.Next(10) - 5, random.Next(10) - 5, random.Next(10) - 5 }, t); t += 0.05f; });
+            timer = new Timer((o) =>
+            {
+                UpdatePlot(accelerometerPlotView, new float[] { random.Next(10) - 5, random.Next(10) - 5, random.Next(10) - 5 }, t);
+                t += 0.05f;
+            });
             timer.Change(1000, 50);
 
 
@@ -87,75 +92,11 @@ namespace Mirea.Snar2017.Navigate
             gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
             magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "μT");
 
-            calibrateMenuButton.Click += calibrateMenuButton_Clicked;
-            filterButton.Click += filterButton_Clicked;
-            logButton.Click += logButton_Clicked;
-            logPlayerButton.Click += logPlayerButton_Clicked;
-            playPlotsButton.Click += playPlotsButton_Clicked;
-
-            void calibrateMenuButton_Clicked(object sender, EventArgs e)
-            {
-                var intent = new Intent(this, typeof(CalibrateMenuActivity));
-                StartActivity(intent);
-                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            }
-
-            void filterButton_Clicked(object sender, EventArgs e)
-            {
-                var intent = new Intent(this, typeof(FilterSettingsActivity));
-                StartActivity(intent);
-                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            }
-
-            void logButton_Clicked(object sender, EventArgs e)
-            {
-                //plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 0f);
-                //plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 2f);
-                var intent = new Intent(this, typeof(LogMenuActivity));
-                StartActivity(intent);
-                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            }
-
-            void logPlayerButton_Clicked(object sender, EventArgs e)
-            {
-                /*using (var sr = new StreamReader(Storage.CurrentFile))
-                {
-                    var line = sr.ReadLine();
-                    Storage.numberOfFrames = int.Parse(line, CultureInfo.InvariantCulture);
-                    Storage.data = new float[Storage.numberOfFrames][];
-                    var text = sr.ReadToEnd().Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = 0; i < Storage.numberOfFrames; i++)
-                    {
-                        Storage.data[i] = new float[8];
-                        var s = text[i].Split(new char[] { ',' });
-                        for (int j = 0; j < 8; j++)
-                        {
-                            Storage.data[i][j] = float.Parse(s[j], CultureInfo.InvariantCulture);
-                        }
-                    }
-                }
-                */
-                var intent = new Intent(this, typeof(LogPlayerActivity));
-                StartActivity(intent);
-                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            }            
-
-            
-
-            void playPlotsButton_Clicked(object sender, EventArgs e)
-            {
-               // plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 1f);
-               // plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 0f);
-                var intent = new Intent(this, typeof(LogMenuActivity));
-                StartActivity(intent);
-                OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-            }
-
-
-
-            /*timer.Elapsed += (o, e) => RunOnUiThread(() => UpdatePlots());
-            timer.Interval = 100;
-            timer.Enabled = true;*/
+            calibrateMenuButton.Click += OnCalibrateMenuButtonClicked;
+            filterButton.Click += OnFilterButtonClicked;
+            logButton.Click += OnLogButtonClicked;
+            logPlayerButton.Click += OnLogPlayerButtonClicked;
+            playPlotsButton.Click += OnPlayPlotsButtonClicked;
         }
 
         protected override void OnPause()
@@ -229,7 +170,6 @@ namespace Mirea.Snar2017.Navigate
             magnetometerPlotView.InvalidatePlot();
         }
 
-        //-------------------------------------------------------------------------------------------------------------
         private void UpdatePlot(PlotView plotView, float[] data, float t)
         {
             lock (Storage.DataAccessSync)
@@ -249,7 +189,6 @@ namespace Mirea.Snar2017.Navigate
                 RunOnUiThread(() => plotView.InvalidatePlot());
             }
         }
-        //-------------------------------------------------------------------------------------------------------------
 
         private PlotModel CreatePlotModel(string xName, string xUnits, string yName, string yUnits)
         {
@@ -350,6 +289,62 @@ namespace Mirea.Snar2017.Navigate
         }
 
         #region Handlers
+        void OnCalibrateMenuButtonClicked(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(CalibrateMenuActivity));
+            StartActivity(intent);
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+
+        void OnFilterButtonClicked(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(FilterSettingsActivity));
+            StartActivity(intent);
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+
+        void OnLogButtonClicked(object sender, EventArgs e)
+        {
+            //plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 0f);
+            //plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 2f);
+            var intent = new Intent(this, typeof(LogMenuActivity));
+            StartActivity(intent);
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+
+        void OnLogPlayerButtonClicked(object sender, EventArgs e)
+        {
+            /*using (var sr = new StreamReader(Storage.CurrentFile))
+            {
+                var line = sr.ReadLine();
+                Storage.numberOfFrames = int.Parse(line, CultureInfo.InvariantCulture);
+                Storage.data = new float[Storage.numberOfFrames][];
+                var text = sr.ReadToEnd().Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < Storage.numberOfFrames; i++)
+                {
+                    Storage.data[i] = new float[8];
+                    var s = text[i].Split(new char[] { ',' });
+                    for (int j = 0; j < 8; j++)
+                    {
+                        Storage.data[i][j] = float.Parse(s[j], CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+            */
+            var intent = new Intent(this, typeof(LogPlayerActivity));
+            StartActivity(intent);
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+
+        void OnPlayPlotsButtonClicked(object sender, EventArgs e)
+        {
+            // plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 1f);
+            // plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 0f);
+            var intent = new Intent(this, typeof(LogMenuActivity));
+            StartActivity(intent);
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+
         // REMARK KK: привести в порядок имена - <blabla>OkAction
         private void OkAction(object sender, DialogClickEventArgs e)
         {
