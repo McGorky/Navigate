@@ -30,7 +30,7 @@ namespace Mirea.Snar2017.Navigate
         private (float Z, float XY) angle;
         private (float X, float Y, float Z) position;
         private (int Width, int Height) viewport;
-        private float speedMultiplier;
+        private float speedMultiplier = 1;
 
         private List<float> trace = new List<float>();
         private float[] stateVector = new float[8];
@@ -38,8 +38,7 @@ namespace Mirea.Snar2017.Navigate
         private ScaleGestureDetector scaleDetector;
         private static float scaleFactor = 1.0f;
 
-        private Timer timer = new Timer();
-        private bool first = true;
+        private Timer stateVectorChangeTimer = new Timer();
 
         #region Constructors
         public PaintingView(Context context, IAttributeSet attrs) :
@@ -57,7 +56,7 @@ namespace Mirea.Snar2017.Navigate
         private void Initialize()
         {
             scaleDetector = new ScaleGestureDetector(Context, new ScaleListener());
-            timer.AutoReset = false;
+            stateVectorChangeTimer.AutoReset = false;
             angle.Z = 0;
             angle.XY = 0;
         }
@@ -75,33 +74,8 @@ namespace Mirea.Snar2017.Navigate
             GL.CullFace(All.Back);
             GL.Hint(All.PerspectiveCorrectionHint, All.Nicest);
 
-            EventHandler<FrameEventArgs> updateCoordinates = null;
-            updateCoordinates = delegate
-            {
-                if (Storage.CurrentFrame == Storage.NumberOfFrames)
-                {
-                    UpdateFrame -= updateCoordinates;
-                    return;
-                }
-
-                stateVector = Storage.Data[Storage.CurrentFrame];
-
-                if (first)
-                {
-                    timer.Interval = stateVector[0] / speedMultiplier;
-                    first = false;
-                }
-                timer.Elapsed += delegate (Object source, ElapsedEventArgs ev)
-                {
-                    first = true;
-                    Storage.CurrentFrame++;
-                };
-                stateVector[1] = 2 * (float)Math.Acos(stateVector[1]);
-                stateVector[2] /= (float)Math.Sin(stateVector[1] / 2);
-                stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
-                stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
-            };
-            UpdateFrame += updateCoordinates;
+            stateVectorChangeTimer.Elapsed += UpdateCoordinates;
+            UpdateCoordinates(null, null);
 
             RenderFrame += delegate
             {
@@ -110,6 +84,26 @@ namespace Mirea.Snar2017.Navigate
             };
 
             Run(60);
+        }
+
+        private void UpdateCoordinates(object sender, ElapsedEventArgs e)
+        {
+            if (Storage.CurrentFrame == Storage.NumberOfFrames)
+            {
+                stateVectorChangeTimer.Elapsed -= UpdateCoordinates;
+                return;
+            }
+            stateVector = Storage.Data[Storage.CurrentFrame];
+
+            stateVectorChangeTimer.Interval = stateVector[0] / speedMultiplier;
+            stateVectorChangeTimer.Enabled = true;
+
+            stateVector[1] = 2 * (float)Math.Acos(stateVector[1]);
+            stateVector[2] /= (float)Math.Sin(stateVector[1] / 2);
+            stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
+            stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
+
+            Storage.CurrentFrame++;
         }
 
         public void SetupCamera()
