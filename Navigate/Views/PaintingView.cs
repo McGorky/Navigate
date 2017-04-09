@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Timers;
 
 using Android.App;
 using Android.Content;
@@ -25,22 +26,20 @@ namespace Mirea.Snar2017.Navigate
 {
     class PaintingView : AndroidGameView
     {
-        // REMARK ZH: привести в порядок имена (пкм - переименовать)
-        float xPrevious, yPrevious;
-        float xAngle, yAngle;
+        private (float X, float Y) previousPositionTouch;
+        private (float Z, float XY) angle;
+        private (float X, float Y, float Z) position;
+        private (int Width, int Height) viewport;
+        private float speedMultiplier;
+
+        private List<float> trace = new List<float>();
+        private float[] stateVector = new float[8];
 
         private ScaleGestureDetector scaleDetector;
         private static float scaleFactor = 1.0f;
 
-        List<float> trace = new List<float>();
-        float x, y, z;
-        float koef;
-
-        // REMARK ZH: сделать нормальный коэффициент скорости
-        bool speedUp = false;
-        bool first = true;
-        float[] stateVector = new float[8];
-        int viewportWidth, viewportHeight;
+        private Timer timer = new Timer();
+        private bool first = true;
 
         #region Constructors
         public PaintingView(Context context, IAttributeSet attrs) :
@@ -58,55 +57,23 @@ namespace Mirea.Snar2017.Navigate
         private void Initialize()
         {
             scaleDetector = new ScaleGestureDetector(Context, new ScaleListener());
-            xAngle = 0;
-            yAngle = 0;
+            timer.AutoReset = false;
+            angle.Z = 0;
+            angle.XY = 0;
         }
         #endregion
 
-        protected override void CreateFrameBuffer()
-        {
-            ContextRenderingApi = GLVersion.ES1;
-            try
-            {
-                // REMARK ZH: зачем тут Log?
-                Log.Verbose("GLCube", "Loading with default settings");
-                base.CreateFrameBuffer();
-                return;
-            }
-            catch (Exception ex)
-            {
-                Log.Verbose("GLCube", "{0}", ex);
-            }
-
-            try
-            {
-                Log.Verbose("GLCube", "Loading with custom Android settings (low mode)");
-                GraphicsMode = new AndroidGraphicsMode(0, 4, 0, 0, 0, false);
-                base.CreateFrameBuffer();
-                return;
-            }
-            catch (Exception ex)
-            {
-                Log.Verbose("GLCube", "{0}", ex);
-            }
-            throw new Exception("Can't load egl, aborting");
-        }
-        
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
             GL.ShadeModel(All.Flat);
-
             GL.Enable(All.CullFace);
             GL.ClearDepth(1.0f);
-
             GL.Enable(All.DepthTest);
             GL.DepthFunc(All.Lequal);
             GL.Enable(All.CullFace);
             GL.CullFace(All.Back);
             GL.Hint(All.PerspectiveCorrectionHint, All.Nicest);
-
 
             EventHandler<FrameEventArgs> updateCoordinates = null;
             updateCoordinates = delegate
@@ -116,30 +83,23 @@ namespace Mirea.Snar2017.Navigate
                     UpdateFrame -= updateCoordinates;
                     return;
                 }
+
                 stateVector = Storage.Data[Storage.CurrentFrame];
-                Storage.CurrentFrame++;
 
                 if (first)
                 {
-                    koef = 1000000 / stateVector[0] / 60;
+                    timer.Interval = stateVector[0] / speedMultiplier;
                     first = false;
                 }
-
-                var angle = Math.Acos(stateVector[1]) * 2;
-                if (speedUp == false)
+                timer.Elapsed += delegate (Object source, ElapsedEventArgs ev)
                 {
-                    stateVector[1] = (float)angle * koef;
-                    stateVector[5] *= koef;
-                    stateVector[6] *= koef;
-                    stateVector[7] *= koef;
-                }
-                else
-                {
-                    stateVector[1] = 2 * (float)angle * koef;
-                    stateVector[5] *= 2 * koef;
-                    stateVector[6] *= 2 * koef;
-                    stateVector[7] *= 2 * koef;
-                }
+                    first = true;
+                    Storage.CurrentFrame++;
+                };
+                stateVector[1] = 2 * (float)Math.Acos(stateVector[1]);
+                stateVector[2] /= (float)Math.Sin(stateVector[1] / 2);
+                stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
+                stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
             };
             UpdateFrame += updateCoordinates;
 
@@ -152,81 +112,48 @@ namespace Mirea.Snar2017.Navigate
             Run(60);
         }
 
-        void SetupCamera()
+        public void SetupCamera()
         {
-            viewportWidth = Width;
-            viewportHeight = Height;
+            viewport.Width = Width;
+            viewport.Height = Height;
 
-            GL.Viewport(0, 0, viewportWidth, viewportWidth);
+            GL.Viewport(0, 0, viewport.Width, viewport.Height);
 
-            Matrix4 M = Matrix4.CreatePerspectiveFieldOfView(ToRadians(90), (float)viewportWidth / (float)viewportHeight, 0.001f, 1000.0f);
-
-            float[] perspective_m1 = new float[16];
-            int i = 0;
-
-            // REMARK ZH: никогда не пиши несколько команд на одной строке
-            // REMARK ZH: и нужно отрефакторить все
-            perspective_m1[i + 0] = M.Row0.X;perspective_m1[i + 1] = M.Row0.Y;
-            perspective_m1[i + 2] = M.Row0.Z; perspective_m1[i + 3] = M.Row0.W;
-            i += 4;
-
-            perspective_m1[i + 0] = M.Row1.X; perspective_m1[i + 1] = M.Row1.Y;
-            perspective_m1[i + 2] = M.Row1.Z; perspective_m1[i + 3] = M.Row1.W;
-            i += 4;
-
-            perspective_m1[i + 0] = M.Row2.X; perspective_m1[i + 1] = M.Row2.Y;
-            perspective_m1[i + 2] = M.Row2.Z; perspective_m1[i + 3] = M.Row2.W;
-            i += 4;
-
-            perspective_m1[i + 0] = M.Row3.X; perspective_m1[i + 1] = M.Row3.Y;
-            perspective_m1[i + 2] = M.Row3.Z; perspective_m1[i + 3] = M.Row3.W;
-            GL.LoadMatrix(perspective_m1);
+            GL.MatrixMode(All.Projection);
+            Matrix4 M = Matrix4.CreatePerspectiveFieldOfView(ToRadians(110), (float)viewport.Width / (float)viewport.Height, 0.001f, 10000.0f);
+            GL.LoadIdentity();
+            GL.LoadMatrix(ConvertMatrix4(M));
 
             GL.MatrixMode(All.Modelview);
-            Matrix4 m = Matrix4.LookAt(0, 0, 0, -1, -1, -1, 0, 1, 0);
-            float[] perspective_m = new float[16];
-
-            i = 0;
-            perspective_m[i + 0] = m.Row0.X; perspective_m[i + 1] = m.Row0.Y;
-            perspective_m[i + 2] = m.Row0.Z; perspective_m[i + 3] = m.Row0.W;
-            i += 4;
-
-            perspective_m[i + 0] = m.Row1.X; perspective_m[i + 1] = m.Row1.Y;
-            perspective_m[i + 2] = m.Row1.Z; perspective_m[i + 3] = m.Row1.W;
-            i += 4;
-
-            perspective_m[i + 0] = m.Row2.X; perspective_m[i + 1] = m.Row2.Y;
-            perspective_m[i + 2] = m.Row2.Z; perspective_m[i + 3] = m.Row2.W;
-            i += 4;
-
-            perspective_m[i + 0] = m.Row3.X; perspective_m[i + 1] = m.Row3.Y;
-            perspective_m[i + 2] = m.Row3.Z; perspective_m[i + 3] = m.Row3.W;
+            //Matrix4 m = Matrix4.LookAt(0, 0, 0, -1, -1, -1, 0, 1, 0);
+            Matrix4 m = Matrix4.LookAt(1, 1, 1, 0, 0, 0, 0, 1, 0);
             GL.LoadIdentity();
-            GL.LoadMatrix(perspective_m);
+            GL.LoadMatrix(ConvertMatrix4(m));
+
             GL.Scale(0.1f, 0.1f, 0.1f);
-            GL.Rotate(-yAngle / 10, 0, 1, 0);
-            GL.Rotate(-xAngle / 10, 1, 0, -1);
+            GL.Rotate(-angle.XY / 10, 0, 1, 0);
+            GL.Rotate(-angle.Z / 10, 1, 0, -1);
             GL.Scale(scaleFactor, scaleFactor, scaleFactor);
         }
 
-        void RenderCube()
+        public void RenderCube()
         {
             GL.PushMatrix();
 
-            x = stateVector[5];
-            y = stateVector[7];
-            z = stateVector[6];
+            position.X = stateVector[5];
+            position.Y = stateVector[7];
+            position.Z = stateVector[6];
 
-            GL.Translate(x, y, z);
-            GL.Rotate(stateVector[1], stateVector[2] + x, stateVector[4] + y, stateVector[3] + z);
-            trace.Add(x);
-            trace.Add(y);
-            trace.Add(z);
+            GL.Translate(position.X, position.Y, position.Z);
+            GL.Rotate(stateVector[1], stateVector[2] + position.X, stateVector[4] + position.Y, stateVector[3] + position.Z);
+            trace.Add(position.X);
+            trace.Add(position.Y);
+            trace.Add(position.Z);
 
             float[] tr = new float[trace.Count];
             for (int j = 0; j < trace.Count; j++)
                 tr[j] = trace[j];
-            
+
             GL.ClearColor(0, 0.7f, 0.5f, 0.3f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             unsafe
@@ -263,11 +190,6 @@ namespace Mirea.Snar2017.Navigate
             }
         }
 
-        private static float ToRadians(float degrees)
-        {
-            return (float)(degrees * (System.Math.PI / 180.0));
-        }
-
         #region View handlers
         public override bool OnTouchEvent(MotionEvent e)
         {
@@ -275,8 +197,8 @@ namespace Mirea.Snar2017.Navigate
 
             if (e.Action == MotionEventActions.Down)
             {
-                xPrevious = e.GetX();
-                yPrevious = e.GetY();
+                previousPositionTouch.X = e.GetX();
+                previousPositionTouch.Y = e.GetY();
             }
             if (e.Action == MotionEventActions.Move)
             {
@@ -285,12 +207,12 @@ namespace Mirea.Snar2017.Navigate
                     float e_x = e.GetX();
                     float e_y = e.GetY();
 
-                    float xdiff = (xPrevious - e_x);
-                    float ydiff = (yPrevious - e_y);
-                    xAngle = xAngle + ydiff;
-                    yAngle = yAngle + xdiff;
-                    xPrevious = e_x;
-                    yPrevious = e_y;
+                    float xDiff = (previousPositionTouch.X - e_x);
+                    float yDiff = (previousPositionTouch.Y - e_y);
+                    angle.Z = angle.Z + yDiff;
+                    angle.XY = angle.XY + xDiff;
+                    previousPositionTouch.X = e_x;
+                    previousPositionTouch.Y = e_y;
                 }
             }
             if (e.Action == MotionEventActions.Down || e.Action == MotionEventActions.Move)
@@ -298,6 +220,33 @@ namespace Mirea.Snar2017.Navigate
             return true;
         }
         #endregion
+
+        private static float[] ConvertMatrix4(Matrix4 M)
+        {
+            float[] Array = new float[16];
+            Array[0] = M.Row0.X;
+            Array[1] = M.Row0.Y;
+            Array[2] = M.Row0.Z;
+            Array[3] = M.Row0.W;
+            Array[4] = M.Row1.X;
+            Array[5] = M.Row1.Y;
+            Array[6] = M.Row1.Z;
+            Array[7] = M.Row1.W;
+            Array[8] = M.Row2.X;
+            Array[9] = M.Row2.Y;
+            Array[10] = M.Row2.Z;
+            Array[11] = M.Row2.W;
+            Array[12] = M.Row3.X;
+            Array[13] = M.Row3.Y;
+            Array[14] = M.Row3.Z;
+            Array[15] = M.Row3.W;
+            return Array;
+        }
+
+        private static float ToRadians(float degrees)
+        {
+            return (float)(degrees * (System.Math.PI / 180.0));
+        }
 
         #region Arrays for OpenGl
         float[] cube = {
@@ -311,12 +260,12 @@ namespace Mirea.Snar2017.Navigate
 			-3f, -0.2f, -1f, // vertex[7]
 		};
         float[] line = {
-            0, 500, 0,
-            0, -500, 0,
-            500, 0, 0,
-            -500, 0, 0,
-            0, 0, 500,
-            0, 0, -500,
+            0, 10000, 0,
+            0, -10000, 0,
+            10000, 0, 0,
+            -10000, 0, 0,
+            0, 0, 10000,
+            0, 0, -10000,
         };
         float[] lineColor = {
             0, 0, 1, 0,
@@ -352,6 +301,11 @@ namespace Mirea.Snar2017.Navigate
         };
         #endregion
 
+        /*private void PrintText3D(double x, double y, double z, string text)
+        {
+            GL.DrawText();
+            Glut.glutBitmapString(Glut.GLUT_BITMAP_9_BY_15, text);
+        }*/
         private class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
         {
             public override bool OnScale(ScaleGestureDetector detector)
