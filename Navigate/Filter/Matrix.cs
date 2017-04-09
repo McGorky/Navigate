@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using System;
+using System.Threading;
+using System.Globalization;
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -80,6 +82,23 @@ namespace Mirea.Snar2017.Navigate
             }
             return output;
         }
+
+        public static Matrix operator *(Matrix a, float scalar)
+        {
+            var output = new Matrix(a.Rows, a.Columns);
+            for (int i = 0; i < output.Rows; i++)
+            {
+                for (int j = 0; j < output.Columns; j++)
+                {
+                    output[i, j] = a[i, j] * scalar;
+                }
+            }
+            return output;
+        }
+
+        public static Matrix operator *(float scalar, Matrix a) => a * scalar;
+
+        public static Matrix operator /(Matrix a, float scalar) => a * (1.0f / scalar);
 
         public static Matrix operator +(Matrix a, Matrix b)
         {
@@ -179,6 +198,7 @@ namespace Mirea.Snar2017.Navigate
 
         public override string ToString()
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             var output = new StringBuilder(Rows * Columns * 7);
 
             for (int i = 0; i < Rows; i++)

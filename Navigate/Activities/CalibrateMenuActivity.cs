@@ -48,17 +48,18 @@ namespace Mirea.Snar2017.Navigate
 
         #region Data collecting and processing related fields 
         private const int SamplesToCollect = 300;
-        private float[,] samples = new float[SamplesToCollect, 3];
-        private float[] meanSample;
+        private float[][] samples = new float[SamplesToCollect][];
+        private float[] medianSamples;
         private int numberOfSamplesCollected = 0;
 
-        private PhoneOrientation orientaion;
+        private Matrix expectedValues = new Matrix(4, 4);
+        private Matrix actualValues = new Matrix(4, 4);
 
-        private Matrix R = new Matrix(4, 4);
-        private Matrix r = new Matrix(4, 4);
+        private Matrix calibrateMatrix = new Matrix(3, 3);
 
         // CONSIDER: использовать EventArgs
-        private event Func<Task<float[]>> AllSamplesCollected;
+        private event Action AllSamplesCollected;
+        private event Action MediansCalculated;
         private event Action<int> SomeSamplesCollected;
         #endregion
 
@@ -80,22 +81,18 @@ namespace Mirea.Snar2017.Navigate
             rightButton = FindViewById<Button>(Resource.Id.CalibrateRightButton);
 
             calibrateButton.Click += OnCalibrateButtonClicked;
-            frontButton.Click += OnFrontButtonClicked;
-            backButton.Click += OnBackButtonClicked;
-            topButton.Click += OnTopButtonClicked;
-            bottomButton.Click += OnBottomButtonClicked;
-            leftButton.Click += OnLeftButtonClicked;
-            rightButton.Click += OnRightButtonClicked;
 
-            
-            R[0, 2] = g;
-            R[1, 3] = -g;
-            R[2, 0] = -g;
-            R[2, 1] = g;
-            R[3, 0] = 1;
-            R[3, 1] = 1;
-            R[3, 2] = 1;
-            R[3, 3] = 1;
+            frontButton.Click += OnAnySideButtonClicked;
+            backButton.Click += OnAnySideButtonClicked;
+            topButton.Click += OnAnySideButtonClicked;
+            bottomButton.Click += OnAnySideButtonClicked;
+            leftButton.Click += OnAnySideButtonClicked;
+            rightButton.Click += OnAnySideButtonClicked;
+
+            for (int i = 0; i < samples.Length; i++)
+            {
+                samples[i] = new float[3];
+            }
         }
 
         protected override void OnPause()
@@ -135,13 +132,9 @@ namespace Mirea.Snar2017.Navigate
         {
             if (e.Sensor.Type == SensorType.Accelerometer)
             {
-                for (int i = 0; i < 3; i++)
-                {
-                    samples[numberOfSamplesCollected, i] = e.Values[i];
-                }
+                e.Values.CopyTo(samples[numberOfSamplesCollected], 0);
                 numberOfSamplesCollected++;
-                if (numberOfSamplesCollected % 10 == 0)
-                    SomeSamplesCollected(numberOfSamplesCollected);
+                SomeSamplesCollected(numberOfSamplesCollected);
                 if (numberOfSamplesCollected == SamplesToCollect)
                 {
                     DisableSensors();
@@ -150,11 +143,9 @@ namespace Mirea.Snar2017.Navigate
             }
         }
 
-        
-
         private void EnableSensors()
         {
-            StopService(new Intent(this, typeof(SensorsDataService)));
+            numberOfSamplesCollected = 0;
             sensorManager.RegisterListener(this,
                     sensorManager.GetDefaultSensor(SensorType.Accelerometer),
                     SensorDelay.Game);
@@ -165,137 +156,130 @@ namespace Mirea.Snar2017.Navigate
             sensorManager.UnregisterListener(this);
         }
 
-        private async Task CollectData(PhoneOrientation orientation)
-        {
-            ShowProgressDialog();
-            SomeSamplesCollected += UpdateProgressDialog;
-            numberOfSamplesCollected = 0;
-            EnableSensors();
-            AllSamplesCollected += this.ProcessData;
-            var ProcessData = (Func<Task<float[]>>)AllSamplesCollected.GetInvocationList()[0];
-            var data = await ProcessData();
-            DismissProgressDialog();
-        }
-        // TODO: вызывать событие при считывании каждого 10 файла
-        private async Task<float[]> ProcessData()
-        {
-            var meanSample = new float[3];
-            await Task.Run(() =>
-            {
-                for (int i = 0; i < SamplesToCollect; i++)
-                    for (int j = 0; j < 3; j++)
-                        meanSample[j] += samples[i, j] / SamplesToCollect;
-
-            });
-
-            AllSamplesCollected -= ProcessData;
-            int column = -1;
-            switch (orientaion)
-            {
-                case PhoneOrientation.OnFront:
-                column = 0;
-                break;
-                case PhoneOrientation.OnBack:
-                column = 1;
-                break;
-                case PhoneOrientation.OnLeft:
-                column = 2;
-                break;
-                case PhoneOrientation.OnTop:
-                column = 3;
-                break;
-            }
-            for (int i = 0; i < 3; i++)
-                r[i, column] = meanSample[i];
-
-            r[3, column] = 1;
-
-            return meanSample;
-        }
-
-        private void ShowProgressDialog()
+        private void ShowProgressDialog(string message)
         {
             dataCollectingDialog = new ProgressDialog(this);
             dataCollectingDialog.SetProgressStyle(ProgressDialogStyle.Horizontal);
-            dataCollectingDialog.SetMessage(GetString(Resource.String.CollectingData));
+            dataCollectingDialog.SetMessage(message + GetString(Resource.String.CollectingData));
             dataCollectingDialog.SetCancelable(false);
             dataCollectingDialog.Progress = 0;
             dataCollectingDialog.Max = SamplesToCollect;
             dataCollectingDialog.Show();
-            /*Task.Run(async () =>
+
+            SomeSamplesCollected += (i) => dataCollectingDialog.Progress = i;
+            AllSamplesCollected += () => RunOnUiThread(() => dataCollectingDialog.Dismiss());
+        }
+
+        private void GetMedianValues()
+        {
+            medianSamples = new float[3];
+            float[][] samplesTransposed = new float[3][];
+            for (int i = 0; i < 3; i++)
             {
-                
-            });*/
-            /*new Thread(new ThreadStart(() =>
-            {
-                while (dataCollectingDialog.Progress < dataCollectingDialog.Max)
+                samplesTransposed[i] = new float[SamplesToCollect];
+                for (int j = 0; j < SamplesToCollect; j++)
                 {
-                    //progressBar.Progress = samplesGathered;
-                    Thread.Sleep(100);
+                    samplesTransposed[i][j] = samples[j][i];
                 }
-                RunOnUiThread(() => dataCollectingDialog.Dismiss());
-            })).Start();*/
-        }
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                Array.Sort(samplesTransposed[i]);
+                medianSamples[i] = SamplesToCollect % 2 == 1 ? samplesTransposed[i][SamplesToCollect] :
+                    (samplesTransposed[i][SamplesToCollect / 2] + samplesTransposed[i][1 + SamplesToCollect / 2]) * 0.5f;
+            }
 
-        private void UpdateProgressDialog(int progress)
-        {
-            dataCollectingDialog.Progress = progress;
-        }
-
-        private void DismissProgressDialog()
-        {
-            dataCollectingDialog.Dismiss();
+            MediansCalculated();
         }
         #endregion
 
         #region Handlers
-        private async void OnFrontButtonClicked(object sender, EventArgs e)
+        private void OnAnySideButtonClicked(object sender, EventArgs e)
         {
-            await CollectData(PhoneOrientation.OnFront);
-            frontCalibrated = true;
-            frontButton.SetBackgroundResource(Resource.Drawable.GreenButton);
-        }
+            var handlers = AllSamplesCollected?.GetInvocationList();
+            if (handlers != null)
+            {
+                foreach (var h in handlers)
+                {
+                    AllSamplesCollected -= h as Action;
+                }
+            }
+            handlers = MediansCalculated?.GetInvocationList();
+            if (handlers != null)
+            {
+                foreach (var h in handlers)
+                {
+                    MediansCalculated -= h as Action;
+                }
+            }
 
-        private async void OnBackButtonClicked(object sender, EventArgs e)
-        {
-            await CollectData(PhoneOrientation.OnBack);
-            backCalibrated = true;
-            backButton.SetBackgroundResource(Resource.Drawable.GreenButton);
-        }
+            var button = sender as Button;
+            PhoneOrientation orientation;
+            switch (button.Id)
+            {
+                case Resource.Id.CalibrateFrontButton:
+                {
+                    orientation = PhoneOrientation.OnFront;
+                    break;
+                }
+                case Resource.Id.CalibrateBackButton:
+                {
+                    orientation = PhoneOrientation.OnBack;
+                    break;
+                }
+                case Resource.Id.CalibrateTopButton:
+                {
+                    orientation = PhoneOrientation.OnTop;
+                    break;
+                }
+                case Resource.Id.CalibrateBottomButton:
+                {
+                    orientation = PhoneOrientation.OnBottom;
+                    break;
+                }
+                case Resource.Id.CalibrateLeftButton:
+                {
+                    orientation = PhoneOrientation.OnLeft;
+                    break;
+                }
+                case Resource.Id.CalibrateRightButton:
+                {
+                    orientation = PhoneOrientation.OnRight;
+                    break;
+                }
+                default:
+                {
+                    orientation = PhoneOrientation.Unknown;
+                    break;
+                }
+            }
+            int column = -1;
+            if (orientation == PhoneOrientation.OnRight)
+                column = 0;
+            else if (orientation == PhoneOrientation.OnTop)
+                column = 1;
+            else if (orientation == PhoneOrientation.OnBack)
+                column = 2;
 
-        private async void OnTopButtonClicked(object sender, EventArgs e)
-        {
-            await CollectData(PhoneOrientation.OnTop);
-            topCalibrated = true;
-            topButton.SetBackgroundResource(Resource.Drawable.GreenButton);
-        }
+            // TODO: подождать, пока телефон не будет двигаться с эпсилон погрешностью
 
-        private async void OnBottomButtonClicked(object sender, EventArgs e)
-        {
-            await CollectData(PhoneOrientation.OnBottom);
-            topCalibrated = true;
-            bottomButton.SetBackgroundResource(Resource.Drawable.GreenButton);
+            EnableSensors();
+            ShowProgressDialog(orientation.ToString());
+            AllSamplesCollected += GetMedianValues;
+            MediansCalculated += () => button.SetBackgroundResource(Resource.Drawable.GreenButton);
+            MediansCalculated += () =>
+            {
+                for (int i = 0; i < 3; i++)
+                    calibrateMatrix[column, i] = medianSamples[i] / g;
+            };
         }
-
-        private async void OnLeftButtonClicked(object sender, EventArgs e)
-        {
-            await CollectData(PhoneOrientation.OnLeft);
-            topCalibrated = true;
-            leftButton.SetBackgroundResource(Resource.Drawable.GreenButton);
-        }
-
-        private async void OnRightButtonClicked(object sender, EventArgs e)
-        {
-            await CollectData(PhoneOrientation.OnRight);
-            topCalibrated = true;
-            rightButton.SetBackgroundResource(Resource.Drawable.GreenButton);
-        }
-
         private void OnCalibrateButtonClicked(object sender, EventArgs e)
         {
             calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
-            Storage.AccelerometerCalibrationMatrix = R * r.Inversed();
-         // calibrateTextView.Text = Storage.AccelerometerCalibrationMatrix.ToString();
+            //Storage.AccelerometerCalibrationMatrix = expectedValues * actualValues.Inversed();
+            calibrateMatrix = calibrateMatrix.Inversed();
+
+            calibrateButton.Text = calibrateMatrix.ToString();
         }
         #endregion
     }
