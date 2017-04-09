@@ -26,11 +26,11 @@ namespace Mirea.Snar2017.Navigate
 {
     class PaintingView : AndroidGameView
     {
-        private (float X, float Y) previous;
+        private (float X, float Y) previousPositionTouch;
         private (float Z, float XY) angle;
-        private (float X, float Y, float Z) move;
+        private (float X, float Y, float Z) position;
         private (int Width, int Height) viewport;
-        private float koefSpeed;
+        private float speedMultiplier;
 
         private List<float> trace = new List<float>();
         private float[] stateVector = new float[8];
@@ -83,11 +83,12 @@ namespace Mirea.Snar2017.Navigate
                     UpdateFrame -= updateCoordinates;
                     return;
                 }
+
                 stateVector = Storage.Data[Storage.CurrentFrame];
 
                 if (first)
                 {
-                    timer.Interval = stateVector[0] / koefSpeed;
+                    timer.Interval = stateVector[0] / speedMultiplier;
                     first = false;
                 }
                 timer.Elapsed += delegate (Object source, ElapsedEventArgs ev)
@@ -95,8 +96,10 @@ namespace Mirea.Snar2017.Navigate
                     first = true;
                     Storage.CurrentFrame++;
                 };
-                stateVector[1] = (float)Math.Acos(stateVector[1]);
-
+                stateVector[1] = 2 * (float)Math.Acos(stateVector[1]);
+                stateVector[2] /= (float)Math.Sin(stateVector[1] / 2);
+                stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
+                stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
             };
             UpdateFrame += updateCoordinates;
 
@@ -137,15 +140,15 @@ namespace Mirea.Snar2017.Navigate
         {
             GL.PushMatrix();
 
-            move.X = stateVector[5];
-            move.Y = stateVector[7];
-            move.Z = stateVector[6];
+            position.X = stateVector[5];
+            position.Y = stateVector[7];
+            position.Z = stateVector[6];
 
-            GL.Translate(move.X, move.Y, move.Z);
-            GL.Rotate(stateVector[1], stateVector[2] + move.X, stateVector[4] + move.Y, stateVector[3] + move.Z);
-            trace.Add(move.X);
-            trace.Add(move.Y);
-            trace.Add(move.Z);
+            GL.Translate(position.X, position.Y, position.Z);
+            GL.Rotate(stateVector[1], stateVector[2] + position.X, stateVector[4] + position.Y, stateVector[3] + position.Z);
+            trace.Add(position.X);
+            trace.Add(position.Y);
+            trace.Add(position.Z);
 
             float[] tr = new float[trace.Count];
             for (int j = 0; j < trace.Count; j++)
@@ -194,8 +197,8 @@ namespace Mirea.Snar2017.Navigate
 
             if (e.Action == MotionEventActions.Down)
             {
-                previous.X = e.GetX();
-                previous.Y = e.GetY();
+                previousPositionTouch.X = e.GetX();
+                previousPositionTouch.Y = e.GetY();
             }
             if (e.Action == MotionEventActions.Move)
             {
@@ -204,12 +207,12 @@ namespace Mirea.Snar2017.Navigate
                     float e_x = e.GetX();
                     float e_y = e.GetY();
 
-                    float xDiff = (previous.X - e_x);
-                    float yDiff = (previous.Y - e_y);
+                    float xDiff = (previousPositionTouch.X - e_x);
+                    float yDiff = (previousPositionTouch.Y - e_y);
                     angle.Z = angle.Z + yDiff;
                     angle.XY = angle.XY + xDiff;
-                    previous.X = e_x;
-                    previous.Y = e_y;
+                    previousPositionTouch.X = e_x;
+                    previousPositionTouch.Y = e_y;
                 }
             }
             if (e.Action == MotionEventActions.Down || e.Action == MotionEventActions.Move)
