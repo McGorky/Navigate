@@ -34,9 +34,9 @@ namespace Mirea.Snar2017.Navigate
             SetContentView(Resource.Layout.FilterSettings);
 
             // TODO: привести в порядок имена в axml
-            betaSeekbar = FindViewById<SeekBar>(Resource.Id.seekBar1);
-            zetaSeekbar = FindViewById<SeekBar>(Resource.Id.seekBar2);
-            gammaSeekbar = FindViewById<SeekBar>(Resource.Id.seekBar3);
+            betaSeekbar = FindViewById<SeekBar>(Resource.Id.BetaSeekBar);
+            zetaSeekbar = FindViewById<SeekBar>(Resource.Id.ZetaSeekBar);
+            gammaSeekbar = FindViewById<SeekBar>(Resource.Id.ExponentialSeekBar);
             betaEditText = FindViewById<EditText>(Resource.Id.MadgwickEditText1);
             zetaEditText = FindViewById<EditText>(Resource.Id.MadgwickEditText2);
             gammaEditText = FindViewById<EditText>(Resource.Id.ExponentialEditText);
@@ -53,56 +53,11 @@ namespace Mirea.Snar2017.Navigate
             // string.Format("{0:F3}", Storage.Beta)
             //           V
             // $"{Storage.Beta:F3}"
-            betaSeekbar.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
-            {
-                if (e.FromUser)
-                {
-                    if (e.Progress == 0)
-                    {
-                        Storage.Beta = 0;
-                        betaEditText.Text = string.Format("0.000");
-                    }
-                    else
-                    {
-                        Storage.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                        betaEditText.Text = string.Format("{0:F3}", Storage.Beta);
-                    }
-                }
-            };
+            betaSeekbar.ProgressChanged += OnBetaProgressChanged;
+            zetaSeekbar.ProgressChanged += OnZetaProgressChanged;
+            gammaSeekbar.ProgressChanged += OnGammaProgressChanged;
 
-            zetaSeekbar.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
-            {
-                if (e.FromUser)
-                {
-                    if (e.Progress == 0)
-                    {
-                        Storage.Zeta = 0;
-                        zetaEditText.Text = string.Format("0.000");
-                    }
-                    else
-                    {
-                        Storage.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                        zetaEditText.Text = string.Format("{0:F3}", Storage.Zeta);
-                    }
-                }
-            };
-
-            gammaSeekbar.ProgressChanged += (object sender, SeekBar.ProgressChangedEventArgs e) =>
-            {
-                if (e.FromUser)
-                {
-                    if (e.Progress == 0)
-                    {
-                        Storage.Gamma = 0;
-                        gammaEditText.Text = string.Format("0.000");
-                    }
-                    else
-                    {
-                        Storage.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                        gammaEditText.Text = string.Format("{0:F3}", Storage.Gamma);
-                    }
-                }
-            };
+            
 
             /* betaEditText.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
             {
@@ -141,6 +96,58 @@ namespace Mirea.Snar2017.Navigate
         #endregion
 
         #region Handlers
+        void OnBetaProgressChanged(object sender, SeekBar.ProgressChangedEventArgs e)
+        {
+            if (e.FromUser)
+            {
+                if (e.Progress == 0)
+                {
+                    Storage.Beta = 0;
+                    betaEditText.Text = string.Format("0.000");
+                }
+                else
+                {
+                    Storage.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    betaEditText.Text = string.Format("{0:F3}", Storage.Beta);
+                }
+            }
+        }
+
+
+        void OnZetaProgressChanged(object sender, SeekBar.ProgressChangedEventArgs e)
+        {
+            if (e.FromUser)
+            {
+                if (e.Progress == 0)
+                {
+                    Storage.Zeta = 0;
+                    zetaEditText.Text = string.Format("0.000");
+                }
+                else
+                {
+                    Storage.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    zetaEditText.Text = string.Format("{0:F3}", Storage.Zeta);
+                }
+            }
+        }
+
+
+        void OnGammaProgressChanged(object sender, SeekBar.ProgressChangedEventArgs e)
+        {
+            if (e.FromUser)
+            {
+                if (e.Progress == 0)
+                {
+                    Storage.Gamma = 0;
+                    gammaEditText.Text = string.Format("0.000");
+                }
+                else
+                {
+                    Storage.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    gammaEditText.Text = string.Format("{0:F3}", Storage.Gamma);
+                }
+            }
+        }
         #endregion
     }
 }  

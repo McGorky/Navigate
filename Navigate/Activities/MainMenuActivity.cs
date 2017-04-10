@@ -46,9 +46,9 @@ namespace Mirea.Snar2017.Navigate
         private Button calibrateMenuButton;
         private Button filterButton;
         private Button logButton;
-        private Button logPlayerButton;
-        private Button playPlotsButton;
+        private Button recordsButton;
 
+        private bool pressed = false;
         private bool backButtonPressed = false;
         #endregion
 
@@ -60,16 +60,14 @@ namespace Mirea.Snar2017.Navigate
             SetContentView(Resource.Layout.MainMenu);
 
             AlertDialog.Builder startAlert = new AlertDialog.Builder(this);
-            // REMARK KK: добавить в values/Strings, использовать через GetString(Resource.String.***)
-            startAlert.SetTitle("Do calibrate?");
-            startAlert.SetPositiveButton("YES", OnCalibrateMenuButtonClicked);
-            startAlert.SetNegativeButton("NO", CancelAction);
+            startAlert.SetTitle(GetString(Resource.String.AlertCalibrateStart));
+            startAlert.SetPositiveButton(GetString(Resource.String.OkAction), OnCalibrateMenuButtonClicked);
+            startAlert.SetNegativeButton(GetString(Resource.String.CancelAction), SaveCancelAction);
 
             calibrateMenuButton = FindViewById<Button>(Resource.Id.CalibrateMenuButton);
             filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
             logButton = FindViewById<Button>(Resource.Id.LogButton);
-            logPlayerButton = FindViewById<Button>(Resource.Id.LogPlayerButton);
-            playPlotsButton = FindViewById<Button>(Resource.Id.PlayPlotsButton);
+            recordsButton = FindViewById<Button>(Resource.Id.RecordsButton);
 
             accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
             gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
@@ -82,11 +80,6 @@ namespace Mirea.Snar2017.Navigate
                 t += 0.05f;
             });
             timer.Change(1000, 50);
-
-
-            plotsSpinner = FindViewById<Spinner>(Resource.Id.PlotsSpinner);
-
-            plotsLayout = FindViewById<LinearLayout>(Resource.Id.PlotsLayout);
             
             accelerometerPlotView.Model = CreatePlotModel("Time", "s", "Accelerometer", "m/s^2");
             gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
@@ -95,8 +88,7 @@ namespace Mirea.Snar2017.Navigate
             calibrateMenuButton.Click += OnCalibrateMenuButtonClicked;
             filterButton.Click += OnFilterButtonClicked;
             logButton.Click += OnLogButtonClicked;
-            logPlayerButton.Click += OnLogPlayerButtonClicked;
-            playPlotsButton.Click += OnPlayPlotsButtonClicked;
+            recordsButton.Click += OnRecordsButtonClicked;
         }
 
         protected override void OnPause()
@@ -305,11 +297,37 @@ namespace Mirea.Snar2017.Navigate
 
         void OnLogButtonClicked(object sender, EventArgs e)
         {
-            //plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 0f);
-            //plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 2f);
-            var intent = new Intent(this, typeof(LogMenuActivity));
-            StartActivity(intent);
-            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+            if(!pressed)
+            {
+                logButton.Text = "Stop Log";
+                pressed = true;
+            }
+            else
+            {
+                logButton.Text = "Start Log";
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.SetTitle("Name");
+                inputEditText = new EditText(this);
+                builder.SetView(inputEditText);
+                inputEditText.Text = "f.txt";
+
+                builder.SetPositiveButton("OK", SaveOkAction);
+                builder.SetNegativeButton("Cancel", SaveCancelAction);
+                builder.Show();
+
+                pressed = false;
+            }
+
+        }
+
+        private void SaveOkAction(object sender, DialogClickEventArgs e)
+        {
+
+        }
+
+        private void SaveCancelAction(object sender, DialogClickEventArgs e)
+        {
+
         }
 
         void OnLogPlayerButtonClicked(object sender, EventArgs e)
@@ -336,22 +354,11 @@ namespace Mirea.Snar2017.Navigate
             OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
         }
 
-        void OnPlayPlotsButtonClicked(object sender, EventArgs e)
+        void OnRecordsButtonClicked(object sender, EventArgs e)
         {
-            // plotsLayout.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, 50, 1f);
-            // plotsSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent, 0f);
-            var intent = new Intent(this, typeof(LogMenuActivity));
+            var intent = new Intent(this, typeof(RecordsMenuActivity));
             StartActivity(intent);
             OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
-        }
-
-        // REMARK KK: привести в порядок имена - <blabla>OkAction
-        private void OkAction(object sender, DialogClickEventArgs e)
-        {
-        }
-
-        private void CancelAction(object sender, DialogClickEventArgs e)
-        {
         }
         #endregion        
     }

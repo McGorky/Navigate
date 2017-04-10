@@ -4,16 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="100">
-    <Spinner
-        android:id="@+id/LogSelectSpinner"
-        android:layout_weight="10"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown" />
     <mirea.snar2017.navigate.PaintingView
         android:id="@+id/LogPaintingView"
-        android:layout_weight="90"
+        android:layout_weight="100"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 </LinearLayout>

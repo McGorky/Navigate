@@ -4,47 +4,6 @@
     android:layout_height="fill_parent"
     android:background="@drawable/DarkRedBackground"
     android:orientation="vertical">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:weightSum="2"
-        android:id="@+id/PlotsLayout"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp"
-        android:layout_weight="0">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="TIMER"
-            android:id="@+id/LogTimer"
-            android:layout_weight="1"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:gravity="center" />
-        <Button
-            android:background="@drawable/Pink"
-            android:id="@+id/PlayStopButton"
-            android:text="Play"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="8dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-    <Spinner
-        android:layout_width="match_parent"
-        android:id="@+id/PlotsSpinner"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown"
-        android:layout_height="wrap_content"
-        android:layout_weight="0" />
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
