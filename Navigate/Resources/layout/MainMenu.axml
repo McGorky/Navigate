@@ -67,37 +67,17 @@
         android:typeface="normal"
         android:textSize="12dp"
         android:textStyle="bold" />
-    <LinearLayout
-        android:orientation="horizontal"
+    <Button
+        android:text="@string/Records"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@drawable/Pink"
+        android:id="@+id/RecordsButton"
         android:layout_weight="1"
-        android:weightSum="2"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp">
-        <Button
-            android:text="@string/LogPlayer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/Pink"
-            android:id="@+id/LogPlayerButton"
-            android:layout_weight="1"
-            android:layout_marginRight="2dp"
-            android:textColor="#FFFFFF"
-            android:typeface="normal"
-            android:textSize="12dp"
-            android:textStyle="bold" />
-        <Button
-            android:text="@string/PlayPlots"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/Pink"
-            android:id="@+id/PlayPlotsButton"
-            android:layout_weight="1"
-            android:layout_marginLeft="2dp"
-            android:textColor="#FFFFFF"
-            android:typeface="normal"
-            android:textSize="12dp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:textColor="#FFFFFF"
+        android:typeface="normal"
+        android:textSize="12dp"
+        android:textStyle="bold" />
 </LinearLayout>

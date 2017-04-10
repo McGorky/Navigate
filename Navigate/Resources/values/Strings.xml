@@ -14,7 +14,10 @@
     <string name="GyroscopeDriftCompensation">Gyroscope Drift Compensation</string>
     <string name="DrawTrajectory">Draw Device Trajectory</string>
     <string name="AccelCalibrationText">Accelerometer Calibration</string>
-    <string name="PlayPlots">Play Plots</string>
+    <string name="Records">Records</string>
     <string name="CollectingData">Collecting data...</string>
     <string name="PressBackToExit">Press back again to exit</string>
+  <string name="AlertCalibrateStart">Do calibrate?</string>
+  <string name="OkAction">OK</string>
+  <string name="CancelAction">Cancel</string>
 </resources>

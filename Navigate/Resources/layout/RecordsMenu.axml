@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:background="@drawable/DarkRedBackground"
+    android:orientation="vertical"
+    android:gravity="center|top"
+    android:weightSum="12">
+    <Spinner
+        android:layout_width="match_parent"
+        android:id="@+id/LogTypeSpinner"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3" />
+    <Spinner
+        android:layout_width="match_parent"
+        android:id="@+id/LogNameSpinner"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:weightSum="4"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <Button
+            android:text="Show plots"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/Pink"
+            android:id="@+id/ShowPlotsButton"
+            android:layout_marginBottom="2dp" />
+        <Button
+            android:text="Show 3D"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/Pink"
+            android:id="@+id/Show3DButton"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <TextView
+            android:text="@string/DrawTrajectory"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/DrawTrajectoryTextView"
+            android:layout_weight="1.7" />
+        <Switch
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:id="@+id/DrawTrajectorySwitch"
+            android:layout_weight="0.3"
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch" />
+    </LinearLayout>
+</LinearLayout>
