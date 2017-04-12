@@ -41,14 +41,14 @@ namespace Mirea.Snar2017.Navigate
         private PlotView magnetometerPlotView;
         private LinearLayout plotsLayout;
         private Spinner plotsSpinner;
-        private EditText inputEditText;
+        private EditText saveLogInputEditText;
 
         private Button calibrateMenuButton;
         private Button filterButton;
         private Button logButton;
         private Button recordsButton;
 
-        private bool pressed = false;
+        private bool isLogging = false;
         private bool backButtonPressed = false;
         #endregion
 
@@ -59,7 +59,7 @@ namespace Mirea.Snar2017.Navigate
             
             SetContentView(Resource.Layout.MainMenu);
 
-            AlertDialog.Builder startAlert = new AlertDialog.Builder(this);
+            var startAlert = new AlertDialog.Builder(this);
             startAlert.SetTitle(GetString(Resource.String.AlertCalibrateStart));
             startAlert.SetPositiveButton(GetString(Resource.String.OkAction), OnCalibrateMenuButtonClicked);
             startAlert.SetNegativeButton(GetString(Resource.String.CancelAction), SaveCancelAction);
@@ -79,7 +79,7 @@ namespace Mirea.Snar2017.Navigate
                 UpdatePlot(accelerometerPlotView, new float[] { random.Next(10) - 5, random.Next(10) - 5, random.Next(10) - 5 }, t);
                 t += 0.05f;
             });
-            timer.Change(1000, 50);
+            timer.Change(2000, 50);
             
             accelerometerPlotView.Model = CreatePlotModel("Time", "s", "Accelerometer", "m/s^2");
             gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
@@ -204,82 +204,6 @@ namespace Mirea.Snar2017.Navigate
             return plotModel;
         }
 
-        private void Compile(string fileName)
-        {
-            string[] text;
-            DateTime startTime;
-            var calibrationMatrix = new Matrix(4, 4);
-            using (var sr = new StreamReader(Storage.Filename))
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    var s = sr.ReadLine().Split(new char[] { ',' });
-                    for (int j = 0; j < 4; j++)
-                    {
-                        calibrationMatrix[i, j] = float.Parse(s[j], CultureInfo.InvariantCulture);
-                    }
-                }
-                startTime = DateTime.Parse(sr.ReadLine(), CultureInfo.InvariantCulture);
-                var tmp = sr.ReadToEnd();
-                text = tmp.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            }
-            using (var sw = new StreamWriter(File.Open(System.IO.Path.Combine(Storage.Path, fileName), FileMode.Create, FileAccess.Write)))
-            {
-                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-                Quaternion a = (0, 0, 0, 0.01f);
-                Quaternion g = (0, 0, 0, 0.01f);
-                Quaternion m = (0, 0, 0, 0.01f);
-                Quaternion q = (1, 0, 0, 0);
-                Quaternion startRotation = (1, 0, 0, 0);
-                Quaternion aLinear;
-                float dt;
-                float tPrev = float.Parse(text[0].Split(new char[] { ',' })[0], CultureInfo.InvariantCulture);
-                float beta = 0.9f;
-                bool calibrated = false;
-
-                var acceleration = new float[3];
-                var velocity = new float[3];
-                var offset = new float[3];
-
-                for (int i = 1; i < text.Length; i++)
-                {
-                    var s = text[i].Split(new char[] { ',' });
-                    var data = new float[13];
-                    for (int j = 0; j < 13; j++)
-                    {
-                        data[j] = float.Parse(s[j], CultureInfo.InvariantCulture);
-                    }
-                    dt = (data[0] - tPrev) * 0.001f;
-                    tPrev = data[0];
-                    // FIXME: данные должны нормироваться
-                    a = (0, data[1], data[2], data[3]);
-                    a = Filter.Calibrate(calibrationMatrix, a);
-                    g = (0, data[4], data[5], data[6]);
-                    m = new Quaternion(0, data[7], data[8], data[9]) * 0.001f;
-
-                    if (!calibrated && data[0] > 9000)
-                    {
-                        beta = Storage.Beta;
-                        startRotation = q;
-                        calibrated = true;
-                        sw.WriteLine($"{text.Length - i}");
-                    }
-                    q = Filter.Madgvic(q, g, a, m, beta, Storage.Zeta, dt);
-                    if (calibrated)
-                    {
-                        var localRotation = Quaternion.CalculateDifference(startRotation, q);
-                        aLinear = (0, data[10], data[11], data[12]);
-                        var aGlobal = localRotation * aLinear * localRotation.Conjugated();
-                        var accelerationCurrent = Filter.Exponential(acceleration, new float[] { aGlobal.X, aGlobal.Y, aGlobal.Z }, Storage.Gamma);
-                        var velocityCurrent = Filter.Integrate(acceleration, accelerationCurrent, Storage.Velocity, dt);
-                        offset = Filter.Integrate(velocity, velocityCurrent, offset, dt);
-                        sw.WriteLine($"{dt * 1000},{q.ToString()},{offset[0]},{offset[1]},{offset[2]}");
-                        //sw.WriteLine($"{dt * 1000},{q.ToString()},{0},{0},{0}");
-                    }
-                }
-            }
-        }
-
         #region Handlers
         void OnCalibrateMenuButtonClicked(object sender, EventArgs e)
         {
@@ -297,32 +221,34 @@ namespace Mirea.Snar2017.Navigate
 
         void OnLogButtonClicked(object sender, EventArgs e)
         {
-            if(!pressed)
+            if(!isLogging)
             {
-                logButton.Text = "Stop Log";
-                pressed = true;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                var builder = new AlertDialog.Builder(this);
+                builder.SetTitle("Set log name");
+                saveLogInputEditText = new EditText(this);
+                builder.SetView(saveLogInputEditText);
+                saveLogInputEditText.Text = DateTime.Now.ToString("dd.MM.yyyy-HH:mm:ss");
+                builder.SetPositiveButton(GetString(Resource.String.OkAction), SaveOkAction);
+                builder.SetNegativeButton(GetString(Resource.String.CancelAction), SaveCancelAction);
+                builder.Show();
             }
             else
             {
-                logButton.Text = "Start Log";
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.SetTitle("Name");
-                inputEditText = new EditText(this);
-                builder.SetView(inputEditText);
-                inputEditText.Text = "f.txt";
-
-                builder.SetPositiveButton("OK", SaveOkAction);
-                builder.SetNegativeButton("Cancel", SaveCancelAction);
-                builder.Show();
-
-                pressed = false;
+                StopService(new Intent(this, typeof(SensorsDataService)));
+                logButton.Text = GetString(Resource.String.StartLog);
+                isLogging = false;
+                Toast.MakeText(this, $"{Storage.CurrentRawFile} saved", ToastLength.Short).Show();
             }
 
         }
 
         private void SaveOkAction(object sender, DialogClickEventArgs e)
         {
-
+            Storage.Filename = saveLogInputEditText.Text + ".txt";
+            logButton.Text = GetString(Resource.String.StopLog);
+            isLogging = true;
+            StartService(new Intent(this, typeof(SensorsDataService)));
         }
 
         private void SaveCancelAction(object sender, DialogClickEventArgs e)

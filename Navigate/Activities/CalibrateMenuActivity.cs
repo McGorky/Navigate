@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -196,22 +197,25 @@ namespace Mirea.Snar2017.Navigate
         #region Handlers
         private void OnAnySideButtonClicked(object sender, EventArgs e)
         {
-            var handlers = AllSamplesCollected?.GetInvocationList();
-            if (handlers != null)
-            {
-                foreach (var h in handlers)
-                {
-                    AllSamplesCollected -= h as Action;
-                }
-            }
-            handlers = MediansCalculated?.GetInvocationList();
-            if (handlers != null)
-            {
-                foreach (var h in handlers)
-                {
-                    MediansCalculated -= h as Action;
-                }
-            }
+            AllSamplesCollected?.GetInvocationList().ToList().ForEach(d => AllSamplesCollected -= d as Action);
+            MediansCalculated?.GetInvocationList().ToList().ForEach(d => MediansCalculated -= d as Action);
+
+            //var handlers = AllSamplesCollected?.GetInvocationList();
+            //if (handlers != null)
+            //{
+            //    foreach (var h in handlers)
+            //    {
+            //        AllSamplesCollected -= h as Action;
+            //    }
+            //}
+            //handlers = MediansCalculated?.GetInvocationList();
+            //if (handlers != null)
+            //{
+            //    foreach (var h in handlers)
+            //    {
+            //        MediansCalculated -= h as Action;
+            //    }
+            //}
 
             var button = sender as Button;
             PhoneOrientation orientation;

@@ -30,7 +30,8 @@ namespace Mirea.Snar2017.Navigate
         private (float Z, float XY) angle;
         private (float X, float Y, float Z) position;
         private (int Width, int Height) viewport;
-        private float speedMultiplier = 1;
+
+        private float speedMultiplier = 1.0f;
 
         private List<float> trace = new List<float>();
         private float[] stateVector = new float[8];
@@ -74,6 +75,7 @@ namespace Mirea.Snar2017.Navigate
             GL.CullFace(All.Back);
             GL.Hint(All.PerspectiveCorrectionHint, All.Nicest);
 
+            Storage.CurrentFrame = 0;
             stateVectorChangeTimer.Elapsed += UpdateCoordinates;
             UpdateCoordinates(null, null);
 
@@ -90,20 +92,20 @@ namespace Mirea.Snar2017.Navigate
         {
             if (Storage.CurrentFrame == Storage.NumberOfFrames)
             {
+                Toast.MakeText(Context, "finished", ToastLength.Long).Show();
                 stateVectorChangeTimer.Elapsed -= UpdateCoordinates;
                 return;
             }
             stateVector = Storage.Data[Storage.CurrentFrame];
 
-            stateVectorChangeTimer.Interval = stateVector[0] / speedMultiplier;
-            stateVectorChangeTimer.Enabled = true;
-
-            stateVector[1] = 2 * (float)Math.Acos(stateVector[1]);
+            stateVector[1] = 2 * (float)(Math.Acos(stateVector[1]) * 180 / Math.PI);
             stateVector[2] /= (float)Math.Sin(stateVector[1] / 2);
             stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
             stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
-
             Storage.CurrentFrame++;
+
+            stateVectorChangeTimer.Interval = stateVector[0] / speedMultiplier;
+            stateVectorChangeTimer.Enabled = true;
         }
 
         public void SetupCamera()

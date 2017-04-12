@@ -15,7 +15,7 @@
         <item name="android:shadowRadius" >3</item>
     </style>
 
-    <style name="DarkRedAndPink" parent="android:Theme.Black.NoTitleBar">
+    <style name="DarkRedAndPink" parent="android:Theme.Holo.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowBackground">@color/Primary</item>
         <item name="android:navigationBarColor">@color/Secondary</item>

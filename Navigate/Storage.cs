@@ -24,13 +24,15 @@ namespace Mirea.Snar2017.Navigate
             public static int SenorsData = 812563123;
         }
 
-        public static object DataAccessSync { get; } = new object();
+        public static object DataAccessSync { get; set; } = new object();
 
         #region LogPlayer data
         // UNDONE: разобраться
         public static int CurrentFrame = 0;
         public static int NumberOfFrames = 0;
         public static float[][] Data = null;
+
+        public static bool TrajectoryTracingEnabled { get; set; } = true;
         #endregion
 
         #region Raw data
@@ -73,6 +75,7 @@ namespace Mirea.Snar2017.Navigate
 
         #region Filter parameters
         public static Matrix AccelerometerCalibrationMatrix { get; set; } = new Matrix(4, 4, MatrixInitializationValue.Identity);
+        public static float[] GyroscopeCalibrationVector { get; set; } = new float[3];
 
         public static Quaternion StartRotation { get; set; } = (1, 0, 0, 0);
 
@@ -80,21 +83,23 @@ namespace Mirea.Snar2017.Navigate
         public static float Zeta { get; set; } = 0.1f;
         public static float Gamma { get; set; } = 0.7f;
 
-        public static bool MagnetometerEnabled { get; set; }
-        public static bool GyroscopeDriftCompensationEnabled { get; set; }
-        public static bool AccelerometerCalibrationEnabled { get; set; }
-        public static bool TrajectoryTracingEnabled { get; set; }
+        public static bool MagnetometerEnabled { get; set; } = true;
+        public static bool GyroscopeDriftCompensationEnabled { get; set; } = true;
+        public static bool AccelerometerCalibrationEnabled { get; set; } = true;
+        public static bool GyroscopeCalibrationEnabled { get; set; } = true;
 
         public static TimeSpan Uptime { get; set; } = new TimeSpan();
         public static DateTime StartTime { get; set; }
         #endregion
 
         #region File parameters
-        public static string Path { get; set; } = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);//(string)Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments);//(string)Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments); 
-        // TODO: название не должно содержать полный путь
-        public static string Filename { get; set; } = System.IO.Path.Combine(Path, "data.txt");
-        // UNDONE: название файла
-        public static string CurrentFile = System.IO.Path.Combine(Path, "f.txt");
+        //public static string ApllicationDataFolder { get; set; } = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+        public static string ApllicationDataFolder { get; set; } = Path.Combine((string)Android.OS.Environment.ExternalStorageDirectory, "Navigate");
+        public static string Filename { get; set; }// = "data.txt";
+        public static string RawFolderName { get; } = Path.Combine(ApllicationDataFolder, "raw");
+        public static string FilteredFolderName { get; } = Path.Combine(ApllicationDataFolder, "filtered");
+        public static string CurrentRawFile { get => Path.Combine(RawFolderName, Filename); }
+        public static string CurrentFilteredFile { get => Path.Combine(FilteredFolderName, Filename); }
         #endregion
     }
 }

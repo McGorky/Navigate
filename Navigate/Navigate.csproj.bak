@@ -119,6 +119,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\RecordsMenuActivity.cs" />
     <Compile Include="Activities\LogMenuActivity.cs" />
     <Compile Include="Activities\FilterSettingsActivity.cs" />
     <Compile Include="Activities\LogPlayerActivity.cs" />
@@ -151,6 +152,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\LogMenu.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\RecordsMenu.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

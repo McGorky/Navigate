@@ -1,56 +1,55 @@
-﻿using System;
+﻿using Android.App;
+using Android.Content;
+using Android.Hardware;
+using Android.OS;
+using System;
+using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Timers;
-using System.IO;
-using System.Globalization;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Util;
-using Android.Hardware;
-using Android.Widget;
-using Android.Runtime;
 
 namespace Mirea.Snar2017.Navigate
 {
     [Service]
     public class SensorsDataService : Service, ISensorEventListener
     {
-        // REFACTOR: привести в порядок поля
         private SensorManager sensorManager;
-        private Timer timer = new Timer();
-        private Timer starter = new Timer();
+        private Timer dataWriteTimer = new Timer();
+        private Timer startTimer = new Timer();
         StreamWriter streamWriter;
+        FileStream fileStream;
         StringBuilder builder = new StringBuilder();
-        bool record = false;
-        DateTime st;
+        bool isRecording = false;
+        DateTime startTime;
+
         public override void OnCreate()
         {
             base.OnCreate();
             StartForeground(Storage.ForegroundServiceId.SenorsData, new Notification());
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-            //File.SetAttributes(Storage.Filename, FileAttributes.Normal);
-            streamWriter = new StreamWriter(Storage.Filename, false);
-            starter.Elapsed += (o, e) =>
-            {
-                record = true;
-                timer.Interval = 20;
-                streamWriter.WriteLine(Storage.AccelerometerCalibrationMatrix.ToString());
-                st = DateTime.Now;
-                streamWriter.WriteLine(st.ToString());
-                timer.Enabled = true;
-            };
-            starter.Interval = 500;
-            starter.Enabled = true;
-            starter.AutoReset = false;
 
-            timer.Elapsed += (o, e) =>
+            Directory.CreateDirectory(Storage.RawFolderName);
+            fileStream = new FileStream(Storage.CurrentRawFile, FileMode.OpenOrCreate, FileAccess.Write);
+            streamWriter = new StreamWriter(fileStream); 
+            startTimer.Elapsed += (o, e) =>
+            {
+                streamWriter.WriteLine(Storage.AccelerometerCalibrationMatrix.ToString());
+                startTime = DateTime.Now;
+                streamWriter.WriteLine(startTime.ToString());
+                isRecording = true;
+                dataWriteTimer.Interval = 20;
+                dataWriteTimer.Enabled = true;
+            };
+            startTimer.Interval = 500;
+            startTimer.Enabled = true;
+            startTimer.AutoReset = false;
+
+            dataWriteTimer.Elapsed += (o, e) =>
             {
                 lock (Storage.DataAccessSync)
                 {
-                    builder.Append($"{DateTime.Now.Subtract(st).TotalMilliseconds.ToString()},");
+                    builder.Append($"{DateTime.Now.Subtract(startTime).TotalMilliseconds.ToString()},");
                     for (int i = 0; i < 3; i++)
                         builder.Append($"{Storage.AccelerometerData[i]},");
                     for (int i = 0; i < 3; i++)
@@ -63,7 +62,7 @@ namespace Mirea.Snar2017.Navigate
                     builder.Clear();
                 }
             };
-            timer.Enabled = false;
+            dataWriteTimer.Enabled = false;
 
             Storage.StartTime = DateTime.Now;
             sensorManager = (SensorManager)GetSystemService(Context.SensorService);
@@ -98,11 +97,13 @@ namespace Mirea.Snar2017.Navigate
         public override void OnDestroy()
         {
             sensorManager.UnregisterListener(this);
+            streamWriter.Close();
             streamWriter.Dispose();
+            fileStream.Close();
+            fileStream.Dispose();
             StopForeground(true);
             base.OnDestroy();
         }
-
 
         public void OnAccuracyChanged(Sensor sensor, SensorStatus accuracy)
         {
@@ -110,7 +111,7 @@ namespace Mirea.Snar2017.Navigate
 
         public void OnSensorChanged(SensorEvent e)
         {
-            if (record)
+            if (isRecording)
             {
                 Storage.Uptime = DateTime.Now.Subtract(Storage.StartTime);
                 switch (e.Sensor.Type)

@@ -36,7 +36,6 @@
             android:inputType="numberDecimal|numberSigned"
             android:layout_height="match_parent"
             android:id="@+id/MadgwickEditText1"
-            android:background="@color/White"
             android:layout_weight="0.3"
             android:layout_width="100dp"
             android:layout_marginLeft="7.0dp" />
@@ -72,7 +71,6 @@
             android:layout_height="match_parent"
             android:id="@+id/MadgwickEditText2"
             android:layout_weight="0.3"
-            android:background="@color/White"
             android:layout_marginLeft="7dp" />
     </LinearLayout>
     <TextView
@@ -106,7 +104,6 @@
             android:layout_height="match_parent"
             android:id="@+id/ExponentialEditText"
             android:layout_weight="0.3"
-            android:background="@color/White"
             android:layout_marginLeft="7dp" />
     </LinearLayout>
     <LinearLayout
@@ -122,14 +119,16 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:id="@+id/MagnetTextView"
+            android:id="@+id/MagnetometerTextView"
             android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
             android:layout_height="50dp"
-            android:id="@+id/MagnSwitch"
+            android:id="@+id/MagnetometerSwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch" />
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:textOff="@string/SwitchTextOff"
+            android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -144,14 +143,16 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/GyrodriftTextView"
+            android:id="@+id/GyroscopeDriftCompensationTextView"
             android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
             android:layout_height="50dp"
-            android:id="@+id/GyrodriftSwitch"
+            android:id="@+id/GyroscopeDriftCompensationSwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch" />
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:textOff="@string/SwitchTextOff"
+            android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -162,17 +163,43 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <TextView
-            android:text="@string/AccelCalibrationText"
+            android:text="@string/AccelerometerCalibrationText"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/AccelCalibrationTextView"
+            android:id="@+id/AccelerometerCalibrationTextView"
             android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
             android:layout_height="50dp"
-            android:id="@+id/AccelCalibrationSwitch"
+            android:id="@+id/AccelerometerCalibrationSwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch" />
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:textOff="@string/SwitchTextOff"
+            android:textOn="@string/SwitchTextOn" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:weightSum="2"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp">
+        <TextView
+            android:text="@string/GyroscopeCalibrationText"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/GyroscopeCalibrationTextView"
+            android:layout_weight="1.7" />
+        <Switch
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:id="@+id/GyroscopeCalibrationSwitch"
+            android:layout_weight="0.3"
+            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:textOff="@string/SwitchTextOff"
+            android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
 </LinearLayout>

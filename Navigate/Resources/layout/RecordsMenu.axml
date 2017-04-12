@@ -63,9 +63,10 @@
             android:layout_weight="1.7" />
         <Switch
             android:layout_width="180dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:id="@+id/DrawTrajectorySwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch" />
+            android:textOff="@string/SwitchTextOff"
+            android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
 </LinearLayout>
