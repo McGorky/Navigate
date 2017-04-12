@@ -16,6 +16,17 @@ namespace Mirea.Snar2017.Navigate
             return result;
         }
 
+        public static Quaternion Exponential(Quaternion previous, Quaternion current, float k)
+        {
+            var result = new Quaternion();
+            for (int i = 1; i <= 4; i++)
+            {
+                result[i] = k * current[i] + (1 - k) * previous[i];
+            }
+
+            return result;
+        }
+
         public static Quaternion Calibrate(Matrix calibrationMatrix, Quaternion notCalibratedData)
         {
             var notCalibratedMatrix = new Matrix(4, 1);

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Globalization;
+using System.Collections.Generic;
 
 //using Xamarin.Forms;
 
@@ -15,7 +16,8 @@ using Android.Views.Animations;
 using Android.Widget;
 using Android.OS;
 using Android.Text;
-using System.Collections.Generic;
+using Android.Media;
+
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -144,6 +146,7 @@ namespace Mirea.Snar2017.Navigate
                 Quaternion g = (0, 0, 0, 0.01f);
                 Quaternion m = (0, 0, 0, 0.01f);
                 Quaternion q = (1, 0, 0, 0);
+                Quaternion qPrev = (1, 0, 0, 0);
                 Quaternion startRotation = (1, 0, 0, 0);
                 Quaternion aLinear;
                 float dt;
@@ -154,9 +157,7 @@ namespace Mirea.Snar2017.Navigate
                 var acceleration = new float[3];
                 var velocity = new float[3];
                 var offset = new float[3];
-
-                sw.WriteLine($"{text.Length - 15}");
-
+                
                 for (int i = 1; i < text.Length; i++)
                 {
                     var s = text[i].Split(new char[] { ',' });
@@ -170,14 +171,21 @@ namespace Mirea.Snar2017.Navigate
                     tPrev = data[0];
 
                     a = new Quaternion(0, data[1], data[2], data[3]);
-                    a = Filter.Calibrate(calibrationMatrix, a).Normalized();
-                    g = new Quaternion(0, data[4], data[5], data[6]).Normalized();
-                    m = (new Quaternion(0, data[7], data[8], data[9]) * 0.001f).Normalized();
+                    a = Filter.Calibrate(calibrationMatrix, a);
+                    g = new Quaternion(0, data[4], data[5], data[6]);
+                    m = (new Quaternion(0, data[7], data[8], data[9]) * 0.001f);
 
-                    if (!converged && data[0] > 9000)
+                    if (!converged && data[0] > 2000)
                     {
+                        startRotation = q;
                         beta = Storage.Beta;
                         converged = true;
+
+                        acceleration = new float[3];
+                        velocity = new float[3];
+                        offset = new float[3];
+
+                        sw.WriteLine($"{text.Length - i}");
                     }
                     q = Filter.Madgvic(q, g, a, m, beta, Storage.Zeta, dt);
 
@@ -186,10 +194,13 @@ namespace Mirea.Snar2017.Navigate
                     var aGlobal = localRotation * aLinear * localRotation.Conjugated();
 
                     var accelerationCurrent = Filter.Exponential(acceleration, new float[] { aGlobal.X, aGlobal.Y, aGlobal.Z }, Storage.Gamma);
-                    var velocityCurrent = Filter.Integrate(acceleration, accelerationCurrent, Storage.Velocity, dt);
+                    var velocityCurrent = Filter.Integrate(acceleration, accelerationCurrent, velocity, dt);
                     offset = Filter.Integrate(velocity, velocityCurrent, offset, dt);
 
-                    if (i > 10)
+                    acceleration = accelerationCurrent;
+                    velocity = velocityCurrent;
+
+                    if (converged)
                     {
                         sw.WriteLine($"{(int)Math.Round(dt * 1000, MidpointRounding.AwayFromZero)},{q.ToString()},{offset[0]},{offset[1]},{offset[2]}");
                     }
@@ -215,6 +226,8 @@ namespace Mirea.Snar2017.Navigate
                     }
                 }
             }
+
+            MediaScannerConnection.ScanFile(this, new string[] { Storage.FilteredFolderName }, null, null);
         }
 
         #region Handlers

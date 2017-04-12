@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
-using System.Timers;
+using System.Threading;
 
 using Android.App;
 using Android.Content;
@@ -30,6 +30,7 @@ namespace Mirea.Snar2017.Navigate
         private (float Z, float XY) angle;
         private (float X, float Y, float Z) position;
         private (int Width, int Height) viewport;
+        private int activePointerId = -1;
 
         private float speedMultiplier = 1.0f;
 
@@ -39,7 +40,7 @@ namespace Mirea.Snar2017.Navigate
         private ScaleGestureDetector scaleDetector;
         private static float scaleFactor = 1.0f;
 
-        private Timer stateVectorChangeTimer = new Timer();
+        private Timer starter;
 
         #region Constructors
         public PaintingView(Context context, IAttributeSet attrs) :
@@ -57,11 +58,17 @@ namespace Mirea.Snar2017.Navigate
         private void Initialize()
         {
             scaleDetector = new ScaleGestureDetector(Context, new ScaleListener());
-            stateVectorChangeTimer.AutoReset = false;
+            //stateVectorChangeTimer.AutoReset = false;
             angle.Z = 0;
             angle.XY = 0;
         }
         #endregion
+
+        protected override void OnClosed(EventArgs e)
+        {
+            Storage.CurrentFrame = 0;
+            base.OnClosed(e);
+        }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -76,8 +83,9 @@ namespace Mirea.Snar2017.Navigate
             GL.Hint(All.PerspectiveCorrectionHint, All.Nicest);
 
             Storage.CurrentFrame = 0;
-            stateVectorChangeTimer.Elapsed += UpdateCoordinates;
-            UpdateCoordinates(null, null);
+            starter = new Timer(UpdateCoordinates);
+
+            UpdateCoordinates(null);
 
             RenderFrame += delegate
             {
@@ -88,12 +96,12 @@ namespace Mirea.Snar2017.Navigate
             Run(60);
         }
 
-        private void UpdateCoordinates(object sender, ElapsedEventArgs e)
+        private void UpdateCoordinates(object sender)
         {
             if (Storage.CurrentFrame == Storage.NumberOfFrames)
             {
                 Toast.MakeText(Context, "finished", ToastLength.Long).Show();
-                stateVectorChangeTimer.Elapsed -= UpdateCoordinates;
+                starter.Change(Timeout.Infinite, Timeout.Infinite);
                 return;
             }
             stateVector = Storage.Data[Storage.CurrentFrame];
@@ -102,13 +110,17 @@ namespace Mirea.Snar2017.Navigate
             stateVector[2] /= (float)Math.Sin(stateVector[1] / 2);
             stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
             stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
+
+            position.X = stateVector[5];
+            position.Y = stateVector[7];
+            position.Z = stateVector[6];
+
             Storage.CurrentFrame++;
 
-            stateVectorChangeTimer.Interval = stateVector[0] / speedMultiplier;
-            stateVectorChangeTimer.Enabled = true;
+            starter.Change((int)stateVector[0], Timeout.Infinite);
         }
 
-        public void SetupCamera()
+         public void SetupCamera()
         {
             viewport.Width = Width;
             viewport.Height = Height;
@@ -122,23 +134,20 @@ namespace Mirea.Snar2017.Navigate
 
             GL.MatrixMode(All.Modelview);
             //Matrix4 m = Matrix4.LookAt(0, 0, 0, -1, -1, -1, 0, 1, 0);
-            Matrix4 m = Matrix4.LookAt(1, 1, 1, 0, 0, 0, 0, 1, 0);
+            Matrix4 m = Matrix4.LookAt(position.X + 1, position.Y + 1, position.Z + 1, 0, 0, 0, 0, 1, 0);
             GL.LoadIdentity();
             GL.LoadMatrix(ConvertMatrix4(m));
 
-            GL.Scale(0.1f, 0.1f, 0.1f);
-            GL.Rotate(-angle.XY / 10, 0, 1, 0);
-            GL.Rotate(-angle.Z / 10, 1, 0, -1);
+            GL.Scale(10f, 10f, 10f);
+            GL.Rotate(-angle.XY / 10, 1, 0, -1);
+            GL.Rotate(-angle.Z / 10, 0, 1, 0);
+            
             GL.Scale(scaleFactor, scaleFactor, scaleFactor);
-        }
+}
 
         public void RenderCube()
         {
             GL.PushMatrix();
-
-            position.X = stateVector[5];
-            position.Y = stateVector[7];
-            position.Z = stateVector[6];
 
             GL.Translate(position.X, position.Y, position.Z);
             GL.Rotate(stateVector[1], stateVector[2] + position.X, stateVector[4] + position.Y, stateVector[3] + position.Z);
@@ -190,29 +199,53 @@ namespace Mirea.Snar2017.Navigate
         public override bool OnTouchEvent(MotionEvent e)
         {
             scaleDetector.OnTouchEvent(e);
+            int pointerIndex;
 
-            if (e.Action == MotionEventActions.Down)
+            switch (e.Action & MotionEventActions.Mask)
             {
+                case MotionEventActions.Down:
                 previousPositionTouch.X = e.GetX();
                 previousPositionTouch.Y = e.GetY();
-            }
-            if (e.Action == MotionEventActions.Move)
-            {
+                activePointerId = e.GetPointerId(0);
+                break;
+
+                case MotionEventActions.Move:
+                pointerIndex = e.FindPointerIndex(activePointerId);
+                float e_x = e.GetX();
+                float e_y = e.GetY();
                 if (!scaleDetector.IsInProgress)
                 {
-                    float e_x = e.GetX();
-                    float e_y = e.GetY();
 
                     float xDiff = (previousPositionTouch.X - e_x);
                     float yDiff = (previousPositionTouch.Y - e_y);
-                    angle.Z = angle.Z + yDiff;
-                    angle.XY = angle.XY + xDiff;
-                    previousPositionTouch.X = e_x;
-                    previousPositionTouch.Y = e_y;
+                    angle.XY += yDiff;
+                    if (angle.XY > 3600) angle.XY -= 3600;
+                    if (angle.XY < -3600) angle.XY += 3600;
+                    if ((angle.XY > 1100 && angle.XY < 2900) || (angle.XY < -1100 && angle.XY > -2900))
+                        angle.Z -= xDiff;
+                    else
+                        angle.Z += xDiff;
                 }
+                previousPositionTouch.X = e_x;
+                previousPositionTouch.Y = e_y;
+                break;
+
+                case MotionEventActions.Cancel:
+                activePointerId = -1;
+                break;
+
+                case MotionEventActions.PointerUp:
+                pointerIndex = (int)(e.Action & MotionEventActions.PointerIndexMask) >> (int)MotionEventActions.PointerIndexShift;
+                int pointerId = e.GetPointerId(pointerIndex);
+                if (pointerId == activePointerId)
+                {
+                    int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    previousPositionTouch.X = e.GetX(newPointerIndex);
+                    previousPositionTouch.Y = e.GetY(newPointerIndex);
+                    activePointerId = e.GetPointerId(newPointerIndex);
+                }
+                break;
             }
-            if (e.Action == MotionEventActions.Down || e.Action == MotionEventActions.Move)
-                RenderCube();
             return true;
         }
         #endregion
@@ -246,22 +279,22 @@ namespace Mirea.Snar2017.Navigate
 
         #region Arrays for OpenGl
         float[] cube = {
-            -3f, 0.2f, 1f, // vertex[0]
-			3f, 0.2f, 1f, // vertex[1]
-			3f, -0.2f, 1f, // vertex[2]
-			-3f, -0.2f, 1f, // vertex[3]
-			-3f, 0.2f, -1f, // vertex[4]
-			3f, 0.2f, -1f, // vertex[5]
-			3f, -0.2f, -1f, // vertex[6]
-			-3f, -0.2f, -1f, // vertex[7]
+            -0.03f, 0.002f, 0.01f, // vertex[0]
+			0.03f, 0.002f, 0.01f, // vertex[1]
+			0.03f, -0.002f,0.01f, // vertex[2]
+			-0.03f, -0.002f, 0.01f, // vertex[3]
+			-0.03f, 0.002f, -0.01f, // vertex[4]
+			0.03f, 0.002f, -0.01f, // vertex[5]
+			0.03f, -0.002f, -0.01f, // vertex[6]
+			-0.03f, -0.002f, -0.01f, // vertex[7]
 		};
         float[] line = {
-            0, 10000, 0,
-            0, -10000, 0,
-            10000, 0, 0,
-            -10000, 0, 0,
-            0, 0, 10000,
-            0, 0, -10000,
+            0, 100, 0,
+            0, -100, 0,
+            100, 0, 0,
+            -100, 0, 0,
+            0, 0, 100,
+            0, 0, -100,
         };
         float[] lineColor = {
             0, 0, 1, 0,

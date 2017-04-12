@@ -1,12 +1,14 @@
-﻿using Android.App;
-using Android.Content;
-using Android.Hardware;
-using Android.OS;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Timers;
+
+using Android.App;
+using Android.Content;
+using Android.Hardware;
+using Android.OS;
+using Android.Media;
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -101,6 +103,7 @@ namespace Mirea.Snar2017.Navigate
             streamWriter.Dispose();
             fileStream.Close();
             fileStream.Dispose();
+            MediaScannerConnection.ScanFile(this, new string[] { Storage.RawFolderName }, null, null);
             StopForeground(true);
             base.OnDestroy();
         }
