@@ -32,8 +32,6 @@ namespace Mirea.Snar2017.Navigate
         private (int Width, int Height) viewport;
         private int activePointerId = -1;
 
-        private float speedMultiplier = 1.0f;
-
         private List<float> trace = new List<float>();
         private float[] stateVector = new float[8];
 
@@ -41,6 +39,12 @@ namespace Mirea.Snar2017.Navigate
         private static float scaleFactor = 1.0f;
 
         private Timer starter;
+
+        public float SpeedMultiplier { get; set; } = 1.0f;
+        public bool DrawTrajectory { get; set; } = true;
+        public bool IsPlaying { get; set; } = false;
+        public event Action CoordinatesUpdated;
+        public event Action Finished;
 
         #region Constructors
         public PaintingView(Context context, IAttributeSet attrs) :
@@ -84,7 +88,6 @@ namespace Mirea.Snar2017.Navigate
 
             Storage.CurrentFrame = 0;
             starter = new Timer(UpdateCoordinates);
-
             UpdateCoordinates(null);
 
             RenderFrame += delegate
@@ -98,12 +101,21 @@ namespace Mirea.Snar2017.Navigate
 
         private void UpdateCoordinates(object sender)
         {
+            if (!IsPlaying)
+            {
+                starter.Change((int)(Math.Round(stateVector[0] / SpeedMultiplier, MidpointRounding.AwayFromZero)), Timeout.Infinite);
+                return;
+            }
+
+            Storage.CurrentFrame++;
             if (Storage.CurrentFrame == Storage.NumberOfFrames)
             {
-                Toast.MakeText(Context, "finished", ToastLength.Long).Show();
+                //Toast.MakeText(Context, "finished", ToastLength.Long).Show();
+                Finished();
                 starter.Change(Timeout.Infinite, Timeout.Infinite);
                 return;
             }
+            CoordinatesUpdated();
             stateVector = Storage.Data[Storage.CurrentFrame];
 
             stateVector[1] = 2 * (float)(Math.Acos(stateVector[1]) * 180 / Math.PI);
@@ -111,16 +123,17 @@ namespace Mirea.Snar2017.Navigate
             stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
             stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
 
-            position.X = stateVector[5];
-            position.Y = stateVector[7];
-            position.Z = stateVector[6];
+            if (DrawTrajectory)
+            {
+                position.X = stateVector[5];
+                position.Y = stateVector[7];
+                position.Z = stateVector[6];
+            }
 
-            Storage.CurrentFrame++;
-
-            starter.Change((int)stateVector[0], Timeout.Infinite);
+            starter.Change((int)(Math.Round(stateVector[0] / SpeedMultiplier, MidpointRounding.AwayFromZero)), Timeout.Infinite);
         }
 
-         public void SetupCamera()
+        public void SetupCamera()
         {
             viewport.Width = Width;
             viewport.Height = Height;
@@ -131,19 +144,18 @@ namespace Mirea.Snar2017.Navigate
             Matrix4 M = Matrix4.CreatePerspectiveFieldOfView(ToRadians(110), (float)viewport.Width / (float)viewport.Height, 0.001f, 10000.0f);
             GL.LoadIdentity();
             GL.LoadMatrix(ConvertMatrix4(M));
+            GL.Rotate(-angle.XY / 10, 1, 0, 0);
+            GL.Rotate(-angle.Z / 10, 0, 1, 0);
+
+            GL.Scale(scaleFactor, scaleFactor, scaleFactor);
 
             GL.MatrixMode(All.Modelview);
             //Matrix4 m = Matrix4.LookAt(0, 0, 0, -1, -1, -1, 0, 1, 0);
-            Matrix4 m = Matrix4.LookAt(position.X + 1, position.Y + 1, position.Z + 1, 0, 0, 0, 0, 1, 0);
+            Matrix4 m = Matrix4.LookAt(position.X - 0.9f + 1 / scaleFactor, position.Y - 0.9f + 1 / scaleFactor, position.Z - 0.9f + 1 / scaleFactor, position.X, position.Y, position.Z, 0, 1, 0);
             GL.LoadIdentity();
             GL.LoadMatrix(ConvertMatrix4(m));
-
-            GL.Scale(10f, 10f, 10f);
-            GL.Rotate(-angle.XY / 10, 1, 0, -1);
-            GL.Rotate(-angle.Z / 10, 0, 1, 0);
-            
-            GL.Scale(scaleFactor, scaleFactor, scaleFactor);
-}
+            //GL.Scale(10f, 10f, 10f);
+        }
 
         public void RenderCube()
         {

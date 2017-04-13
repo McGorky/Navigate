@@ -9,6 +9,11 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
+using OxyPlot.Xamarin.Android;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+
 namespace Mirea.Snar2017.Navigate
 {
     // REMARK ALL: код должен выглядеть идеально и должен читаться с первого раза
@@ -49,20 +54,32 @@ namespace Mirea.Snar2017.Navigate
         //public static (float X, float Y, float Z) LinearAccelerationData { get; } = (0, 0, 0);
         #endregion
 
+        #region Plot data
+        /*public static LineSeries AccelerometerX = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Red, MarkerSize = 0.5};
+        public static LineSeries AccelerometerY = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Red, MarkerSize = 0.5 };
+        public static LineSeries AccelerometerZ = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Red, MarkerSize = 0.5 };
+        public static LineSeries Gyro;
+        public static LineSeries Magnetometer;
+        public static float[] SensorsTimes;*/
+
+        public static LineSeries Phi = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.3 };
+        public static LineSeries Theta = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.3 };
+        public static LineSeries Psi = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.3 };
+        /*public static float[][] Offsets;
+        public static float[] OffsetsTimes;*/
+
+        public static (float Psi, float Theta, float Phi) ToEulerAngles(Quaternion q)
+        {
+            var psi = (float)Math.Atan2(2 * q[1] * q[4] + 2 * q[2] * q[3], 1 - 2 * q[3] * q[3] - 2 * q[4] * q[4]);
+            var theta = (float)-Math.Asin(2 * q[1] * q[3] - 2 * q[4] * q[2]);
+            var phi = (float)Math.Atan2(2 * q[1] * q[2] + 2 * q[3] * q[4], 1 - 2 * q[2] * q[2] - 2 * q[3] * q[3]);
+
+            return (psi, theta, phi);
+        }
+        #endregion
+
         #region Filtered data
         public static Quaternion Rotation { get; set; } = (1, 0, 0, 0);
-        public static (float Psi, float Theta, float Phi) EulerAngles
-        {
-            get
-            {
-                var q = Rotation;
-                var psi = (float)Math.Atan2(2 * q[2] * q[3] - 2 * q[1] * q[4], 2 * q[1] * q[1] + 2 * q[2] * q[2] - 1);
-                var theta = (float)-Math.Asin(2 * q[2] * q[4] + 2 * q[1] * q[3]);
-                var phi = (float)Math.Atan2(2 * q[3] * q[4] - 2 * q[1] * q[2], 2 * q[1] * q[1] + 2 * q[4] * q[4] - 1);
-
-                return (psi, theta, phi);
-            }
-        }
 
         public static float[] Acceleration { get; } = new float[3];
         public static float[] Velocity { get; } = new float[3];
@@ -84,9 +101,9 @@ namespace Mirea.Snar2017.Navigate
         public static float Gamma { get; set; } = 0.7f;
 
         public static bool MagnetometerEnabled { get; set; } = true;
-        public static bool GyroscopeDriftCompensationEnabled { get; set; } = true;
+        public static bool GyroscopeDriftCompensationEnabled { get; set; } = false;
         public static bool AccelerometerCalibrationEnabled { get; set; } = true;
-        public static bool GyroscopeCalibrationEnabled { get; set; } = true;
+        public static bool GyroscopeCalibrationEnabled { get; set; } = false;
 
         public static TimeSpan Uptime { get; set; } = new TimeSpan();
         public static DateTime StartTime { get; set; }

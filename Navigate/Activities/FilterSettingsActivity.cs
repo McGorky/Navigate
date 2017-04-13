@@ -55,6 +55,12 @@ namespace Mirea.Snar2017.Navigate
             accelerometerCalibrationSwitch = FindViewById<Switch>(Resource.Id.AccelerometerCalibrationSwitch);
             gyroscopeCalibrationSwitch = FindViewById<Switch>(Resource.Id.GyroscopeCalibrationSwitch);
 
+            magnetometerSwitch.Enabled = false;
+            gyroscopeDriftSwitch.Enabled = false;
+            zetaSeekbar.Enabled = false;
+            zetaEditText.Enabled = false;
+            gyroscopeCalibrationSwitch.Enabled = false;
+
             betaSeekbar.ProgressChanged += OnBetaProgressChanged;
             zetaSeekbar.ProgressChanged += OnZetaProgressChanged;
             gammaSeekbar.ProgressChanged += OnGammaProgressChanged;
@@ -64,13 +70,6 @@ namespace Mirea.Snar2017.Navigate
             accelerometerCalibrationSwitch.CheckedChange += OnAccelerometerCalibrationSwitchCheckedChange;
             gyroscopeCalibrationSwitch.CheckedChange += OnGyroscopeCalibrationSwitchCheckedChange;
 
-            /* betaEditText.AfterTextChanged += (object sender, Android.Text.AfterTextChangedEventArgs e) =>
-            {
-                // нужно использовать int.Parse();
-                betaSeekbar.Progress = Convert.ToInt32(betaEditText.Text);
-            };
-            */
-
             RunOnUiThread(() =>
             {
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -79,17 +78,17 @@ namespace Mirea.Snar2017.Navigate
                 zetaEditText.Text = $"{Storage.Zeta:F3}";
                 gammaEditText.Text = $"{Storage.Gamma:F3}";
 
-                //betaSeekbar.Max = 1000;
-                //betaSeekbar.Progress = (int)Storage.Beta * 1000;
-                //betaSeekbar.RefreshDrawableState();
+                betaSeekbar.Max = 1000;
+                betaSeekbar.Progress = (int)(Storage.Beta * 1000);
+                betaSeekbar.RefreshDrawableState();
 
-                //zetaSeekbar.Max = 1000;
-                //zetaSeekbar.Progress = (int)Storage.Zeta * 1000;
-                //zetaSeekbar.RefreshDrawableState();
+                zetaSeekbar.Max = 1000;
+                zetaSeekbar.Progress = (int)(Storage.Zeta * 1000);
+                zetaSeekbar.RefreshDrawableState();
 
-                //gammaSeekbar.Max = 1000;
-                //gammaSeekbar.Progress = (int)Storage.Gamma * 1000;
-                //gammaSeekbar.RefreshDrawableState();
+                gammaSeekbar.Max = 1000;
+                gammaSeekbar.Progress = (int)(Storage.Gamma * 1000);
+                gammaSeekbar.RefreshDrawableState();
 
                 magnetometerSwitch.Checked = Storage.MagnetometerEnabled;
                 gyroscopeDriftSwitch.Checked = Storage.GyroscopeDriftCompensationEnabled;
@@ -139,8 +138,8 @@ namespace Mirea.Snar2017.Navigate
                 }
                 else
                 {
-                    Storage.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                    //Storage.Beta = e.Progress / 1000.0f;
+                    //Storage.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    Storage.Beta = e.Progress / 1000.0f;
                     betaEditText.Text = $"{Storage.Beta:F3}";
                 }
             }
@@ -157,7 +156,8 @@ namespace Mirea.Snar2017.Navigate
                 }
                 else
                 {
-                    Storage.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    //Storage.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    Storage.Zeta = e.Progress / 1000.0f;
                     zetaEditText.Text = string.Format("{0:F3}", Storage.Zeta);
                 }
             }
@@ -174,7 +174,8 @@ namespace Mirea.Snar2017.Navigate
                 }
                 else
                 {
-                    Storage.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    //Storage.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    Storage.Gamma = e.Progress / 1000.0f;
                     gammaEditText.Text = string.Format("{0:F3}", Storage.Gamma);
                 }
             }

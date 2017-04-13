@@ -31,19 +31,19 @@ namespace Mirea.Snar2017.Navigate
 
         #region Views and related fields
         private Button calibrateButton,
-            frontButton,
+            //frontButton,
             backButton,
             topButton,
-            bottomButton,
-            leftButton,
+            //bottomButton,
+            //leftButton
             rightButton;
 
         private bool
-            frontCalibrated = false,
+            //frontCalibrated = false,
             backCalibrated = false,
             topCalibrated = false,
-            bottomCalibrated = false,
-            leftCalibrated = false,
+            //bottomCalibrated = false,
+            //leftCalibrated = false
             rightCalibrated = false;
         #endregion
 
@@ -74,20 +74,21 @@ namespace Mirea.Snar2017.Navigate
             sensorManager = (SensorManager)GetSystemService(Context.SensorService);
 
             calibrateButton = FindViewById<Button>(Resource.Id.CalibrateButton);
-            frontButton = FindViewById<Button>(Resource.Id.CalibrateFrontButton);
+            //frontButton = FindViewById<Button>(Resource.Id.CalibrateFrontButton);
             backButton = FindViewById<Button>(Resource.Id.CalibrateBackButton);
             topButton = FindViewById<Button>(Resource.Id.CalibrateTopButton);
-            bottomButton = FindViewById<Button>(Resource.Id.CalibrateBottomButton);
-            leftButton = FindViewById<Button>(Resource.Id.CalibrateLeftButton);
+            //bottomButton = FindViewById<Button>(Resource.Id.CalibrateBottomButton);
+            //leftButton = FindViewById<Button>(Resource.Id.CalibrateLeftButton);
             rightButton = FindViewById<Button>(Resource.Id.CalibrateRightButton);
 
             calibrateButton.Click += OnCalibrateButtonClicked;
+            calibrateButton.Enabled = false;
 
-            frontButton.Click += OnAnySideButtonClicked;
+            //frontButton.Click += OnAnySideButtonClicked;
             backButton.Click += OnAnySideButtonClicked;
             topButton.Click += OnAnySideButtonClicked;
-            bottomButton.Click += OnAnySideButtonClicked;
-            leftButton.Click += OnAnySideButtonClicked;
+            //bottomButton.Click += OnAnySideButtonClicked;
+            //leftButton.Click += OnAnySideButtonClicked;
             rightButton.Click += OnAnySideButtonClicked;
 
             for (int i = 0; i < samples.Length; i++)
@@ -221,11 +222,11 @@ namespace Mirea.Snar2017.Navigate
             PhoneOrientation orientation;
             switch (button.Id)
             {
-                case Resource.Id.CalibrateFrontButton:
+                /*case Resource.Id.CalibrateFrontButton:
                 {
                     orientation = PhoneOrientation.OnFront;
                     break;
-                }
+                }*/
                 case Resource.Id.CalibrateBackButton:
                 {
                     orientation = PhoneOrientation.OnBack;
@@ -236,16 +237,16 @@ namespace Mirea.Snar2017.Navigate
                     orientation = PhoneOrientation.OnTop;
                     break;
                 }
-                case Resource.Id.CalibrateBottomButton:
+                /*case Resource.Id.CalibrateBottomButton:
                 {
                     orientation = PhoneOrientation.OnBottom;
                     break;
-                }
-                case Resource.Id.CalibrateLeftButton:
+                }*/
+                /*case Resource.Id.CalibrateLeftButton:
                 {
                     orientation = PhoneOrientation.OnLeft;
                     break;
-                }
+                }*/
                 case Resource.Id.CalibrateRightButton:
                 {
                     orientation = PhoneOrientation.OnRight;
@@ -259,16 +260,25 @@ namespace Mirea.Snar2017.Navigate
             }
             int column = -1;
             if (orientation == PhoneOrientation.OnRight)
+            {
+                rightCalibrated = true;
                 column = 0;
+            }
             else if (orientation == PhoneOrientation.OnTop)
+            {
+                topCalibrated = true;
                 column = 1;
+            }
             else if (orientation == PhoneOrientation.OnBack)
+            {
+                backCalibrated = true;
                 column = 2;
+            }
 
             // TODO: подождать, пока телефон не будет двигаться с эпсилон погрешностью
 
             EnableSensors();
-            ShowProgressDialog(orientation.ToString());
+            ShowProgressDialog("");
             AllSamplesCollected += GetMedianValues;
             MediansCalculated += () => button.SetBackgroundResource(Resource.Drawable.GreenButton);
             MediansCalculated += () =>
@@ -276,10 +286,16 @@ namespace Mirea.Snar2017.Navigate
                 for (int i = 0; i < 3; i++)
                     calibrateMatrix[column, i] = medianSamples[i] / g;
             };
+
+            if (backCalibrated && topCalibrated && rightCalibrated)
+            {
+                calibrateButton.Enabled = true;
+                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            }
         }
         private void OnCalibrateButtonClicked(object sender, EventArgs e)
         {
-            calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+            
             //Storage.AccelerometerCalibrationMatrix = expectedValues * actualValues.Inversed();
             calibrateMatrix = calibrateMatrix.Inversed();
 

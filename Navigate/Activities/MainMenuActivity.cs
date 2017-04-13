@@ -33,7 +33,6 @@ namespace Mirea.Snar2017.Navigate
     public class MainMenuActivity : Activity
     {
         private Timer timer;
-        private Random random = new Random(1);
 
         #region Views and related fields
         private PlotView accelerometerPlotView;
@@ -73,11 +72,9 @@ namespace Mirea.Snar2017.Navigate
             gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
             magnetometerPlotView = FindViewById<PlotView>(Resource.Id.MagnetometerPlotView);
 
-            var t = 0.0f;
             timer = new Timer((o) =>
             {
-                UpdatePlot(accelerometerPlotView, new float[] { random.Next(10) - 5, random.Next(10) - 5, random.Next(10) - 5 }, t);
-                t += 0.05f;
+                RunOnUiThread(() => UpdatePlots());
             });
             timer.Change(2000, 50);
             

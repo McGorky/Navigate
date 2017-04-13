@@ -30,14 +30,13 @@ namespace Mirea.Snar2017.Navigate
             StartForeground(Storage.ForegroundServiceId.SenorsData, new Notification());
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-
             Directory.CreateDirectory(Storage.RawFolderName);
             fileStream = new FileStream(Storage.CurrentRawFile, FileMode.OpenOrCreate, FileAccess.Write);
             streamWriter = new StreamWriter(fileStream); 
             startTimer.Elapsed += (o, e) =>
             {
                 streamWriter.WriteLine(Storage.AccelerometerCalibrationMatrix.ToString());
-                startTime = DateTime.Now;
+                Storage.StartTime = DateTime.Now;
                 streamWriter.WriteLine(startTime.ToString());
                 isRecording = true;
                 dataWriteTimer.Interval = 20;
@@ -51,7 +50,7 @@ namespace Mirea.Snar2017.Navigate
             {
                 lock (Storage.DataAccessSync)
                 {
-                    builder.Append($"{DateTime.Now.Subtract(startTime).TotalMilliseconds.ToString()},");
+                    builder.Append($"{DateTime.Now.Subtract(Storage.StartTime).TotalMilliseconds.ToString()},");
                     for (int i = 0; i < 3; i++)
                         builder.Append($"{Storage.AccelerometerData[i]},");
                     for (int i = 0; i < 3; i++)

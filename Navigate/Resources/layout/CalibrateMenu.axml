@@ -15,19 +15,19 @@
         android:weightSum="2"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
-        <Button
+        <!--<Button
             android:text="Calibrate front side"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginRight="2dp"
             android:background="@drawable/RedButton"
-            android:id="@+id/CalibrateFrontButton" />
+            android:id="@+id/CalibrateFrontButton" />-->
         <Button
-            android:text="Calibrate back side"
+            android:text="On back side"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_marginLeft="2dp"
             android:background="@drawable/RedButton"
             android:id="@+id/CalibrateBackButton" />
@@ -41,21 +41,21 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
         <Button
-            android:text="Calibrate top side"
+            android:text="On bottom side"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_marginRight="2dp"
             android:background="@drawable/RedButton"
             android:id="@+id/CalibrateTopButton" />
-        <Button
+        <!--<Button
             android:text="Calibrate bottom side"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginLeft="2dp"
             android:background="@drawable/RedButton"
-            android:id="@+id/CalibrateBottomButton" />
+            android:id="@+id/CalibrateBottomButton" />-->
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -65,19 +65,19 @@
         android:weightSum="2"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="2dp">
-        <Button
+        <!--<Button
             android:text="Calibrate left side"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginRight="2dp"
             android:background="@drawable/RedButton"
-            android:id="@+id/CalibrateLeftButton" />
+            android:id="@+id/CalibrateLeftButton" />-->
         <Button
-            android:text="Calibrate right side"
+            android:text="On left side"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_marginLeft="2dp"
             android:background="@drawable/RedButton"
             android:id="@+id/CalibrateRightButton" />

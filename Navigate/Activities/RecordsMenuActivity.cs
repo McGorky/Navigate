@@ -18,6 +18,10 @@ using Android.OS;
 using Android.Text;
 using Android.Media;
 
+using OxyPlot.Xamarin.Android;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -35,7 +39,7 @@ namespace Mirea.Snar2017.Navigate
         private Switch drawTrajectorySwitch;
 
         private bool playFromRawData = true;
-        private List<string> LogTypeOptions = new List<string>() { "Raw data", "Filtered data" };
+        private List<string> LogTypeOptions = new List<string>() { "Raw data" };
         private List<string> SavedLogs
         {
             get
@@ -157,7 +161,16 @@ namespace Mirea.Snar2017.Navigate
                 var acceleration = new float[3];
                 var velocity = new float[3];
                 var offset = new float[3];
-                
+
+                /*Storage.Accelerometer = new float[text.Length - 1][];
+                Storage.Gyro = new float[text.Length - 1][];
+                Storage.Magnetometer = new float[text.Length - 1][];
+
+                Storage.Phi = new float[text.Length - 1];
+                Storage.Theta = new float[text.Length - 1];
+                Storage.Psi = new float[text.Length - 1];*/
+
+                int startOffsetIndex = 0;
                 for (int i = 1; i < text.Length; i++)
                 {
                     var s = text[i].Split(new char[] { ',' });
@@ -175,6 +188,10 @@ namespace Mirea.Snar2017.Navigate
                     g = new Quaternion(0, data[4], data[5], data[6]);
                     m = (new Quaternion(0, data[7], data[8], data[9]) * 0.001f);
 
+                    /*Storage.Accelerometer[i - 1] = new float[] { data[1], data[2], data[3] };
+                    Storage.Gyro[i - 1] = new float[] { data[4], data[5], data[6] };
+                    Storage.Magnetometer[i - 1] = new float[] { data[7], data[8], data[9] };*/
+
                     if (!converged && data[0] > 2000)
                     {
                         startRotation = q;
@@ -185,9 +202,19 @@ namespace Mirea.Snar2017.Navigate
                         velocity = new float[3];
                         offset = new float[3];
 
+                        startOffsetIndex = i;
+                        //Storage.Offsets = new float[text.Length - i][];
                         sw.WriteLine($"{text.Length - i}");
                     }
                     q = Filter.Madgvic(q, g, a, m, beta, Storage.Zeta, dt);
+
+                    if (i > 15)
+                    {
+                        var angles = Storage.ToEulerAngles(q.Normalized());
+                        Storage.Phi.Points.Add(new DataPoint(data[0] / 1000, angles.Phi * 180 / 3.1416f));
+                        Storage.Theta.Points.Add(new DataPoint(data[0] / 1000, angles.Theta * 180 / 3.1416f));
+                        Storage.Psi.Points.Add(new DataPoint(data[0] / 1000, angles.Psi * 180 / 3.1416f));
+                    }
 
                     var localRotation = Quaternion.CalculateDifference(startRotation, q).Normalized();
                     aLinear = (0, data[10], data[11], data[12]);
@@ -202,6 +229,7 @@ namespace Mirea.Snar2017.Navigate
 
                     if (converged)
                     {
+                        //Storage.Offsets[i - startOffsetIndex] = new float[] { offset[0], offset[1], offset[2] };
                         sw.WriteLine($"{(int)Math.Round(dt * 1000, MidpointRounding.AwayFromZero)},{q.ToString()},{offset[0]},{offset[1]},{offset[2]}");
                     }
                 }
@@ -235,7 +263,7 @@ namespace Mirea.Snar2017.Navigate
         {
             var spinner = sender as Spinner;
             string text = $"{spinner.GetItemAtPosition(e.Position)}";
-            Toast.MakeText(this, text, ToastLength.Short).Show();
+            //Toast.MakeText(this, text, ToastLength.Short).Show();
 
             switch (text)
             {
@@ -266,6 +294,9 @@ namespace Mirea.Snar2017.Navigate
             else
                 fullFileName = Path.Combine(Storage.FilteredFolderName, fileName);
 
+            Storage.Phi.Points.Clear();
+            Storage.Psi.Points.Clear();
+            Storage.Theta.Points.Clear();
             Compile(fullFileName);
         }
 
