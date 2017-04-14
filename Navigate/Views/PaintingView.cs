@@ -144,17 +144,28 @@ namespace Mirea.Snar2017.Navigate
             Matrix4 M = Matrix4.CreatePerspectiveFieldOfView(ToRadians(110), (float)viewport.Width / (float)viewport.Height, 0.001f, 10000.0f);
             GL.LoadIdentity();
             GL.LoadMatrix(ConvertMatrix4(M));
+            // слежка за объектом
+            /*     
             GL.Rotate(-angle.XY / 10, 1, 0, 0);
             GL.Rotate(-angle.Z / 10, 0, 1, 0);
 
-            GL.Scale(scaleFactor, scaleFactor, scaleFactor);
-
             GL.MatrixMode(All.Modelview);
-            //Matrix4 m = Matrix4.LookAt(0, 0, 0, -1, -1, -1, 0, 1, 0);
             Matrix4 m = Matrix4.LookAt(position.X - 0.9f + 1 / scaleFactor, position.Y - 0.9f + 1 / scaleFactor, position.Z - 0.9f + 1 / scaleFactor, position.X, position.Y, position.Z, 0, 1, 0);
             GL.LoadIdentity();
             GL.LoadMatrix(ConvertMatrix4(m));
-            //GL.Scale(10f, 10f, 10f);
+             */
+            #region centerCamera
+            GL.MatrixMode(All.Modelview);
+            Matrix4 m = Matrix4.LookAt(1, 1, 1, 0, 0, 0, 0, 1, 0);
+            GL.LoadIdentity();
+            GL.LoadMatrix(ConvertMatrix4(m));
+
+            GL.Scale(10f, 10f, 10f);
+            GL.Rotate(-angle.XY / 10, 1, 0, -1);
+            GL.Rotate(-angle.Z / 10, 0, 1, 0);
+            GL.Scale(scaleFactor, scaleFactor, scaleFactor);
+            #endregion
+            
         }
 
         public void RenderCube()
@@ -163,6 +174,7 @@ namespace Mirea.Snar2017.Navigate
 
             GL.Translate(position.X, position.Y, position.Z);
             GL.Rotate(stateVector[1], stateVector[2] + position.X, stateVector[4] + position.Y, stateVector[3] + position.Z);
+            //GL.Rotate(stateVector[1], stateVector[2], stateVector[4], stateVector[3]);
             trace.Add(position.X);
             trace.Add(position.Y);
             trace.Add(position.Z);
