@@ -124,7 +124,7 @@
     <Compile Include="Activities\LogMenuActivity.cs" />
     <Compile Include="Activities\FilterSettingsActivity.cs" />
     <Compile Include="Activities\LogPlayerActivity.cs" />
-    <Compile Include="Activities\MainMenuActivity.cs" />
+    <Compile Include="Filter\MainMenuActivity.cs" />
     <Compile Include="Activities\CalibrateMenuActivity.cs" />
     <Compile Include="Filter\Filter.cs" />
     <Compile Include="Filter\Matrix.cs" />
