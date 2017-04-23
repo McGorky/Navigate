@@ -46,6 +46,7 @@ namespace Mirea.Snar2017.Navigate
         private Button filterButton;
         private Button logButton;
         private Button recordsButton;
+        private Button realtimeButton;
 
         private bool isLogging = false;
         private bool backButtonPressed = false;
@@ -67,6 +68,7 @@ namespace Mirea.Snar2017.Navigate
             filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
             logButton = FindViewById<Button>(Resource.Id.LogButton);
             recordsButton = FindViewById<Button>(Resource.Id.RecordsButton);
+            realtimeButton = FindViewById<Button>(Resource.Id.RealTime3dButton);
 
             accelerometerPlotView = FindViewById<PlotView>(Resource.Id.AccelerometerPlotView);
             gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
@@ -86,6 +88,7 @@ namespace Mirea.Snar2017.Navigate
             filterButton.Click += OnFilterButtonClicked;
             logButton.Click += OnLogButtonClicked;
             recordsButton.Click += OnRecordsButtonClicked;
+            realtimeButton.Click += OnRealTime3dButtonClicked;
         }
 
         protected override void OnPause()
@@ -205,6 +208,13 @@ namespace Mirea.Snar2017.Navigate
         void OnCalibrateMenuButtonClicked(object sender, EventArgs e)
         {
             var intent = new Intent(this, typeof(CalibrateMenuActivity));
+            StartActivity(intent);
+            OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
+        }
+
+        void OnRealTime3dButtonClicked(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(RealTime3dActivity));
             StartActivity(intent);
             OverridePendingTransition(Resource.Animation.ExpandIn, Resource.Animation.ShrinkOut);
         }

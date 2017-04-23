@@ -35,7 +35,7 @@
         <EditText
             android:inputType="numberDecimal|numberSigned"
             android:layout_height="match_parent"
-            android:id="@+id/MadgwickEditText1"
+            android:id="@+id/MadgwickBetaEditText"
             android:layout_weight="0.3"
             android:layout_width="100dp"
             android:layout_marginLeft="7.0dp" />
@@ -69,7 +69,7 @@
             android:inputType="numberDecimal|numberSigned"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:id="@+id/MadgwickEditText2"
+            android:id="@+id/MadgwickZetaEditText"
             android:layout_weight="0.3"
             android:layout_marginLeft="7dp" />
     </LinearLayout>
@@ -126,7 +126,8 @@
             android:layout_height="50dp"
             android:id="@+id/MagnetometerSwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:thumb="@drawable/apptheme_switch_inner_holo_dark"
+            android:track="@drawable/apptheme_switch_track_holo_dark"
             android:textOff="@string/SwitchTextOff"
             android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
@@ -150,7 +151,8 @@
             android:layout_height="50dp"
             android:id="@+id/GyroscopeDriftCompensationSwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:thumb="@drawable/apptheme_switch_inner_holo_dark"
+            android:track="@drawable/apptheme_switch_track_holo_dark"
             android:textOff="@string/SwitchTextOff"
             android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
@@ -174,7 +176,8 @@
             android:layout_height="50dp"
             android:id="@+id/AccelerometerCalibrationSwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:thumb="@drawable/apptheme_switch_inner_holo_dark"
+            android:track="@drawable/apptheme_switch_track_holo_dark"
             android:textOff="@string/SwitchTextOff"
             android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
@@ -198,7 +201,8 @@
             android:layout_height="50dp"
             android:id="@+id/GyroscopeCalibrationSwitch"
             android:layout_weight="0.3"
-            android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+            android:thumb="@drawable/apptheme_switch_inner_holo_dark"
+            android:track="@drawable/apptheme_switch_track_holo_dark"
             android:textOff="@string/SwitchTextOff"
             android:textOn="@string/SwitchTextOn" />
     </LinearLayout>
