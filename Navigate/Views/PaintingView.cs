@@ -29,36 +29,31 @@ namespace Mirea.Snar2017.Navigate
         private Vector3 position;
         private Vector3 previousPositionTouch;
         private (float Z, float XY) angle;
-        private (float Z, float XY) realAngle;
-        private (float Z, float XY) previousAngle;
 
-        Quaternion axisXY = new Quaternion();
-        Quaternion axisZ = new Quaternion();
-        Quaternion vector = new Quaternion();
-        private float offset = 1f; 
-        private float teta;
-        private float lengthCameraVector;
-        static float x = 0.001f;
-        //private Vector3 pop;
+        private Vector3 positionCamera;
+        private float offsetCamera = 1f;
+        private float speedMoveCamera = 0.01f;
+        private Vector3 rightCamera;
+        private Vector3 upCamera;
+        private Vector3 derectionCamera;
 
         private (int Width, int Height) viewport;
         private int activePointerId = -1;
 
         private List<float> trace = new List<float>();
         private float[] stateVector = new float[8];
-        private float[] pop = new float[3] {-1, -1, -1 };
-        private float[] pop1 = new float[3] {1, 1, 1};
-        private float[] off = new float[3];
 
         private ScaleGestureDetector scaleDetector;
         private static float scaleFactor = 1.0f;
 
         private Timer starter;
 
+        static float x = 0.001f;
+
         public float SpeedMultiplier { get; set; } = 1.0f;
         public bool DrawTrajectory { get; set; } = true;
         public bool IsPlaying { get; set; } = false;
-        public bool freeCamera { get; set; } = true;
+        public bool UseFreeCamera { get; set; } = true;
         public event Action CoordinatesUpdated;
         public event Action Finished;
 
@@ -81,6 +76,9 @@ namespace Mirea.Snar2017.Navigate
             //stateVectorChangeTimer.AutoReset = false;
             angle.Z = 0;
             angle.XY = 0;
+            positionCamera.X = 0f;
+            positionCamera.Y = 0.2f;
+            positionCamera.Z = 0.2f;
         }
         #endregion
 
@@ -161,81 +159,40 @@ namespace Mirea.Snar2017.Navigate
             GL.LoadIdentity();
             GL.LoadMatrix(ConvertMatrix4(M));
 
-            if (freeCamera)
+            if (UseFreeCamera)
             {
-                #region freeCamera
-
                 GL.MatrixMode(All.Modelview);
-
-                if (previousAngle.Z != angle.Z || previousAngle.XY != angle.XY)
-                {
-                    realAngle.Z = angle.Z - previousAngle.Z;
-                    realAngle.XY = angle.XY - previousAngle.XY;
-
-                    lengthCameraVector = (float)Math.Sqrt(pop[0] * pop[0] + pop[1] * pop[1] + pop[2] * pop[2]);
-                    teta = (float)Math.Acos(Math.Abs(pop[1]) / lengthCameraVector);
-                    teta = (float)Math.PI / 2 - teta;
-                    axisZ[1] = (float)Math.Cos(teta / 2);
-                    axisZ[2] = -(float)Math.Sin(teta / 2);
-                    axisZ[3] = 0;
-                    axisZ[4] = (float)Math.Sin(teta / 2);
-
-                    vector[1] = 0;
-                    vector[2] = 0;
-                    vector[3] = 1;
-                    vector[4] = 0;
-
-                    var Z = axisZ * vector;
-                    Z.Normalized();
-                    vector = Z * axisZ.Inversed();
-                    vector.Normalized();
-                    //
-                    axisZ[1] = (float)Math.Cos(ToRadians(realAngle.Z / 20));
-                    axisZ[2] = vector[2] * (float)Math.Sin(ToRadians(realAngle.Z / 20));
-                    axisZ[3] = vector[3] * (float)Math.Sin(ToRadians(realAngle.Z / 20));
-                    axisZ[4] = vector[4] * (float)Math.Sin(ToRadians(realAngle.Z / 20));
-
-                    axisXY[1] = (float)Math.Cos(ToRadians(realAngle.XY / 20));
-                    axisXY[2] = (float)Math.Sin(ToRadians(realAngle.XY / 20));
-                    axisXY[3] = 0;
-                    axisXY[4] = -(float)Math.Sin(ToRadians(realAngle.XY / 20));
-
-                    vector[1] = 0;
-                    vector[2] = pop[0];
-                    vector[3] = pop[1];
-                    vector[4] = pop[2];
-
-                    var Q = axisZ * axisXY;
-                    Q = Q.Normalized();
-                    var T = Q * vector;
-                    T = T.Normalized();
-                    vector = T * Q.Inversed();
-                    vector = vector.Normalized();
-                    pop[0] = vector[2];
-                    pop[1] = vector[3];
-                    pop[2] = vector[4];
-                }
-                /*off[0] = 200f;
-                off[1] = 200f;
-                off[2] = 200f;*/
-                if (scaleFactor < offset)
-                    for (int i = 0; i < 3; i++) off[i] -= pop[i] / 10;
-                if (scaleFactor > offset)
-                    for (int i = 0; i < 3; i++) off[i] += pop[i] / 10;
-
-                Matrix4 m = Matrix4.LookAt(0.5f + off[0], 0.5f + off[1], 0.5f + off[2], 0.5f + off[0] + pop[0], 0.5f + off[1] + pop[1], 0.5f + off[2] + pop[2], 0, 1, 0);
+                Matrix4 m = Matrix4.LookAt(positionCamera, positionCamera - derectionCamera, upCamera);
                 GL.LoadMatrix(ConvertMatrix4(m));
 
-                previousAngle.Z = angle.Z;
-                previousAngle.XY = angle.XY;
-                offset = scaleFactor;
+                derectionCamera.X = (float)Math.Cos(-angle.XY / 1000) * (float)Math.Sin(-angle.Z / 1000);
+                derectionCamera.Y = (float)Math.Sin(-angle.XY / 1000);
+                derectionCamera.Z = (float)Math.Cos(-angle.XY / 1000) * (float)Math.Cos(-angle.Z / 1000);
 
-                #endregion
+                rightCamera.X = (float)Math.Sin(-angle.Z / 1000 - Math.PI / 2);
+                rightCamera.Y = 0;
+                rightCamera.Z = (float)Math.Cos(-angle.Z / 1000 - Math.PI / 2);
+
+                upCamera.X = rightCamera.Y * derectionCamera.Z - rightCamera.Z * derectionCamera.Y;
+                upCamera.Y = rightCamera.Z * derectionCamera.X - rightCamera.X * derectionCamera.Z;
+                upCamera.Z = rightCamera.X * derectionCamera.Y - rightCamera.Y * derectionCamera.X;
+
+                if (scaleFactor < offsetCamera)
+                {
+                    positionCamera.X += derectionCamera.X * speedMoveCamera;
+                    positionCamera.Y += derectionCamera.Y * speedMoveCamera;
+                    positionCamera.Z += derectionCamera.Z * speedMoveCamera;
+                }
+                if (scaleFactor > offsetCamera)
+                {
+                    positionCamera.X -= derectionCamera.X * speedMoveCamera;
+                    positionCamera.Y -= derectionCamera.Y * speedMoveCamera;
+                    positionCamera.Z -= derectionCamera.Z * speedMoveCamera;
+                }
+                offsetCamera = scaleFactor;
             }
             else
-            {
-                #region слежка за объектом
-                /*
+            {               
                 float offset = -0.9f + 1 / scaleFactor;
                 GL.MatrixMode(All.Modelview);
                 if (offset < 0) scaleFactor = 1 / 0.9f;
@@ -246,9 +203,7 @@ namespace Mirea.Snar2017.Navigate
                 GL.Translate(position.X, position.Y, position.Z);
                 GL.Rotate(-angle.XY / 10, 1, 0, -1);
                 GL.Rotate(-angle.Z / 10, 0, 1, 0);
-                GL.Translate(-position.X, -position.Y, -position.Z);
-                */
-                #endregion
+                GL.Translate(-position.X, -position.Y, -position.Z);                
 
                 #region centerCamera
                 /*
@@ -368,16 +323,20 @@ namespace Mirea.Snar2017.Navigate
                     float xDiff = (previousPositionTouch.X - e_x);
                     float yDiff = (previousPositionTouch.Y - e_y);
                     angle.XY += yDiff;
-                    if (!freeCamera)
-                    {
-                        if (angle.XY > 3600) angle.XY -= 3600;
-                        if (angle.XY < -3600) angle.XY += 3600;
-                        if ((angle.XY > 1100 && angle.XY < 2900) || (angle.XY < -1100 && angle.XY > -2900))
-                            angle.Z -= xDiff;
+
+                        if (!UseFreeCamera)
+                        {
+                            if (angle.XY > 3600) angle.XY -= 3600;
+                            if (angle.XY < -3600) angle.XY += 3600;
+                            if ((angle.XY > 1100 && angle.XY < 2900) || (angle.XY < -1100 && angle.XY > -2900))
+                                angle.Z -= xDiff;
+                            else
+                                angle.Z += xDiff;
+                        }
                         else
-                            angle.Z += xDiff;                           
-                    }
-                    else angle.Z += xDiff; ;
+                        {
+                            angle.Z += xDiff; ;
+                        }
                     }
                 previousPositionTouch.X = e_x;
                 previousPositionTouch.Y = e_y;
