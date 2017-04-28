@@ -50,6 +50,7 @@ namespace Mirea.Snar2017.Navigate
 
         static float x = 0.001f;
 
+        public bool switchModeCamera = false;
         public float SpeedMultiplier { get; set; } = 1.0f;
         public bool DrawTrajectory { get; set; } = true;
         public bool IsPlaying { get; set; } = false;
@@ -161,6 +162,11 @@ namespace Mirea.Snar2017.Navigate
 
             if (UseFreeCamera)
             {
+                if (switchModeCamera)
+                {
+                    positionCamera = position;
+                    switchModeCamera = false;
+                }
                 GL.MatrixMode(All.Modelview);
                 Matrix4 m = Matrix4.LookAt(positionCamera, positionCamera - derectionCamera, upCamera);
                 GL.LoadMatrix(ConvertMatrix4(m));
@@ -192,7 +198,8 @@ namespace Mirea.Snar2017.Navigate
                 offsetCamera = scaleFactor;
             }
             else
-            {               
+            {
+                switchModeCamera = true;
                 float offset = -0.9f + 1 / scaleFactor;
                 GL.MatrixMode(All.Modelview);
                 if (offset < 0) scaleFactor = 1 / 0.9f;
@@ -203,10 +210,9 @@ namespace Mirea.Snar2017.Navigate
                 GL.Translate(position.X, position.Y, position.Z);
                 GL.Rotate(-angle.XY / 10, 1, 0, -1);
                 GL.Rotate(-angle.Z / 10, 0, 1, 0);
-                GL.Translate(-position.X, -position.Y, -position.Z);                
+                GL.Translate(-position.X, -position.Y, -position.Z);
 
-                #region centerCamera
-                /*
+                /* centerCamera
                 GL.MatrixMode(All.Modelview);
                 Matrix4 m = Matrix4.LookAt(0.1f, 0.1f, 0.1f, 0, 0, 0, 0, 1, 0);
                 GL.LoadIdentity();
@@ -217,7 +223,6 @@ namespace Mirea.Snar2017.Navigate
                 GL.Rotate(-angle.Z / 10, 0, 1, 0);
                 GL.Scale(scaleFactor, scaleFactor, scaleFactor);
                 */
-                #endregion
             }
         }
 
@@ -268,7 +273,7 @@ namespace Mirea.Snar2017.Navigate
                     GL.DrawArrays(All.LineStrip, 0, trace.Count / 3);
                 }
 
-                GL.PushMatrix();
+                /*GL.PushMatrix();
                 float[] modelview = new float[16];
 
                 GL.GetFloat(All.ModelviewMatrix, modelview);
@@ -294,7 +299,7 @@ namespace Mirea.Snar2017.Navigate
                     }
                 }
                 GL.PopMatrix();
-
+                */
                 SwapBuffers();
             }
         }
