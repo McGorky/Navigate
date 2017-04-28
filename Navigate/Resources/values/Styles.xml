@@ -15,7 +15,12 @@
         <item name="android:shadowRadius" >3</item>
     </style>
 
-    <style name="DarkRedAndPink" parent="android:Theme.Holo.NoActionBar">
+  <style name="ProgressBarAppTheme" parent="android:Widget.Holo.ProgressBar.Horizontal">
+    <item name="android:progressDrawable">@drawable/apptheme_progress_horizontal_holo_dark</item>
+    <item name="android:indeterminateDrawable">@drawable/apptheme_progress_indeterminate_horizontal_holo_dark</item>
+  </style>
+
+  <style name="DarkRedAndPink" parent="android:Theme.Holo.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowBackground">@color/Primary</item>
         <item name="android:navigationBarColor">@color/Secondary</item>
@@ -24,5 +29,8 @@
         <item name="android:layout_marginBottom">0dp</item>
         <item name="android:layout_marginLeft">0dp</item>
         <item name="android:layout_marginRight">0dp</item>
+        <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_dark</item>
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarAppTheme</item>
+        
     </style>
 </resources>
