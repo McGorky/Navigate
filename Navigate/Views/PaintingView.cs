@@ -26,9 +26,17 @@ namespace Mirea.Snar2017.Navigate
 {
     class PaintingView : AndroidGameView
     {
-        private (float X, float Y) previousPositionTouch;
+        private Vector3 position;
+        private Vector3 previousPositionTouch;
         private (float Z, float XY) angle;
-        private (float X, float Y, float Z) position;
+
+        private Vector3 positionCamera;
+        private float offsetCamera = 1f;
+        private float speedMoveCamera = 0.01f;
+        private Vector3 rightCamera;
+        private Vector3 upCamera;
+        private Vector3 derectionCamera;
+
         private (int Width, int Height) viewport;
         private int activePointerId = -1;
 
@@ -40,9 +48,13 @@ namespace Mirea.Snar2017.Navigate
 
         private Timer starter;
 
+        static float x = 0.001f;
+
+        public bool switchModeCamera = false;
         public float SpeedMultiplier { get; set; } = 1.0f;
         public bool DrawTrajectory { get; set; } = true;
         public bool IsPlaying { get; set; } = false;
+        public bool UseFreeCamera { get; set; } = true;
         public event Action CoordinatesUpdated;
         public event Action Finished;
 
@@ -65,6 +77,9 @@ namespace Mirea.Snar2017.Navigate
             //stateVectorChangeTimer.AutoReset = false;
             angle.Z = 0;
             angle.XY = 0;
+            positionCamera.X = 0f;
+            positionCamera.Y = 0.2f;
+            positionCamera.Z = 0.2f;
         }
         #endregion
 
@@ -119,10 +134,10 @@ namespace Mirea.Snar2017.Navigate
             stateVector = Storage.Data[Storage.CurrentFrame];
 
             stateVector[1] = 2 * (float)(Math.Acos(stateVector[1]) * 180 / Math.PI);
-            stateVector[2] /= (float)Math.Sin(stateVector[1] / 2);
-            stateVector[3] /= (float)Math.Sin(stateVector[1] / 2);
-            stateVector[4] /= (float)Math.Sin(stateVector[1] / 2);
-
+            stateVector[2] /= Math.Abs((float)Math.Sin(stateVector[1] / 2));
+            stateVector[3] /= Math.Abs((float)Math.Sin(stateVector[1] / 2));
+            stateVector[4] /= Math.Abs((float)Math.Sin(stateVector[1] / 2));
+            
             if (DrawTrajectory)
             {
                 position.X = stateVector[5];
@@ -144,17 +159,71 @@ namespace Mirea.Snar2017.Navigate
             Matrix4 M = Matrix4.CreatePerspectiveFieldOfView(ToRadians(110), (float)viewport.Width / (float)viewport.Height, 0.001f, 10000.0f);
             GL.LoadIdentity();
             GL.LoadMatrix(ConvertMatrix4(M));
-            GL.Rotate(-angle.XY / 10, 1, 0, 0);
-            GL.Rotate(-angle.Z / 10, 0, 1, 0);
 
-            GL.Scale(scaleFactor, scaleFactor, scaleFactor);
+            if (UseFreeCamera)
+            {
+                if (switchModeCamera)
+                {
+                    positionCamera = position;
+                    switchModeCamera = false;
+                }
+                GL.MatrixMode(All.Modelview);
+                Matrix4 m = Matrix4.LookAt(positionCamera, positionCamera - derectionCamera, upCamera);
+                GL.LoadMatrix(ConvertMatrix4(m));
 
-            GL.MatrixMode(All.Modelview);
-            //Matrix4 m = Matrix4.LookAt(0, 0, 0, -1, -1, -1, 0, 1, 0);
-            Matrix4 m = Matrix4.LookAt(position.X - 0.9f + 1 / scaleFactor, position.Y - 0.9f + 1 / scaleFactor, position.Z - 0.9f + 1 / scaleFactor, position.X, position.Y, position.Z, 0, 1, 0);
-            GL.LoadIdentity();
-            GL.LoadMatrix(ConvertMatrix4(m));
-            //GL.Scale(10f, 10f, 10f);
+                derectionCamera.X = (float)Math.Cos(-angle.XY / 1000) * (float)Math.Sin(-angle.Z / 1000);
+                derectionCamera.Y = (float)Math.Sin(-angle.XY / 1000);
+                derectionCamera.Z = (float)Math.Cos(-angle.XY / 1000) * (float)Math.Cos(-angle.Z / 1000);
+
+                rightCamera.X = (float)Math.Sin(-angle.Z / 1000 - Math.PI / 2);
+                rightCamera.Y = 0;
+                rightCamera.Z = (float)Math.Cos(-angle.Z / 1000 - Math.PI / 2);
+
+                upCamera.X = rightCamera.Y * derectionCamera.Z - rightCamera.Z * derectionCamera.Y;
+                upCamera.Y = rightCamera.Z * derectionCamera.X - rightCamera.X * derectionCamera.Z;
+                upCamera.Z = rightCamera.X * derectionCamera.Y - rightCamera.Y * derectionCamera.X;
+
+                if (scaleFactor < offsetCamera)
+                {
+                    positionCamera.X += derectionCamera.X * speedMoveCamera;
+                    positionCamera.Y += derectionCamera.Y * speedMoveCamera;
+                    positionCamera.Z += derectionCamera.Z * speedMoveCamera;
+                }
+                if (scaleFactor > offsetCamera)
+                {
+                    positionCamera.X -= derectionCamera.X * speedMoveCamera;
+                    positionCamera.Y -= derectionCamera.Y * speedMoveCamera;
+                    positionCamera.Z -= derectionCamera.Z * speedMoveCamera;
+                }
+                offsetCamera = scaleFactor;
+            }
+            else
+            {
+                switchModeCamera = true;
+                float offset = -0.9f + 1 / scaleFactor;
+                GL.MatrixMode(All.Modelview);
+                if (offset < 0) scaleFactor = 1 / 0.9f;
+                offset = -0.9f + 1 / scaleFactor;
+                Matrix4 m = Matrix4.LookAt(position.X + offset, position.Y + offset, position.Z + offset, position.X, position.Y, position.Z, 0, 1, 0);
+                GL.LoadMatrix(ConvertMatrix4(m));
+
+                GL.Translate(position.X, position.Y, position.Z);
+                GL.Rotate(-angle.XY / 10, 1, 0, -1);
+                GL.Rotate(-angle.Z / 10, 0, 1, 0);
+                GL.Translate(-position.X, -position.Y, -position.Z);
+
+                /* centerCamera
+                GL.MatrixMode(All.Modelview);
+                Matrix4 m = Matrix4.LookAt(0.1f, 0.1f, 0.1f, 0, 0, 0, 0, 1, 0);
+                GL.LoadIdentity();
+                GL.LoadMatrix(ConvertMatrix4(m));
+
+                //GL.Scale(10f, 10f, 10f);
+                GL.Rotate(-angle.XY / 10, 1, 0, -1);
+                GL.Rotate(-angle.Z / 10, 0, 1, 0);
+                GL.Scale(scaleFactor, scaleFactor, scaleFactor);
+                */
+            }
         }
 
         public void RenderCube()
@@ -162,7 +231,8 @@ namespace Mirea.Snar2017.Navigate
             GL.PushMatrix();
 
             GL.Translate(position.X, position.Y, position.Z);
-            GL.Rotate(stateVector[1], stateVector[2] + position.X, stateVector[4] + position.Y, stateVector[3] + position.Z);
+            //GL.Rotate(stateVector[1], stateVector[2] + position.X, stateVector[4] + position.Y, stateVector[3] + position.Z);
+            GL.Rotate(stateVector[1], stateVector[2], stateVector[4], stateVector[3]);
             trace.Add(position.X);
             trace.Add(position.Y);
             trace.Add(position.Z);
@@ -171,7 +241,7 @@ namespace Mirea.Snar2017.Navigate
             for (int j = 0; j < trace.Count; j++)
                 tr[j] = trace[j];
 
-            GL.ClearColor(0, 0.7f, 0.5f, 0.3f);
+            GL.ClearColor(1, 1, 1, 1f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             unsafe
             {
@@ -203,6 +273,33 @@ namespace Mirea.Snar2017.Navigate
                     GL.DrawArrays(All.LineStrip, 0, trace.Count / 3);
                 }
 
+                /*GL.PushMatrix();
+                float[] modelview = new float[16];
+
+                GL.GetFloat(All.ModelviewMatrix, modelview);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                    {
+                        if (i == j)
+                            modelview[i * 4 + j] = 1.0f;
+                        else
+                            modelview[i * 4 + j] = 0.0f;
+                    }
+                GL.LoadMatrix(modelview);
+
+                fixed (float* pbillboard = billboard, pcubeColors = cubeColors)
+                {
+                    fixed (byte* btriangles = billtriangles)
+                    {
+                        GL.VertexPointer(3, All.Float, 0, new IntPtr(pbillboard));
+                        GL.EnableClientState(All.VertexArray);
+                        GL.ColorPointer(4, All.Float, 0, new IntPtr(pcubeColors));
+                        GL.EnableClientState(All.ColorArray);
+                        GL.DrawElements(All.Triangles, 6, All.UnsignedByte, new IntPtr(btriangles));
+                    }
+                }
+                GL.PopMatrix();
+                */
                 SwapBuffers();
             }
         }
@@ -231,13 +328,21 @@ namespace Mirea.Snar2017.Navigate
                     float xDiff = (previousPositionTouch.X - e_x);
                     float yDiff = (previousPositionTouch.Y - e_y);
                     angle.XY += yDiff;
-                    if (angle.XY > 3600) angle.XY -= 3600;
-                    if (angle.XY < -3600) angle.XY += 3600;
-                    if ((angle.XY > 1100 && angle.XY < 2900) || (angle.XY < -1100 && angle.XY > -2900))
-                        angle.Z -= xDiff;
-                    else
-                        angle.Z += xDiff;
-                }
+
+                        if (!UseFreeCamera)
+                        {
+                            if (angle.XY > 3600) angle.XY -= 3600;
+                            if (angle.XY < -3600) angle.XY += 3600;
+                            if ((angle.XY > 1100 && angle.XY < 2900) || (angle.XY < -1100 && angle.XY > -2900))
+                                angle.Z -= xDiff;
+                            else
+                                angle.Z += xDiff;
+                        }
+                        else
+                        {
+                            angle.Z += xDiff; ;
+                        }
+                    }
                 previousPositionTouch.X = e_x;
                 previousPositionTouch.Y = e_y;
                 break;
@@ -332,21 +437,26 @@ namespace Mirea.Snar2017.Navigate
         };
         float[] cubeColors = {
             1.0f, 0.0f, 0.0f, 0.0f,
-            1.0f, 1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0f,
-            0.0f, 1.0f, 0.0f, 0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+        };
+        float[] billboard = {
+            0.06f + x, -2*x, 0,
+            0.06f + x, 2*x, 0,
+            0.06f - x, 2*x, 0,
+            0.06f - x, -2*x, 0,
+        };
+        byte[] billtriangles = {
+            0, 1, 2,
+            3, 0, 2,
         };
         #endregion
 
-        /*private void PrintText3D(double x, double y, double z, string text)
-        {
-            GL.DrawText();
-            Glut.glutBitmapString(Glut.GLUT_BITMAP_9_BY_15, text);
-        }*/
         private class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
         {
             public override bool OnScale(ScaleGestureDetector detector)
