@@ -1,18 +1,25 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
-using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.App;
+using Android.Hardware;
+using Android.Media;
 
 using OxyPlot.Xamarin.Android;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+
+using Mirea.Snar2017.Navigate.Services;
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -21,15 +28,84 @@ namespace Mirea.Snar2017.Navigate
     // REMARK ALL: давайте всем переменным адекватные имена сразу, чтобы потом не приходилось заниматься рефакторингом https://msdn.microsoft.com/ru-ru/library/ms229002(v=vs.110).aspx
     // REMARK ALL: не задумывайтесь над оптимизацией
 
-    // CONSIDER: переименовать
+    [DataContract]
     public class Storage
     {
-        public static class ForegroundServiceId
+        //public static object DataAccessSync { get; set; } = new object();
+
+        #region SensorsDataService related
+        public static Storage Current { get; }
+
+        public SensorsDataService SensorsDataService
         {
-            public static int SenorsData = 812563123;
+            get
+            {
+                if (sensorsDataServiceConnection.Binder == null)
+                    throw new Exception("Service not bound yet");
+
+                return sensorsDataServiceConnection.Binder.Service;
+            }
         }
 
-        public static object DataAccessSync { get; set; } = new object();
+        public event EventHandler<ServiceConnectedEventArgs> SensorsDataServiceConnected = delegate { };
+
+        private static SensorsDataServiceConnection sensorsDataServiceConnection;
+
+        static Storage()
+        {
+            Current = new Storage();
+            try
+            {
+                using (var fileStream = new FileStream(SettingsFileName, FileMode.Open, FileAccess.Read))
+                {
+                    var jsonFormatter = new DataContractJsonSerializer(typeof(Storage));
+                    Current = (Storage)jsonFormatter.ReadObject(fileStream);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+            }
+            sensorsDataServiceConnection = new SensorsDataServiceConnection(null);
+            sensorsDataServiceConnection.ServiceConnected += (object s, ServiceConnectedEventArgs e) => Current.SensorsDataServiceConnected(null, e);
+        }
+
+        private Storage()
+        {
+        }
+
+        public static void StartSensorsDataService()
+        {
+            Task.Run(() =>
+            {
+                Android.App.Application.Context.StartService(new Intent(Android.App.Application.Context, typeof(SensorsDataService)));
+                var locationServiceIntent = new Intent(Android.App.Application.Context, typeof(SensorsDataService));
+                Android.App.Application.Context.BindService(locationServiceIntent, sensorsDataServiceConnection, Bind.AutoCreate);
+            });
+        }
+
+        public static void StopSensorsDataService()
+        {
+            if (sensorsDataServiceConnection != null)
+            {
+                Android.App.Application.Context.UnbindService(sensorsDataServiceConnection);
+            }
+
+            if (Current.SensorsDataService != null)
+            {
+                Current.SensorsDataService.StopSelf();
+            }
+        }
+
+        public void SaveSettings(Context context)
+        {
+            using (var fileStream = new FileStream(SettingsFileName, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                var jsonFormatter = new DataContractJsonSerializer(typeof(Storage));
+                jsonFormatter.WriteObject(fileStream, this);
+                MediaScannerConnection.ScanFile(context, new string[] { Storage.ApllicationDataFolder }, null, null);
+            }
+        }
+        #endregion
 
         #region LogPlayer data
         // UNDONE: разобраться
@@ -41,17 +117,13 @@ namespace Mirea.Snar2017.Navigate
         #endregion
 
         #region Raw data
-        // CONSIDER: разобраться, нужен ли тут set
-        public static float[] AccelerometerData { get; } = new float[3];
-        public static float[] GyroscopeData { get; } = new float[3];
-        public static float[] MagnetometerData { get; } = new float[3];
-        // TODO: использовать только данные акселерометра для определения перемещений
-        public static float[] LinearAccelerationData { get; } = new float[3];
+        //public static float[] AccelerometerData { get; } = new float[3];
+        //public static float[] LinearAccelerationData { get; } = new float[3];
+        //public static float[] GyroscopeData { get; } = new float[3];
+        //public static float[] GyroscopeUncalibratedData { get; } = new float[3];
+        //public static float[] MagnetometerData { get; } = new float[3];
 
-        //public static (float X, float Y, float Z) AccelerometerData { get; } = (0, 0, 0);
-        //public static (float X, float Y, float Z) GyroscopeData { get; } = (0, 0, 0);
-        //public static (float X, float Y, float Z) MagnetometerData { get; } = (0, 0, 0);
-        //public static (float X, float Y, float Z) LinearAccelerationData { get; } = (0, 0, 0);
+        public static long StartTimestamp;
         #endregion
 
         #region Plot data
@@ -65,8 +137,6 @@ namespace Mirea.Snar2017.Navigate
         public static LineSeries Phi = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.3 };
         public static LineSeries Theta = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.3 };
         public static LineSeries Psi = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.3 };
-        /*public static float[][] Offsets;
-        public static float[] OffsetsTimes;*/
 
         public static (float Psi, float Theta, float Phi) ToEulerAngles(Quaternion q)
         {
@@ -84,26 +154,31 @@ namespace Mirea.Snar2017.Navigate
         public static float[] Acceleration { get; } = new float[3];
         public static float[] Velocity { get; } = new float[3];
         public static float[] Offset { get; } = new float[3];
-
-        //public static (float X, float Y, float Z) Acceleration { get; } = (0, 0, 0);
-        //public static (float X, float Y, float Z) Velocity { get; } = (0, 0, 0);
-        //public static (float X, float Y, float Z) Offset { get; } = (0, 0, 0);
         #endregion
 
         #region Filter parameters
-        public static Matrix AccelerometerCalibrationMatrix { get; set; } = new Matrix(4, 4, MatrixInitializationValue.Identity);
-        public static float[] GyroscopeCalibrationVector { get; set; } = new float[3];
+        [DataMember]
+        public OpenTK.Matrix3 AccelerometerCalibrationMatrix { get; set; } = OpenTK.Matrix3.Identity;
+        [DataMember]
+        public OpenTK.Vector3 GyroscopeCalibrationVector { get; set; } = new OpenTK.Vector3();
 
-        public static Quaternion StartRotation { get; set; } = (1, 0, 0, 0);
+        public Quaternion StartRotation { get; set; } = (1, 0, 0, 0);
 
-        public static float Beta { get; set; } = 0.1f;
-        public static float Zeta { get; set; } = 0.1f;
-        public static float Gamma { get; set; } = 0.7f;
+        [DataMember]
+        public float Beta { get; set; } = 0.1f;
+        [DataMember]
+        public float Zeta { get; set; } = 0.1f;
+        [DataMember]
+        public float Gamma { get; set; } = 0.7f;
 
-        public static bool MagnetometerEnabled { get; set; } = true;
-        public static bool GyroscopeDriftCompensationEnabled { get; set; } = false;
-        public static bool AccelerometerCalibrationEnabled { get; set; } = true;
-        public static bool GyroscopeCalibrationEnabled { get; set; } = false;
+        [DataMember]
+        public bool MagnetometerEnabled { get; set; } = true;
+        [DataMember]
+        public bool GyroscopeDriftCompensationEnabled { get; set; } = false;
+        [DataMember]
+        public bool AccelerometerCalibrationEnabled { get; set; } = true;
+        [DataMember]
+        public bool GyroscopeCalibrationEnabled { get; set; } = false;
 
         public static TimeSpan Uptime { get; set; } = new TimeSpan();
         public static DateTime StartTime { get; set; }
@@ -112,11 +187,17 @@ namespace Mirea.Snar2017.Navigate
         #region File parameters
         //public static string ApllicationDataFolder { get; set; } = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
         public static string ApllicationDataFolder { get; set; } = Path.Combine((string)Android.OS.Environment.ExternalStorageDirectory, "Navigate");
-        public static string Filename { get; set; }// = "data.txt";
+        public static string CurrentFilename { get; set; }// = "data.txt";
         public static string RawFolderName { get; } = Path.Combine(ApllicationDataFolder, "raw");
         public static string FilteredFolderName { get; } = Path.Combine(ApllicationDataFolder, "filtered");
-        public static string CurrentRawFile { get => Path.Combine(RawFolderName, Filename); }
-        public static string CurrentFilteredFile { get => Path.Combine(FilteredFolderName, Filename); }
+        public static string SettingsFileName { get; } = Path.Combine(ApllicationDataFolder, "settings.json");
+        public static string CurrentRawFile { get => Path.Combine(RawFolderName, CurrentFilename); }
+        public static string CurrentFilteredFile { get => Path.Combine(FilteredFolderName, CurrentFilename); }
         #endregion
+
+        public static class ForegroundServiceId
+        {
+            public static int SensorsData = 456462365;
+        }
     }
 }

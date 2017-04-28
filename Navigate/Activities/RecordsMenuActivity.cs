@@ -195,7 +195,7 @@ namespace Mirea.Snar2017.Navigate
                     if (!converged && data[0] > 2000)
                     {
                         startRotation = q;
-                        beta = Storage.Beta;
+                        beta = Storage.Current.Beta;
                         converged = true;
 
                         acceleration = new float[3];
@@ -206,7 +206,7 @@ namespace Mirea.Snar2017.Navigate
                         //Storage.Offsets = new float[text.Length - i][];
                         sw.WriteLine($"{text.Length - i}");
                     }
-                    q = Filter.Madgvic(q, g, a, m, beta, Storage.Zeta, dt);
+                    q = Filter.Madgvic(q, g, a, m, beta, Storage.Current.Zeta, dt);
 
                     if (i > 15)
                     {
@@ -220,7 +220,7 @@ namespace Mirea.Snar2017.Navigate
                     aLinear = (0, data[10], data[11], data[12]);
                     var aGlobal = localRotation * aLinear * localRotation.Conjugated();
 
-                    var accelerationCurrent = Filter.Exponential(acceleration, new float[] { aGlobal.X, aGlobal.Y, aGlobal.Z }, Storage.Gamma);
+                    var accelerationCurrent = Filter.Exponential(acceleration, new float[] { aGlobal.X, aGlobal.Y, aGlobal.Z }, Storage.Current.Gamma);
                     var velocityCurrent = Filter.Integrate(acceleration, accelerationCurrent, velocity, dt);
                     offset = Filter.Integrate(velocity, velocityCurrent, offset, dt);
 

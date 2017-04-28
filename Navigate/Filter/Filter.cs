@@ -44,7 +44,7 @@ namespace Mirea.Snar2017.Navigate
         // UNDONE: компенсация дрифта
         public static Quaternion Madgvic(Quaternion q, Quaternion g, Quaternion a, Quaternion m, float beta, float zeta, float dt)
         {
-            if (!Storage.GyroscopeDriftCompensationEnabled)
+            if (!Storage.Current.GyroscopeDriftCompensationEnabled)
             {
                 zeta = 0;
             }

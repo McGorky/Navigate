@@ -51,10 +51,9 @@ namespace Mirea.Snar2017.Navigate
         private const int SamplesToCollect = 300;
         private float[][] samples = new float[SamplesToCollect][];
         private float[] medianSamples;
+        private float[][] gyroSamples = new float[SamplesToCollect][];
         private int numberOfSamplesCollected = 0;
-
-        private Matrix expectedValues = new Matrix(4, 4);
-        private Matrix actualValues = new Matrix(4, 4);
+        PhoneOrientation currentOrientation;
 
         private Matrix calibrateMatrix = new Matrix(3, 3);
 
@@ -71,29 +70,25 @@ namespace Mirea.Snar2017.Navigate
 
             SetContentView(Resource.Layout.CalibrateMenu);
 
+            Storage.StopSensorsDataService();
             sensorManager = (SensorManager)GetSystemService(Context.SensorService);
 
             calibrateButton = FindViewById<Button>(Resource.Id.CalibrateButton);
-            //frontButton = FindViewById<Button>(Resource.Id.CalibrateFrontButton);
             backButton = FindViewById<Button>(Resource.Id.CalibrateBackButton);
             topButton = FindViewById<Button>(Resource.Id.CalibrateTopButton);
-            //bottomButton = FindViewById<Button>(Resource.Id.CalibrateBottomButton);
-            //leftButton = FindViewById<Button>(Resource.Id.CalibrateLeftButton);
             rightButton = FindViewById<Button>(Resource.Id.CalibrateRightButton);
 
             calibrateButton.Click += OnCalibrateButtonClicked;
             calibrateButton.Enabled = false;
 
-            //frontButton.Click += OnAnySideButtonClicked;
             backButton.Click += OnAnySideButtonClicked;
             topButton.Click += OnAnySideButtonClicked;
-            //bottomButton.Click += OnAnySideButtonClicked;
-            //leftButton.Click += OnAnySideButtonClicked;
             rightButton.Click += OnAnySideButtonClicked;
 
             for (int i = 0; i < samples.Length; i++)
             {
                 samples[i] = new float[3];
+                gyroSamples[i] = new float[3];
             }
         }
 
@@ -114,6 +109,7 @@ namespace Mirea.Snar2017.Navigate
 
         protected override void OnDestroy()
         {
+            Storage.StopSensorsDataService();
             base.OnDestroy();
         }
 
@@ -143,6 +139,13 @@ namespace Mirea.Snar2017.Navigate
                     AllSamplesCollected();
                 }
             }
+            else if (e.Sensor.Type == SensorType.Gyroscope)
+            {
+                if (currentOrientation == PhoneOrientation.OnBack)
+                {
+                    e.Values.CopyTo(gyroSamples[numberOfSamplesCollected], 0);
+                }
+            }
         }
 
         private void EnableSensors()
@@ -150,7 +153,10 @@ namespace Mirea.Snar2017.Navigate
             numberOfSamplesCollected = 0;
             sensorManager.RegisterListener(this,
                     sensorManager.GetDefaultSensor(SensorType.Accelerometer),
-                    SensorDelay.Game);
+                    SensorDelay.Fastest);
+            sensorManager.RegisterListener(this,
+                    sensorManager.GetDefaultSensor(SensorType.Gyroscope),
+                    SensorDelay.Fastest);
         }
 
         private void DisableSensors()
@@ -175,7 +181,8 @@ namespace Mirea.Snar2017.Navigate
         private void GetMedianValues()
         {
             medianSamples = new float[3];
-            float[][] samplesTransposed = new float[3][];
+            var samplesTransposed = new float[3][];
+            
             for (int i = 0; i < 3; i++)
             {
                 samplesTransposed[i] = new float[SamplesToCollect];
@@ -191,6 +198,27 @@ namespace Mirea.Snar2017.Navigate
                     (samplesTransposed[i][SamplesToCollect / 2] + samplesTransposed[i][1 + SamplesToCollect / 2]) * 0.5f;
             }
 
+            if (currentOrientation == PhoneOrientation.OnBack)
+            {
+                var gyroMedians = new float[3];
+                var gyroSamplesTransposed = new float[3][];
+                for (int i = 0; i < 3; i++)
+                {
+                    gyroSamplesTransposed[i] = new float[SamplesToCollect];
+                    for (int j = 0; j < SamplesToCollect; j++)
+                    {
+                        gyroSamplesTransposed[i][j] = gyroSamples[j][i];
+                    }
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    Array.Sort(gyroSamplesTransposed[i]);
+                    gyroMedians[i] = SamplesToCollect % 2 == 1 ? gyroSamplesTransposed[i][SamplesToCollect] :
+                        (gyroSamplesTransposed[i][SamplesToCollect / 2] + gyroSamplesTransposed[i][1 + SamplesToCollect / 2]) * 0.5f;
+                }
+                Storage.Current.GyroscopeCalibrationVector = new OpenTK.Vector3(gyroMedians[0], gyroMedians[1], gyroMedians[2]);
+            }
+
             MediansCalculated();
         }
         #endregion
@@ -201,75 +229,58 @@ namespace Mirea.Snar2017.Navigate
             AllSamplesCollected?.GetInvocationList().ToList().ForEach(d => AllSamplesCollected -= d as Action);
             MediansCalculated?.GetInvocationList().ToList().ForEach(d => MediansCalculated -= d as Action);
 
-            //var handlers = AllSamplesCollected?.GetInvocationList();
-            //if (handlers != null)
-            //{
-            //    foreach (var h in handlers)
-            //    {
-            //        AllSamplesCollected -= h as Action;
-            //    }
-            //}
-            //handlers = MediansCalculated?.GetInvocationList();
-            //if (handlers != null)
-            //{
-            //    foreach (var h in handlers)
-            //    {
-            //        MediansCalculated -= h as Action;
-            //    }
-            //}
-
             var button = sender as Button;
-            PhoneOrientation orientation;
+            
             switch (button.Id)
             {
-                /*case Resource.Id.CalibrateFrontButton:
-                {
-                    orientation = PhoneOrientation.OnFront;
-                    break;
-                }*/
                 case Resource.Id.CalibrateBackButton:
                 {
-                    orientation = PhoneOrientation.OnBack;
+                    currentOrientation = PhoneOrientation.OnBack;
                     break;
                 }
                 case Resource.Id.CalibrateTopButton:
                 {
-                    orientation = PhoneOrientation.OnTop;
+                    currentOrientation = PhoneOrientation.OnTop;
                     break;
                 }
-                /*case Resource.Id.CalibrateBottomButton:
-                {
-                    orientation = PhoneOrientation.OnBottom;
-                    break;
-                }*/
-                /*case Resource.Id.CalibrateLeftButton:
-                {
-                    orientation = PhoneOrientation.OnLeft;
-                    break;
-                }*/
                 case Resource.Id.CalibrateRightButton:
                 {
-                    orientation = PhoneOrientation.OnRight;
+                    currentOrientation = PhoneOrientation.OnRight;
                     break;
                 }
+                //case Resource.Id.CalibrateFrontButton:
+                //{
+                //    orientation = PhoneOrientation.OnFront;
+                //    break;
+                //}
+                //case Resource.Id.CalibrateBottomButton:
+                //{
+                //    orientation = PhoneOrientation.OnBottom;
+                //    break;
+                //}
+                //case Resource.Id.CalibrateLeftButton:
+                //{
+                //    orientation = PhoneOrientation.OnLeft;
+                //    break;
+                //}
                 default:
                 {
-                    orientation = PhoneOrientation.Unknown;
+                    currentOrientation = PhoneOrientation.Unknown;
                     break;
                 }
             }
             int column = -1;
-            if (orientation == PhoneOrientation.OnRight)
+            if (currentOrientation == PhoneOrientation.OnRight)
             {
                 rightCalibrated = true;
                 column = 0;
             }
-            else if (orientation == PhoneOrientation.OnTop)
+            else if (currentOrientation == PhoneOrientation.OnTop)
             {
                 topCalibrated = true;
                 column = 1;
             }
-            else if (orientation == PhoneOrientation.OnBack)
+            else if (currentOrientation == PhoneOrientation.OnBack)
             {
                 backCalibrated = true;
                 column = 2;
@@ -285,19 +296,26 @@ namespace Mirea.Snar2017.Navigate
             {
                 for (int i = 0; i < 3; i++)
                     calibrateMatrix[column, i] = medianSamples[i] / g;
-            };
 
-            if (backCalibrated && topCalibrated && rightCalibrated)
-            {
-                calibrateButton.Enabled = true;
-                calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
-            }
+                if (backCalibrated && topCalibrated && rightCalibrated)
+                {
+                    calibrateButton.Enabled = true;
+                    calibrateButton.SetBackgroundResource(Resource.Drawable.WhiteButton);
+                }
+            };
         }
         private void OnCalibrateButtonClicked(object sender, EventArgs e)
         {
-            
-            //Storage.AccelerometerCalibrationMatrix = expectedValues * actualValues.Inversed();
             calibrateMatrix = calibrateMatrix.Inversed();
+            float[] calebrateValues = new float[9];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    calebrateValues[i * 3 + j] = calibrateMatrix[i, j];
+                }
+            }
+            Storage.Current.AccelerometerCalibrationMatrix = new OpenTK.Matrix3(calebrateValues);
 
             calibrateButton.Text = calibrateMatrix.ToString();
         }

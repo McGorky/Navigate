@@ -74,26 +74,26 @@ namespace Mirea.Snar2017.Navigate
             {
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-                betaEditText.Text = $"{Storage.Beta:F3}";
-                zetaEditText.Text = $"{Storage.Zeta:F3}";
-                gammaEditText.Text = $"{Storage.Gamma:F3}";
+                betaEditText.Text = $"{Storage.Current.Beta:F3}";
+                zetaEditText.Text = $"{Storage.Current.Zeta:F3}";
+                gammaEditText.Text = $"{Storage.Current.Gamma:F3}";
 
                 betaSeekbar.Max = 1000;
-                betaSeekbar.Progress = (int)(Storage.Beta * 1000);
+                betaSeekbar.Progress = (int)(Storage.Current.Beta * 1000);
                 betaSeekbar.RefreshDrawableState();
 
                 zetaSeekbar.Max = 1000;
-                zetaSeekbar.Progress = (int)(Storage.Zeta * 1000);
+                zetaSeekbar.Progress = (int)(Storage.Current.Zeta * 1000);
                 zetaSeekbar.RefreshDrawableState();
 
                 gammaSeekbar.Max = 1000;
-                gammaSeekbar.Progress = (int)(Storage.Gamma * 1000);
+                gammaSeekbar.Progress = (int)(Storage.Current.Gamma * 1000);
                 gammaSeekbar.RefreshDrawableState();
 
-                magnetometerSwitch.Checked = Storage.MagnetometerEnabled;
-                gyroscopeDriftSwitch.Checked = Storage.GyroscopeDriftCompensationEnabled;
-                accelerometerCalibrationSwitch.Checked = Storage.AccelerometerCalibrationEnabled;
-                gyroscopeCalibrationSwitch.Checked = Storage.GyroscopeCalibrationEnabled;
+                magnetometerSwitch.Checked = Storage.Current.MagnetometerEnabled;
+                gyroscopeDriftSwitch.Checked = Storage.Current.GyroscopeDriftCompensationEnabled;
+                accelerometerCalibrationSwitch.Checked = Storage.Current.AccelerometerCalibrationEnabled;
+                gyroscopeCalibrationSwitch.Checked = Storage.Current.GyroscopeCalibrationEnabled;
             });
         }
 
@@ -133,14 +133,14 @@ namespace Mirea.Snar2017.Navigate
             {
                 if (e.Progress == 0)
                 {
-                    Storage.Beta = 0;
+                    Storage.Current.Beta = 0;
                     betaEditText.Text = $"{0.0f:F3}"; ;
                 }
                 else
                 {
-                    //Storage.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                    Storage.Beta = e.Progress / 1000.0f;
-                    betaEditText.Text = $"{Storage.Beta:F3}";
+                    //Storage.Current.Beta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    Storage.Current.Beta = e.Progress / 1000.0f;
+                    betaEditText.Text = $"{Storage.Current.Beta:F3}";
                 }
             }
         }
@@ -151,14 +151,14 @@ namespace Mirea.Snar2017.Navigate
             {
                 if (e.Progress == 0)
                 {
-                    Storage.Zeta = 0;
+                    Storage.Current.Zeta = 0;
                     zetaEditText.Text = string.Format("0.000");
                 }
                 else
                 {
-                    //Storage.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                    Storage.Zeta = e.Progress / 1000.0f;
-                    zetaEditText.Text = string.Format("{0:F3}", Storage.Zeta);
+                    //Storage.Current.Zeta = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    Storage.Current.Zeta = e.Progress / 1000.0f;
+                    zetaEditText.Text = string.Format("{0:F3}", Storage.Current.Zeta);
                 }
             }
         }
@@ -169,36 +169,36 @@ namespace Mirea.Snar2017.Navigate
             {
                 if (e.Progress == 0)
                 {
-                    Storage.Gamma = 0;
+                    Storage.Current.Gamma = 0;
                     gammaEditText.Text = string.Format("0.000");
                 }
                 else
                 {
-                    //Storage.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
-                    Storage.Gamma = e.Progress / 1000.0f;
-                    gammaEditText.Text = string.Format("{0:F3}", Storage.Gamma);
+                    //Storage.Current.Gamma = ((e.Progress * e.Progress) / 200) * (float)Math.Log10(e.Progress) / 15000f;
+                    Storage.Current.Gamma = e.Progress / 1000.0f;
+                    gammaEditText.Text = string.Format("{0:F3}", Storage.Current.Gamma);
                 }
             }
         }
 
         private void OnMagnetometerSwitchCheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
-            Storage.MagnetometerEnabled = e.IsChecked;
+            Storage.Current.MagnetometerEnabled = e.IsChecked;
         }
 
         private void OnGyroscopeDriftSwitchCheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
-            Storage.GyroscopeDriftCompensationEnabled = e.IsChecked;
+            Storage.Current.GyroscopeDriftCompensationEnabled = e.IsChecked;
         }
 
         private void OnAccelerometerCalibrationSwitchCheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
-            Storage.AccelerometerCalibrationEnabled = e.IsChecked;
+            Storage.Current.AccelerometerCalibrationEnabled = e.IsChecked;
         }
 
         private void OnGyroscopeCalibrationSwitchCheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
-            Storage.GyroscopeCalibrationEnabled = e.IsChecked;
+            Storage.Current.GyroscopeCalibrationEnabled = e.IsChecked;
         }
         #endregion
     }

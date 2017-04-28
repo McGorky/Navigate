@@ -5,6 +5,7 @@ namespace Mirea.Snar2017.Navigate
 {
     public struct Quaternion
     {
+        // CONSIDER: заменить на массив
         private float w, x, y, z;
 
         public float W { get => w; set => w = value; }
@@ -66,6 +67,16 @@ namespace Mirea.Snar2017.Navigate
         }
 
         public float Norm { get => (float)Sqrt(w * w + x * x + y * y + z * z); }
+
+        /// <summary>
+        /// Вектор, вокруг которого происходит вращение
+        /// </summary>
+        public (float X, float Y, float Z) Vector { get => throw new NotImplementedException(); }
+
+        /// <summary>
+        /// Угол, на который поворачивает кватернион вокруг вектора
+        /// </summary>
+        public float Angle { get => throw new NotImplementedException(); }
 
         public Quaternion(float w, float x, float y, float z)
         {
@@ -135,6 +146,11 @@ namespace Mirea.Snar2017.Navigate
         /// <param name="b">поворот из положения x в положение z</param>
         /// <returns>поворот из положения y в положение z></returns>
         public static Quaternion CalculateDifference(Quaternion a, Quaternion b) => b.Conjugated() * a; // b.Normalized().Conjugated() * a.Normalized();
+
+        public (float Phi, float Theta, float Psi) ToEulerAngles()
+        {
+            throw new NotImplementedException();
+        }
 
         public override string ToString() => $"{w},{x},{y},{z}";
     }

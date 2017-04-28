@@ -18,10 +18,14 @@ using Android.Widget;
 using Android.OS;
 using Android.Graphics;
 
+using OpenTK;
+
 using OxyPlot.Xamarin.Android;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+
+using Mirea.Snar2017.Navigate.Services;
 
 namespace Mirea.Snar2017.Navigate
 {
@@ -32,7 +36,7 @@ namespace Mirea.Snar2017.Navigate
             )]
     public class MainMenuActivity : Activity
     {
-        private Timer timer;
+        private System.Timers.Timer timer;
 
         #region Views and related fields
         private PlotView accelerometerPlotView;
@@ -62,6 +66,7 @@ namespace Mirea.Snar2017.Navigate
             startAlert.SetTitle(GetString(Resource.String.AlertCalibrateStart));
             startAlert.SetPositiveButton(GetString(Resource.String.OkAction), OnCalibrateMenuButtonClicked);
             startAlert.SetNegativeButton(GetString(Resource.String.CancelAction), SaveCancelAction);
+            //startAlert.Show();
 
             calibrateMenuButton = FindViewById<Button>(Resource.Id.CalibrateMenuButton);
             filterButton = FindViewById<Button>(Resource.Id.FilterSettingsButton);
@@ -72,20 +77,27 @@ namespace Mirea.Snar2017.Navigate
             gyroPlotView = FindViewById<PlotView>(Resource.Id.GyroPlotView);
             magnetometerPlotView = FindViewById<PlotView>(Resource.Id.MagnetometerPlotView);
 
-            timer = new Timer((o) =>
+            Storage.Current.SensorsDataServiceConnected += (object sender, ServiceConnectedEventArgs e) =>
             {
-                RunOnUiThread(() => UpdatePlots());
-            });
-            timer.Change(2000, 50);
-            
-            accelerometerPlotView.Model = CreatePlotModel("Time", "s", "Accelerometer", "m/s^2");
-            gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s");
-            magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "μT");
+                
+                Storage.Current.SensorsDataService.SensorsReadingsUpdated += OnSensorReadingsUpdated; // обновить графики
+                Storage.Current.SensorsDataService.StateVectorUpdated += delegate { }; // обновить opengl
+            };
+            Storage.StartSensorsDataService();
+
+            accelerometerPlotView.Model = CreatePlotModel("Time", "s", "Accelerometer", "m/s^2", 5, 20);
+            gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s", 5, 7);
+            magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "μT", 10, 55);
 
             calibrateMenuButton.Click += OnCalibrateMenuButtonClicked;
             filterButton.Click += OnFilterButtonClicked;
             logButton.Click += OnLogButtonClicked;
             recordsButton.Click += OnRecordsButtonClicked;
+
+            //timer.Elapsed += (o, e) => { };
+            //timer.AutoReset = false;
+            //timer.Interval = 1000;
+            //timer.Start();
         }
 
         protected override void OnPause()
@@ -105,6 +117,7 @@ namespace Mirea.Snar2017.Navigate
 
         protected override void OnDestroy()
         {
+            Storage.StopSensorsDataService();
             base.OnDestroy();
         }
 
@@ -112,6 +125,7 @@ namespace Mirea.Snar2017.Navigate
         {
             if (backButtonPressed)
             {
+                Storage.Current.SaveSettings(this);
                 base.OnBackPressed();
                 Process.KillProcess(Process.MyPid());
             }
@@ -128,71 +142,86 @@ namespace Mirea.Snar2017.Navigate
         }
         #endregion
 
-        private void UpdatePlots()
+        //int counter = 0;
+        private void OnSensorReadingsUpdated(object sender, SensorsReadingsUpdatedEventArgs e)
         {
-            var x = Storage.Uptime.TotalSeconds;
+            //counter++;
+            //if (counter < 10)
+            //    return;
+            //counter = 0;
+
+            var t = e.Value.Time;
+            var accelerometerData = new double[] { e.Value.Acceleration.X, e.Value.Acceleration.Y, e.Value.Acceleration.Z };
+            var gyroscopeData = new double[] { e.Value.AngularVelocity.X, e.Value.AngularVelocity.Y, e.Value.AngularVelocity.Z };
+            var magnetometerData = new double[] { e.Value.MagneticField.X, e.Value.MagneticField.Y, e.Value.MagneticField.Z };
 
             for (int i = 0; i < 3; i++)
             {
-                (accelerometerPlotView.Model.Series[i] as LineSeries).Points.Add(new DataPoint(x, Storage.AccelerometerData[i]));
-                (gyroPlotView.Model.Series[i] as LineSeries).Points.Add(new DataPoint(x, Storage.GyroscopeData[i]));
-                (magnetometerPlotView.Model.Series[i] as LineSeries).Points.Add(new DataPoint(x, Storage.MagnetometerData[i]));
+                var accelerometerSeries = accelerometerPlotView.Model.Series[i] as LineSeries;
+                var gyroscopeSeries = gyroPlotView.Model.Series[i] as LineSeries;
+                var magnetometerSeries = magnetometerPlotView.Model.Series[i] as LineSeries;
+
+                if (accelerometerSeries.Points.Count >= accelerometerSeries.Points.Capacity - 1)
+                {
+                    accelerometerSeries.Points.RemoveAt(0);
+                    gyroscopeSeries.Points.RemoveAt(0);
+                    magnetometerSeries.Points.RemoveAt(0);
+                }
+                accelerometerSeries.Points.Add(new DataPoint(t, accelerometerData[i]));
+                gyroscopeSeries.Points.Add(new DataPoint(t, gyroscopeData[i]));
+                magnetometerSeries.Points.Add(new DataPoint(t, magnetometerData[i]));
             }
 
-            accelerometerPlotView.Model.Axes[0].Minimum = x - 10;
-            accelerometerPlotView.Model.Axes[0].Maximum = x + 5;
-            accelerometerPlotView.Model.Axes[1].Minimum = -20;
-            accelerometerPlotView.Model.Axes[1].Maximum = 20;
+            accelerometerPlotView.Model.Axes[0].Minimum = t - 5;
+            accelerometerPlotView.Model.Axes[0].Maximum = t + 2;
 
-            gyroPlotView.Model.Axes[0].Minimum = x - 10;
-            gyroPlotView.Model.Axes[0].Maximum = x + 5;
-            gyroPlotView.Model.Axes[1].Minimum = -7;
-            gyroPlotView.Model.Axes[1].Maximum = 7;
+            gyroPlotView.Model.Axes[0].Minimum = t - 5;
+            gyroPlotView.Model.Axes[0].Maximum = t + 2;
 
-            magnetometerPlotView.Model.Axes[0].Minimum = x - 10;
-            magnetometerPlotView.Model.Axes[0].Maximum = x + 5;
-            magnetometerPlotView.Model.Axes[1].Minimum = -40;
-            magnetometerPlotView.Model.Axes[1].Maximum = 40;
+            magnetometerPlotView.Model.Axes[0].Minimum = t - 5;
+            magnetometerPlotView.Model.Axes[0].Maximum = t + 2;
 
             accelerometerPlotView.InvalidatePlot();
             gyroPlotView.InvalidatePlot();
             magnetometerPlotView.InvalidatePlot();
         }
 
-        private void UpdatePlot(PlotView plotView, float[] data, float t)
-        {
-            lock (Storage.DataAccessSync)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    var s = plotView.Model.Series[i] as LineSeries;
-                    s.Points.Add(new DataPoint(t, data[i]));
-                    if (s.Points.Count == 150)
-                        s.Points.RemoveAt(0);
-                }
-
-                plotView.Model.Axes[0].Minimum = t - 10;
-                plotView.Model.Axes[0].Maximum = t + 3;
-                plotView.Model.Axes[1].Minimum = -6;
-                plotView.Model.Axes[1].Maximum = 5;
-                RunOnUiThread(() => plotView.InvalidatePlot());
-            }
-        }
-
-        private PlotModel CreatePlotModel(string xName, string xUnits, string yName, string yUnits)
+        private PlotModel CreatePlotModel(string xName, string xUnits, string yName, string yUnits, double yStep, double yMax)
         {
             var plotModel = new PlotModel();
             double fontSize = 7;
 
-            var timeAxis = new LinearAxis { Position = AxisPosition.Bottom, FontSize = fontSize, Title = $"{xName}, {xUnits}", MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot };
-            var valueAxis = new LinearAxis { Position = AxisPosition.Left, FontSize = fontSize, Title = $"{yName}, {yUnits}", MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot };
+            var timeAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                FontSize = fontSize,
+                Title = $"{xName}, {xUnits}",
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineThickness = 0.1
+            };
+
+            var valueAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                FontSize = fontSize,
+                Title = $"{yName}, {yUnits}",
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineThickness = 0.1,
+                MajorStep = yStep,
+                Maximum = yMax,
+                Minimum = -yMax
+            };
 
             plotModel.Axes.Add(timeAxis);
             plotModel.Axes.Add(valueAxis);
 
-            var seriesX = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Red, MarkerSize = 0.5};
-            var seriesY = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Green, MarkerSize = 0.5 };
-            var seriesZ = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue, MarkerSize = 0.5 };
+            var seriesX = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Red };
+            var seriesY = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Green };
+            var seriesZ = new LineSeries { MarkerType = MarkerType.None, Background = OxyColors.White, Color = OxyColors.Blue };
+
+            seriesX.Points.Capacity = 250;
+            seriesY.Points.Capacity = 250;
+            seriesZ.Points.Capacity = 250;
 
             plotModel.Series.Add(seriesX);
             plotModel.Series.Add(seriesY);
@@ -225,27 +254,27 @@ namespace Mirea.Snar2017.Navigate
                 builder.SetTitle("Set log name");
                 saveLogInputEditText = new EditText(this);
                 builder.SetView(saveLogInputEditText);
-                saveLogInputEditText.Text = DateTime.Now.ToString("dd.MM.yyyy-HH:mm:ss");
+                saveLogInputEditText.Text = DateTime.Now.ToString("dd.MM.yyyy-HH.mm.ss");
                 builder.SetPositiveButton(GetString(Resource.String.OkAction), SaveOkAction);
                 builder.SetNegativeButton(GetString(Resource.String.CancelAction), SaveCancelAction);
                 builder.Show();
+                isLogging = true;
             }
             else
             {
-                StopService(new Intent(this, typeof(SensorsDataService)));
+                //StopService(new Intent(this, typeof(SensorsDataService)));
                 logButton.Text = GetString(Resource.String.StartLog);
                 isLogging = false;
-                Toast.MakeText(this, $"{Storage.CurrentRawFile} saved", ToastLength.Short).Show();
+                //Toast.MakeText(this, $"{Storage.CurrentRawFile} saved", ToastLength.Short).Show();
             }
 
         }
 
         private void SaveOkAction(object sender, DialogClickEventArgs e)
         {
-            Storage.Filename = saveLogInputEditText.Text + ".txt";
+            Storage.CurrentFilename = saveLogInputEditText.Text + ".txt";
             logButton.Text = GetString(Resource.String.StopLog);
             isLogging = true;
-            StartService(new Intent(this, typeof(SensorsDataService)));
         }
 
         private void SaveCancelAction(object sender, DialogClickEventArgs e)
