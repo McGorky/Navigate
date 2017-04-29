@@ -20,13 +20,11 @@ namespace Mirea.Snar2017.Navigate
     [Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.KeyboardHidden,// LaunchMode = LaunchMode.SingleTask,
         Label = "LogPlayer",
         Theme = "@style/DarkRedAndPink")]
-    public class LogPlayerActivity : Activity
+    public class RealTime3dActivity : Activity
     {
         #region Views and related fields
         private PaintingView paintingView;
-        private NumberPicker speedPicker;
-        private Button playStopButton;
-        private SeekBar rewindSeekbar;
+        private Button play3dRTButton;
         private bool pressed = false;
 
         #endregion
@@ -35,50 +33,17 @@ namespace Mirea.Snar2017.Navigate
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            SetContentView(Resource.Layout.LogPlayer);
+            SetContentView(Resource.Layout.RealTime3dMenu);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             paintingView = FindViewById<PaintingView>(Resource.Id.LogPaintingView);
-            speedPicker = FindViewById<NumberPicker>(Resource.Id.SpeedPicker);
-            playStopButton = FindViewById<Button>(Resource.Id.Play3dButton);
-            rewindSeekbar = FindViewById<SeekBar>(Resource.Id.seekBar1);
+            play3dRTButton = FindViewById<Button>(Resource.Id.Play3DRealtime);
 
-            rewindSeekbar.Enabled = false;
-
-            speedPicker.MinValue = 0;
-            speedPicker.MaxValue = 7;
-            speedPicker.WrapSelectorWheel = false;
-            var speeds = new string[] { "0.25", "0.5", "0.75", "1", "1.25", "1.5", "1.75", "2" };
-            speedPicker.SetDisplayedValues(speeds);
-
-            playStopButton.Click += OnPlayStopButtonClicked;
+            play3dRTButton.Click += OnPlay3dRTButtonClicked;
 
             paintingView.DrawTrajectory = Storage.TrajectoryTracingEnabled;
-            paintingView.RealTimeMode = false;
-
-            speedPicker.Value = 3;
-            speedPicker.ValueChanged += (o, e) =>
-            {
-                paintingView.SpeedMultiplier = float.Parse(speeds[speedPicker.Value]);
-            };
-
-            rewindSeekbar.Max = Storage.NumberOfFrames;
-            paintingView.CoordinatesUpdated += () => RunOnUiThread(() =>
-            {
-                rewindSeekbar.Progress = Storage.CurrentFrame;
-                rewindSeekbar.RefreshDrawableState();
-            });
-
-            paintingView.Finished += () =>
-            {
-                OnPlayStopButtonClicked(playStopButton, null);
-            };
-
-            rewindSeekbar.ProgressChanged += (o, e) =>
-            {
-                Storage.CurrentFrame = rewindSeekbar.Progress;
-            };
+            paintingView.RealTimeMode = true;
         }
 
         protected override void OnPause()
@@ -113,28 +78,27 @@ namespace Mirea.Snar2017.Navigate
         #endregion
 
         #region Handlers
-        void OnPlayStopButtonClicked(object sender, EventArgs e)
+        void OnPlay3dRTButtonClicked(object sender, EventArgs e)
         {
             RunOnUiThread(() =>
             {
                 if (!pressed)
                 {
-                    playStopButton.Text = "Stop";
+                    play3dRTButton.Text = "Stop";
                     pressed = true;
-                    //rewindSeekbar.Enabled = false;
-                    speedPicker.Enabled = false;
+                    play3dRTButton.Enabled = false;
                     paintingView.IsPlaying = true;
                 }
                 else
                 {
-                    playStopButton.Text = "Start";
+                    play3dRTButton.Text = "Start";
                     pressed = false;
-                    //rewindSeekbar.Enabled = true;
-                    speedPicker.Enabled = true;
+                    play3dRTButton.Enabled = true;
                     paintingView.IsPlaying = false;
                 }
             });
         }
+        
         #endregion
     }
 }

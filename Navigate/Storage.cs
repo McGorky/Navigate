@@ -113,6 +113,7 @@ namespace Mirea.Snar2017.Navigate
         public static int NumberOfFrames = 0;
         public static float[][] Data = null;
 
+        [DataMember]
         public static bool TrajectoryTracingEnabled { get; set; } = true;
         #endregion
 

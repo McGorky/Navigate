@@ -45,9 +45,8 @@ namespace Mirea.Snar2017.Navigate
             zetaSeekbar = FindViewById<SeekBar>(Resource.Id.ZetaSeekBar);
             gammaSeekbar = FindViewById<SeekBar>(Resource.Id.ExponentialSeekBar);
 
-            // REMARK KK: привести в порядок имена в axml
-            betaEditText = FindViewById<EditText>(Resource.Id.MadgwickEditText1);
-            zetaEditText = FindViewById<EditText>(Resource.Id.MadgwickEditText2);
+            betaEditText = FindViewById<EditText>(Resource.Id.MadgwickBetaEditText);
+            zetaEditText = FindViewById<EditText>(Resource.Id.MadgwickZetaEditText);
             gammaEditText = FindViewById<EditText>(Resource.Id.ExponentialEditText);
 
             magnetometerSwitch = FindViewById<Switch>(Resource.Id.MagnetometerSwitch);
