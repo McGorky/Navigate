@@ -2450,11 +2450,17 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07006a
 			public const int CalibrateTopButton = 2131165290;
 			
-			// aapt resource value: 0x7f0700c3
-			public const int DrawTrajectorySwitch = 2131165379;
+			// aapt resource value: 0x7f0700c7
+			public const int DrawTrajectorySwitch = 2131165383;
 			
-			// aapt resource value: 0x7f0700c2
-			public const int DrawTrajectoryTextView = 2131165378;
+			// aapt resource value: 0x7f0700bf
+			public const int DrawTrajectorySwitchRealTime = 2131165375;
+			
+			// aapt resource value: 0x7f0700c6
+			public const int DrawTrajectoryTextView = 2131165382;
+			
+			// aapt resource value: 0x7f0700be
+			public const int DrawTrajectoryTextViewRealTime = 2131165374;
 			
 			// aapt resource value: 0x7f07007e
 			public const int ExponentialEditText = 2131165310;
@@ -2467,6 +2473,12 @@ namespace Mirea.Snar2017.Navigate
 			
 			// aapt resource value: 0x7f070094
 			public const int FilterSettingsButton = 2131165332;
+			
+			// aapt resource value: 0x7f0700c1
+			public const int FreeCameraSwitchRealTime = 2131165377;
+			
+			// aapt resource value: 0x7f0700c0
+			public const int FreeCameraTextViewRealTime = 2131165376;
 			
 			// aapt resource value: 0x7f070090
 			public const int GyroPlotView = 2131165328;
@@ -2486,14 +2498,14 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070092
 			public const int LogButton = 2131165330;
 			
-			// aapt resource value: 0x7f0700bf
-			public const int LogNameSpinner = 2131165375;
+			// aapt resource value: 0x7f0700c3
+			public const int LogNameSpinner = 2131165379;
 			
 			// aapt resource value: 0x7f07008b
 			public const int LogPaintingView = 2131165323;
 			
-			// aapt resource value: 0x7f0700be
-			public const int LogTypeSpinner = 2131165374;
+			// aapt resource value: 0x7f0700c2
+			public const int LogTypeSpinner = 2131165378;
 			
 			// aapt resource value: 0x7f070076
 			public const int MadgwickBeta = 2131165302;
@@ -2516,9 +2528,6 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f07007f
 			public const int MagnetometerTextView = 2131165311;
 			
-			// aapt resource value: 0x7f0700bd
-			public const int Play3DRealtime = 2131165373;
-			
 			// aapt resource value: 0x7f07008d
 			public const int Play3dButton = 2131165325;
 			
@@ -2540,14 +2549,17 @@ namespace Mirea.Snar2017.Navigate
 			// aapt resource value: 0x7f070087
 			public const int RootLinearLayot = 2131165319;
 			
-			// aapt resource value: 0x7f0700c1
-			public const int Show3DButton = 2131165377;
+			// aapt resource value: 0x7f0700c5
+			public const int Show3DButton = 2131165381;
 			
-			// aapt resource value: 0x7f0700c0
-			public const int ShowPlotsButton = 2131165376;
+			// aapt resource value: 0x7f0700c4
+			public const int ShowPlotsButton = 2131165380;
 			
 			// aapt resource value: 0x7f07008c
 			public const int SpeedPicker = 2131165324;
+			
+			// aapt resource value: 0x7f0700bd
+			public const int StateVectorTextViewRealTime = 2131165373;
 			
 			// aapt resource value: 0x7f07007a
 			public const int ZetaSeekBar = 2131165306;

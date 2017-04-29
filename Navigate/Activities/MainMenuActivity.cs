@@ -81,12 +81,10 @@ namespace Mirea.Snar2017.Navigate
 
             Storage.Current.SensorsDataServiceConnected += (object sender, ServiceConnectedEventArgs e) =>
             {
-                
                 Storage.Current.SensorsDataService.SensorsReadingsUpdated += OnSensorReadingsUpdated; // обновить графики
-                Storage.Current.SensorsDataService.StateVectorUpdated += delegate { }; // обновить opengl
+                //Storage.Current.SensorsDataService.StateVectorUpdated += delegate { }; // обновить opengl
             };
-            Storage.StartSensorsDataService();
-
+            
             accelerometerPlotView.Model = CreatePlotModel("Time", "s", "Accelerometer", "m/s^2", 5, 20);
             gyroPlotView.Model = CreatePlotModel("Time", "s", "Gyro", "rad/s", 5, 7);
             magnetometerPlotView.Model = CreatePlotModel("Time", "s", "Magnetometer", "μT", 10, 55);
@@ -96,10 +94,12 @@ namespace Mirea.Snar2017.Navigate
             logButton.Click += OnLogButtonClicked;
             recordsButton.Click += OnRecordsButtonClicked;
 
-            //timer.Elapsed += (o, e) => { };
-            //timer.AutoReset = false;
-            //timer.Interval = 1000;
-            //timer.Start();
+            new Thread(() =>
+            {
+                Thread.Sleep(1000);
+                Storage.StartSensorsDataService();
+            }).Start();
+
             realtimeButton.Click += OnRealTime3dButtonClicked;
         }
 

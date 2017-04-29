@@ -6,16 +6,63 @@
     android:weightSum="100">
     <mirea.snar2017.navigate.PaintingView
         android:id="@+id/LogPaintingView"
-        android:layout_weight="100"
+        android:layout_weight="86"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
-    <Button
-        android:text="Play"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/Pink"
-        android:layout_toLeftOf="@id/SpeedPicker"
-        android:id="@+id/Play3DRealtime"
-        android:layout_margin="2dp" />
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0"
+        android:weightSum="100">
+        <TextView
+            android:hint="state vector"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/StateVectorTextViewRealTime"
+            android:layout_weight="100" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="7"
+        android:weightSum="100">
+        <TextView
+            android:text="@string/DrawTrajectory"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/DrawTrajectoryTextViewRealTime"
+            android:layout_weight="70" />
+        <Switch
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/DrawTrajectorySwitchRealTime"
+            android:layout_weight="30"
+            android:textOff="@string/SwitchTextOff"
+            android:textOn="@string/SwitchTextOn" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="7"
+        android:weightSum="100">
+        <TextView
+            android:text="Free camera"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/FreeCameraTextViewRealTime"
+            android:layout_weight="70" />
+        <Switch
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/FreeCameraSwitchRealTime"
+            android:layout_weight="30"
+            android:textOff="@string/SwitchTextOff"
+            android:textOn="@string/SwitchTextOn" />
+    </LinearLayout>
 </LinearLayout>

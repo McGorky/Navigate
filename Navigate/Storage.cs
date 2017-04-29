@@ -31,7 +31,7 @@ namespace Mirea.Snar2017.Navigate
     [DataContract]
     public class Storage
     {
-        //public static object DataAccessSync { get; set; } = new object();
+        public static object DataAccessSync { get; set; } = new object();
 
         #region SensorsDataService related
         public static Storage Current { get; }
@@ -159,14 +159,14 @@ namespace Mirea.Snar2017.Navigate
 
         #region Filter parameters
         [DataMember]
-        public OpenTK.Matrix3 AccelerometerCalibrationMatrix { get; set; } = OpenTK.Matrix3.Identity;
+        public Matrix AccelerometerCalibrationMatrix { get; set; } = new Matrix(3, 3, MatrixInitializationValue.Identity);
         [DataMember]
         public OpenTK.Vector3 GyroscopeCalibrationVector { get; set; } = new OpenTK.Vector3();
 
         public Quaternion StartRotation { get; set; } = (1, 0, 0, 0);
 
         [DataMember]
-        public float Beta { get; set; } = 0.1f;
+        public float Beta { get; set; } = 0.3f;
         [DataMember]
         public float Zeta { get; set; } = 0.1f;
         [DataMember]

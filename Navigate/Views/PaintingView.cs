@@ -93,6 +93,11 @@ namespace Mirea.Snar2017.Navigate
 
         public void Start()
         {
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
             GL.ShadeModel(All.Flat);
             GL.Enable(All.CullFace);
             GL.ClearDepth(1.0f);
@@ -103,9 +108,11 @@ namespace Mirea.Snar2017.Navigate
             GL.Hint(All.PerspectiveCorrectionHint, All.Nicest);
 
             Storage.CurrentFrame = 0;
-            starter = new Timer(UpdateCoordinatesFromRecord);
-            UpdateCoordinatesFromRecord(null);
-
+            if (!RealTimeMode)
+            {
+                starter = new Timer(UpdateCoordinatesFromRecord);
+                UpdateCoordinatesFromRecord(null);
+            }
             RenderFrame += delegate
             {
                 SetupCamera();
@@ -113,11 +120,6 @@ namespace Mirea.Snar2017.Navigate
             };
 
             Run(60);
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
         }
 
         public void UpdateCoordinates(StateVector stateVector)
@@ -132,6 +134,9 @@ namespace Mirea.Snar2017.Navigate
             this.stateVector[2] = orientation.X / sinHalfAngle;
             this.stateVector[3] = orientation.Y / sinHalfAngle;
             this.stateVector[4] = orientation.Z / sinHalfAngle;
+            position.X = stateVector.Position.X;
+            position.Y = stateVector.Position.Y;
+            position.Z = stateVector.Position.Z;
         }
 
         private void UpdateCoordinatesFromRecord(object sender)
@@ -254,23 +259,23 @@ namespace Mirea.Snar2017.Navigate
             else
             {
                 #region слежка за объектом
-                /*
-                float offset = -0.9f + 1 / scaleFactor;
-                GL.MatrixMode(All.Modelview);
-                if (offset < 0) scaleFactor = 1 / 0.9f;
-                offset = -0.9f + 1 / scaleFactor;
-                Matrix4 m = Matrix4.LookAt(position.X + offset, position.Y + offset, position.Z + offset, position.X, position.Y, position.Z, 0, 1, 0);
-                GL.LoadMatrix(ConvertMatrix4(m));
+                
+                //float offset = -0.9f + 1 / scaleFactor;
+                //GL.MatrixMode(All.Modelview);
+                //if (offset < 0) scaleFactor = 1 / 0.9f;
+                //offset = -0.9f + 1 / scaleFactor;
+                //Matrix4 m = Matrix4.LookAt(position.X + offset, position.Y + offset, position.Z + offset, position.X, position.Y, position.Z, 0, 1, 0);
+                //GL.LoadMatrix(ConvertMatrix4(m));
 
-                GL.Translate(position.X, position.Y, position.Z);
-                GL.Rotate(-angle.XY / 10, 1, 0, -1);
-                GL.Rotate(-angle.Z / 10, 0, 1, 0);
-                GL.Translate(-position.X, -position.Y, -position.Z);
-                */
+                //GL.Translate(position.X, position.Y, position.Z);
+                //GL.Rotate(-angle.XY / 10, 1, 0, -1);
+                //GL.Rotate(-angle.Z / 10, 0, 1, 0);
+                //GL.Translate(-position.X, -position.Y, -position.Z);
+                
                 #endregion
 
                 #region centerCamera
-                /*
+                
                 GL.MatrixMode(All.Modelview);
                 Matrix4 m = Matrix4.LookAt(0.1f, 0.1f, 0.1f, 0, 0, 0, 0, 1, 0);
                 GL.LoadIdentity();
@@ -280,7 +285,7 @@ namespace Mirea.Snar2017.Navigate
                 GL.Rotate(-angle.XY / 10, 1, 0, -1);
                 GL.Rotate(-angle.Z / 10, 0, 1, 0);
                 GL.Scale(scaleFactor, scaleFactor, scaleFactor);
-                */
+                
                 #endregion
             }
         }
@@ -327,17 +332,17 @@ namespace Mirea.Snar2017.Navigate
                 }
                 GL.PopMatrix();
 
+                fixed (float* pline = line, plineColor = lineColor)
+                {
+                    GL.VertexPointer(3, All.Float, 0, new IntPtr(pline));
+                    GL.EnableClientState(All.VertexArray);
+                    GL.ColorPointer(4, All.Float, 0, new IntPtr(plineColor));
+                    GL.EnableClientState(All.ColorArray);
+                    GL.DrawArrays(All.Lines, 0, 6);
+                }
+
                 if (DrawTrajectory)
                 {
-                    fixed (float* pline = line, plineColor = lineColor)
-                    {
-                        GL.VertexPointer(3, All.Float, 0, new IntPtr(pline));
-                        GL.EnableClientState(All.VertexArray);
-                        GL.ColorPointer(4, All.Float, 0, new IntPtr(plineColor));
-                        GL.EnableClientState(All.ColorArray);
-                        GL.DrawArrays(All.Lines, 0, 6);
-                    }
-
                     fixed (float* pline = tr)
                     {
                         GL.VertexPointer(3, All.Float, 0, new IntPtr(pline));

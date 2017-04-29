@@ -9,7 +9,8 @@ namespace Mirea.Snar2017.Navigate
     public class RawData : DataLog<SensorsReadings>
     {
         [DataMember]
-        public Matrix3 AccelerometerCalibrationMatrix { get; set; }
+        //public Matrix3 AccelerometerCalibrationMatrix { get; set; }
+        public Matrix AccelerometerCalibrationMatrix { get; set; }
 
         [DataMember]
         public Vector3 GyroscopeCalibrationVector { get; set; }

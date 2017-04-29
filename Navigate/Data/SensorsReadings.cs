@@ -9,7 +9,7 @@ namespace Mirea.Snar2017.Navigate
         /// <summary>
         /// Time in seconds
         /// </summary>
-        public double Time { get; set; }
+        public float Time { get; set; }
         /// <summary>
         /// Acceleration in m/s^2
         /// </summary>

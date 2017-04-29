@@ -23,5 +23,5 @@
     <string name="CancelAction">Cancel</string>
     <string name="SwitchTextOn">ON</string>
     <string name="SwitchTextOff">OFF</string>
-  <string name="Start3drt">RealTime 3D</string>
+  <string name="Start3drt">Realtime 3D</string>
 </resources>

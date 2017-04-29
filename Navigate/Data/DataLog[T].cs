@@ -11,7 +11,7 @@ namespace Mirea.Snar2017.Navigate
         public string Name { get; set; }
 
         [DataMember]
-        public List<T> Data { get; set; }
+        public List<T> Data { get; set; } = new List<T>();
 
         [IgnoreDataMember]
         public int EntriesCount { get => Data.Count; }

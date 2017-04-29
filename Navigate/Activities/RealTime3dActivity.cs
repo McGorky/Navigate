@@ -24,8 +24,11 @@ namespace Mirea.Snar2017.Navigate
     {
         #region Views and related fields
         private PaintingView paintingView;
-        private Button play3dRTButton;
-        private bool pressed = false;
+        private TextView stateVectorTextView,
+            drawTrajectoryTextView,
+            freeCameraTextView;
+        private Switch drawTrajectorySwitch,
+            freeCameraSwitch;
 
         #endregion
 
@@ -38,12 +41,25 @@ namespace Mirea.Snar2017.Navigate
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             paintingView = FindViewById<PaintingView>(Resource.Id.LogPaintingView);
-            play3dRTButton = FindViewById<Button>(Resource.Id.Play3DRealtime);
+            stateVectorTextView = FindViewById<TextView>(Resource.Id.StateVectorTextViewRealTime);
+            drawTrajectoryTextView = FindViewById<TextView>(Resource.Id.DrawTrajectoryTextViewRealTime);
+            freeCameraTextView = FindViewById<TextView>(Resource.Id.FreeCameraTextViewRealTime);
+            drawTrajectorySwitch = FindViewById<Switch>(Resource.Id.DrawTrajectorySwitchRealTime);
+            freeCameraSwitch = FindViewById<Switch>(Resource.Id.FreeCameraSwitchRealTime);
 
-            play3dRTButton.Click += OnPlay3dRTButtonClicked;
+            drawTrajectorySwitch.CheckedChange += (o, e) => paintingView.DrawTrajectory = e.IsChecked;
+            freeCameraSwitch.CheckedChange += (o, e) => paintingView.FreeCamera = e.IsChecked;
 
             paintingView.DrawTrajectory = Storage.TrajectoryTracingEnabled;
+            Storage.Current.SensorsDataService.CalculatingOrientation = true;
             paintingView.RealTimeMode = true;
+            paintingView.Start();
+            Storage.Current.SensorsDataService.CalculatingOrientation = true;
+            //paintingView.FreeCamera = false;
+            Storage.Current.SensorsDataService.StateVectorUpdated += (o, e) =>
+            {
+                paintingView.UpdateCoordinates(e.Value);
+            };
         }
 
         protected override void OnPause()
@@ -66,6 +82,8 @@ namespace Mirea.Snar2017.Navigate
 
         protected override void OnDestroy()
         {
+            Storage.Current.SensorsDataService.CalculatingOrientation = false;
+            Storage.Current.SensorsDataService.CalculatingOrientation = false;
             base.OnDestroy();
         }
 
@@ -78,26 +96,7 @@ namespace Mirea.Snar2017.Navigate
         #endregion
 
         #region Handlers
-        void OnPlay3dRTButtonClicked(object sender, EventArgs e)
-        {
-            RunOnUiThread(() =>
-            {
-                if (!pressed)
-                {
-                    play3dRTButton.Text = "Stop";
-                    pressed = true;
-                    play3dRTButton.Enabled = false;
-                    paintingView.IsPlaying = true;
-                }
-                else
-                {
-                    play3dRTButton.Text = "Start";
-                    pressed = false;
-                    play3dRTButton.Enabled = true;
-                    paintingView.IsPlaying = false;
-                }
-            });
-        }
+
         
         #endregion
     }

@@ -307,15 +307,17 @@ namespace Mirea.Snar2017.Navigate
         private void OnCalibrateButtonClicked(object sender, EventArgs e)
         {
             calibrateMatrix = calibrateMatrix.Inversed();
-            float[] calebrateValues = new float[9];
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    calebrateValues[i * 3 + j] = calibrateMatrix[i, j];
-                }
-            }
-            Storage.Current.AccelerometerCalibrationMatrix = new OpenTK.Matrix3(calebrateValues);
+            //float[] calebrateValues = new float[9];
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    for (int j = 0; j < 3; j++)
+            //    {
+            //        calebrateValues[i * 3 + j] = calibrateMatrix[i, j];
+            //    }
+            //}
+            //Storage.Current.AccelerometerCalibrationMatrix = new OpenTK.Matrix3(calebrateValues);
+
+            Storage.Current.AccelerometerCalibrationMatrix = calibrateMatrix;
 
             calibrateButton.Text = calibrateMatrix.ToString();
         }

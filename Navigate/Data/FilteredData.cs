@@ -6,6 +6,7 @@ namespace Mirea.Snar2017.Navigate
     [DataContract]
     public class FilteredData : DataLog<StateVector>
     {
+        //[IgnoreDataMember]
         [DataMember]
         public RawData RawDataLog{ get; set; }
 
